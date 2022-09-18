@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Prototype</title>
+
+    {% load static %}
+    <!-- Enter stylesheet here -->
+    <link rel="stylesheet" href= {% static 'css/index.css' %}>
+</head>
+<body>
+    <h1>Hello World</h1>
+    <div>
+        <img src={% static 'images/DO-0.png' %} alt="">
+    </div>
+
+
+    <!-- Global Components -->
+    <div>
+        {% include 'kardex_app/Components/header.html' %} 
+        <br>
+        {% include 'kardex_app/Components/navbar.html' %} 
+        <br>
+        {% include 'kardex_app/Components/sidebar.html' %} 
+        <br>
+        {% include 'kardex_app/Components/footer.html' %} 
+        <br>
+    </div>
+
+
+    <!-- Dynamic Components -->
+    {% block content %}
+    <div>
+
+    </div>
+    {% endblock content %}
+
+
+
+</body>
+
+
+
+</html>
