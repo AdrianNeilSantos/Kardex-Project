@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import *
-
+from .forms import *
 
 # Create your views here.
 def home(request):
@@ -31,12 +31,46 @@ def dashboard(request):
     return render(request, 'kardex_app/Kardex/dashboard.html', data)
 
 
+def createKardex(request):
+    form = KardexForm()
+
+    if(request.method == "POST"):
+        form = KardexForm(request.POST)
+        if(form.is_valid()):
+            form.save()
+            return redirect("/dashboard")
+
+    data = {"form": form}
+    return render(request, 'kardex_app/Kardex/createKardex.html', data)
+
+def updateKardex(request, pk):
+    kardex = Kardex.objects.get(id=pk)
+    form = KardexForm(instance=kardex)
+
+    if(request.method == "POST"):
+        form = KardexForm(request.POST, instance=kardex)
+        if(form.is_valid()):
+            form.save()
+            return redirect("/dashboard")
+
+    data = {"form": form}
+    return render(request, 'kardex_app/Kardex/updateKardex.html', data)
+
+
+def deleteKardex(request, pk):
+    kardex = Kardex.objects.get(id=pk)
+    kardex.delete()
+    return redirect("/dashboard")
+
+
 #End of Kardex
 
 
 
 
 #Generate Reports
+def generateReports(request):
+    return render(request, 'kardex_app/Generate Reports/generateReports.html')
 
 
 #End of Generate Reports

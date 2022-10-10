@@ -23,6 +23,12 @@
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.view_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">dashboard</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.view_name == 'createKardex' %}active{% endif %}" href="{% url 'createKardex' %}">createKardex</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.view_name == 'generateReports' %}active{% endif %}" href="{% url 'generateReports' %}">generateReports</a>
+        </li>
       </ul>
     </div>
 </nav>

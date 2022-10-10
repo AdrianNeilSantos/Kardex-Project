@@ -9,12 +9,12 @@
     <h1>Dashboard</h1>
     <strong>Total No. of Kardex: </strong> {{kardexs|length}}
     <br>
-    <a href="#!" class="btn btn-success">Add</a>
+    <a href="{% url 'createKardex' %}" class="btn btn-success"><span class="material-icons">add</span>Add</a>
 </div>
 
 
 <!-- wrapper -->
-<div class="text-center">
+<div class="container-fluid">
   <!-- Inner -->
   <div class="carousel-inner py-4">
     
@@ -40,13 +40,32 @@
                     <strong>hospitalName: </strong> {{kardex.hospitalName}} <br>
                 </div>
 
-                <a href="#!" class="btn btn-primary">View</a>
-                <a href="#!" class="btn btn-warning">Update</a>
-                <a href="#!" class="btn btn-danger">Delete</a>
+ 
+                    <a href="#!" class="btn btn-primary">
+                        <span class="material-icons">visibility</span>
+                        View
+                    </a>
+
+
+                    <a href="{% url 'updateKardex' kardex.id %}" class="btn btn-warning">
+                        <span class="material-icons">edit</span>
+                        Update
+                    </a>
+
+
+                    <a href="{% url 'deleteKardex' kardex.id %}" class="btn btn-danger">
+                        <span class="material-icons">delete</span>
+                        Delete
+                    </a>
+
+
+
+
               </div>
             </div>
           </div>
          
+
         {% endfor %}
 
 
