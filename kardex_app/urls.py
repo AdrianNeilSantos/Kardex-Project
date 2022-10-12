@@ -17,6 +17,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name="dashboard"),
     path('createKardex/', views.createKardex, name="createKardex"),
     path('updateKardex/<str:pk>', views.updateKardex, name="updateKardex"),
+    path('viewKardex/<str:pk>', views.viewKardex, name="viewKardex"),
     path('deleteKardex/<str:pk>', views.deleteKardex, name="deleteKardex"),
 
     #End of Kardex

@@ -56,6 +56,11 @@ def updateKardex(request, pk):
     data = {"form": form}
     return render(request, 'kardex_app/Kardex/updateKardex.html', data)
 
+def viewKardex(request, pk):
+    kardex = Kardex.objects.get(id=pk)
+    data = {"kardex": kardex}
+    return render(request, 'kardex_app/Kardex/viewKardex.html', data)
+
 
 def deleteKardex(request, pk):
     kardex = Kardex.objects.get(id=pk)
