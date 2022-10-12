@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def home(request):
@@ -9,9 +13,36 @@ def home(request):
 
 # Authentication
 def register(request):
-    return render(request, 'kardex_app/Authentication/register.html')
+    form = NurseCreationForm()
+    if( request.method == "POST"):
+        form = NurseCreationForm(request.POST)
+        if( form.is_valid() ):
+            form.save()
+            messages.success(request, "Account was created for "+form.cleaned_data.get("username"))
+            return redirect('/signIn')
+
+    data = {"form": form}
+
+    return render(request, 'kardex_app/Authentication/register.html', data)
 
 def signIn(request):
+    if(request.method == "POST"):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        nurse = authenticate(request, username=username, password=password)
+        
+        if nurse is not None:
+            login(request, nurse)
+            print("Login Success.")
+            return redirect('/')
+        else:
+            print("Login Fail.")
+            messages.error(request, "Incorrect password or username.")
+
+    return render(request, 'kardex_app/Authentication/signIn.html')
+
+def signOut(request):
     return render(request, 'kardex_app/Authentication/signIn.html')
 
 def changePassword(request):

@@ -29,6 +29,18 @@
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.view_name == 'generateReports' %}active{% endif %}" href="{% url 'generateReports' %}">generateReports</a>
         </li>
+
+
+        {% if request.user.is_authenticated %}
+          <!-- Display user -->
+          <li class="nav-link">
+            <h1>HELLO USER</h1>
+            <a href="">
+              <i class="fas fa-user">{{request.user.first_name}} {{request.user.last_name}}</i>
+            </a>
+          </li>
+        {% endif %}
+
       </ul>
     </div>
 </nav>
