@@ -42,25 +42,25 @@
               <a class="nav-link {% if request.resolver_match.view_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {% if request.resolver_match.view_name == 'signIn' %}active{% endif %}" href="{% url 'signIn' %}">Sign In</a>
+              <a class="nav-link {% if request.resolver_match.view_name == 'sign-in' %}active{% endif %}" href="{% url 'sign-in' %}">Sign In</a>
             </li>
             <li class="nav-item">
               <a class="nav-link {% if request.resolver_match.view_name == 'register' %}active{% endif %}" href="{% url 'register' %}">Register</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {% if request.resolver_match.view_name == 'changePassword' %}active{% endif %}" href="{% url 'changePassword' %}">changePassword</a>
+              <a class="nav-link {% if request.resolver_match.view_name == 'change-password' %}active{% endif %}" href="{% url 'change-password' %}">changePassword</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {% if request.resolver_match.view_name == 'forgotPassword' %}active{% endif %}" href="{% url 'forgotPassword' %}">forgotPassword</a>
+              <a class="nav-link {% if request.resolver_match.view_name == 'forgot-password' %}active{% endif %}" href="{% url 'forgot-password' %}">forgotPassword</a>
             </li>
             <li class="nav-item">
               <a class="nav-link {% if request.resolver_match.view_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">dashboard</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {% if request.resolver_match.view_name == 'createKardex' %}active{% endif %}" href="{% url 'createKardex' %}">createKardex</a>
+              <a class="nav-link {% if request.resolver_match.view_name == 'create-kardex' %}active{% endif %}" href="{% url 'create-kardex' %}">createKardex</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {% if request.resolver_match.view_name == 'generateReports' %}active{% endif %}" href="{% url 'generateReports' %}">generateReports</a>
+              <a class="nav-link {% if request.resolver_match.view_name == 'generate-reports' %}active{% endif %}" href="{% url 'generate-reports' %}">generateReports</a>
             </li>
           </ul>
         </li>

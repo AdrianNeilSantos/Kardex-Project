@@ -28,11 +28,11 @@
                     <strong>doctorInCharge: </strong> {{kardex.doctorInCharge}} <br>
                     <strong>hospitalName: </strong> {{kardex.hospitalName}} <br>
                 </div>
-                  <a href="{% url 'updateKardex' kardex.id %}" class="btn btn-warning">
+                  <a href="{% url 'update-kardex' kardex.id %}" class="btn btn-warning">
                     <span class="material-icons">edit</span>
                     Update
                   </a>
-                    <a href="{% url 'deleteKardex' kardex.id %}" class="btn btn-danger">
+                    <a href="{% url 'delete-kardex' kardex.id %}" class="btn btn-danger">
                       <span class="material-icons">delete</span>
                       Delete
                     </a>

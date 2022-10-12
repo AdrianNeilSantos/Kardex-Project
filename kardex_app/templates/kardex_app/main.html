@@ -16,18 +16,18 @@
 </head>
 <body>
   <!-- Navbar -->
-  {% include 'kardex_app/Components/navbar.html' %} 
+  {% include 'kardex_app/partials/navbar.html' %} 
   <br>
-    <!-- Dynamic Components -->
+    <!-- Dynamic partials -->
     {% block content %}
     {% endblock content %}
-    <!-- Global Components -->
+    <!-- Global partials -->
     <div>
-      {% include 'kardex_app/Components/header.html' %} 
+      {% include 'kardex_app/partials/header.html' %} 
       <br>
-      {% include 'kardex_app/Components/sidebar.html' %} 
+      {% include 'kardex_app/partials/sidebar.html' %} 
       <br>
-      {% include 'kardex_app/Components/footer.html' %} 
+      {% include 'kardex_app/partials/footer.html' %} 
       <br>
     </div>
   <!-- JS -->

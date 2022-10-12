@@ -5,7 +5,7 @@
   <h1>Dashboard</h1>
   <strong>Total No. of Kardex: </strong> {{kardexs|length}}
   <br>
-  <a href="{% url 'createKardex' %}" class="btn btn-success"><span class="material-icons">add</span>Add</a>
+  <a href="{% url 'create-kardex' %}" class="btn btn-success"><span class="material-icons">add</span>Add</a>
 </div>
 <!-- wrapper -->
 <div class="container-fluid">
@@ -30,15 +30,15 @@
                   <strong>doctorInCharge: </strong> {{kardex.doctorInCharge}} <br>
                   <strong>hospitalName: </strong> {{kardex.hospitalName}} <br>
                 </div>
-                  <a href="{% url 'viewKardex' kardex.id %}" class="btn btn-primary">
+                  <a href="{% url 'view-kardex' kardex.id %}" class="btn btn-primary">
                     <span class="material-icons">visibility</span>
                     View
                   </a>
-                  <a href="{% url 'updateKardex' kardex.id %}" class="btn btn-warning">
+                  <a href="{% url 'update-kardex' kardex.id %}" class="btn btn-warning">
                     <span class="material-icons">edit</span>
                     Update
                   </a>
-                  <a href="{% url 'deleteKardex' kardex.id %}" class="btn btn-danger">
+                  <a href="{% url 'delete-kardex' kardex.id %}" class="btn btn-danger">
                     <span class="material-icons">delete</span>
                     Delete
                   </a>

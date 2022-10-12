@@ -19,11 +19,11 @@ def register(request):
         if( form.is_valid() ):
             form.save()
             messages.success(request, "Account was created for "+form.cleaned_data.get("username"))
-            return redirect('/signIn')
+            return redirect('/sign-in')
 
     data = {"form": form}
 
-    return render(request, 'kardex_app/Authentication/register.html', data)
+    return render(request, 'kardex_app/authentication/register.html', data)
 
 def signIn(request):
     if(request.method == "POST"):
@@ -40,16 +40,16 @@ def signIn(request):
             print("Login Fail.")
             messages.error(request, "Incorrect password or username.")
 
-    return render(request, 'kardex_app/Authentication/signIn.html')
+    return render(request, 'kardex_app/authentication/sign-in.html')
 
 def signOut(request):
-    return render(request, 'kardex_app/Authentication/signIn.html')
+    return render(request, 'kardex_app/authentication/sign-in.html')
 
 def changePassword(request):
-    return render(request, 'kardex_app/Authentication/changePassword.html')
+    return render(request, 'kardex_app/authentication/change-password.html')
 
 def forgotPassword(request):
-    return render(request, 'kardex_app/Authentication/forgotPassword.html')
+    return render(request, 'kardex_app/authentication/forgot-password.html')
 
 # End of Authentication
 
@@ -59,7 +59,7 @@ def dashboard(request):
     kardexs = Kardex.objects.all()
     data = {"kardexs": kardexs}
 
-    return render(request, 'kardex_app/Kardex/dashboard.html', data)
+    return render(request, 'kardex_app/kardex/dashboard.html', data)
 
 
 def createKardex(request):
@@ -72,7 +72,7 @@ def createKardex(request):
             return redirect("/dashboard")
 
     data = {"form": form}
-    return render(request, 'kardex_app/Kardex/createKardex.html', data)
+    return render(request, 'kardex_app/kardex/create-kardex.html', data)
 
 def updateKardex(request, pk):
     kardex = Kardex.objects.get(id=pk)
@@ -85,12 +85,12 @@ def updateKardex(request, pk):
             return redirect("/dashboard")
 
     data = {"form": form}
-    return render(request, 'kardex_app/Kardex/updateKardex.html', data)
+    return render(request, 'kardex_app/kardex/update-kardex.html', data)
 
 def viewKardex(request, pk):
     kardex = Kardex.objects.get(id=pk)
     data = {"kardex": kardex}
-    return render(request, 'kardex_app/Kardex/viewKardex.html', data)
+    return render(request, 'kardex_app/kardex/view-kardex.html', data)
 
 
 def deleteKardex(request, pk):
@@ -104,9 +104,9 @@ def deleteKardex(request, pk):
 
 
 
-#Generate Reports
+#generate-reports
 def generateReports(request):
-    return render(request, 'kardex_app/Generate Reports/generateReports.html')
+    return render(request, 'kardex_app/generate-reports/generate-reports.html')
 
 
-#End of Generate Reports
+#End of generate-reports
