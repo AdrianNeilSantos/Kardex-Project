@@ -1,93 +1,77 @@
 {% extends 'kardex_app/main.html' %}
-
-
-
 {% block content %}
-
 <br><br><br>
-
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-2 col-lg-3"></div>
-        <div class="col-md-8 col-lg-6">
-            <div class="card text-center shadow">
-                <div class="card-header">
-                    Welcome! Please Register (This is a test)
-                </div>
-                <div class="card-body m-4">
-                    <form action="" method="post">
-                        {% csrf_token %}
-                        
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-floating mb-3">
-                                    {{form.first_name}}
-                                    <label for="floatingInput">Enter First Name</label>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-floating mb-3">
-                                    {{form.last_name}}
-                                    <label for="floatingInput">Enter Last Name</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <br> 
-
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-floating mb-3">
-                                    {{form.username}}
-                                    <label for="floatingInput">Enter Username</label>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-floating mb-3">
-                                    {{form.email}}
-                                    <label for="floatingInput">Enter Email Address</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <br>
-        
-                        <div class="form-floating mb-3">
-                            {{form.password1}}
-                            <label for="floatingInput">Enter Password</label>
-                        </div> 
-
-                        <div class="form-floating mb-3">
-                            {{form.password2}}
-                            <label for="floatingInput">Confirm Password</label>
-                        </div> 
-
-                        <br>
-                        {% if form.errors %}
-                            {% for key, value in form.errors.items %}
-                            <!-- Alert -->
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Error!</strong> {{value | striptags}}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            {% endfor %}
-                        {% endif %}
-
-                        <center>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-dark btn-md">Register</button>
-                        </div>
-                        </center>  
-                    </form>
-
-                    <br>
-                    Have an account? <a href="{% url 'signIn'  %}" style="text-decoration: none;">testLogin</a>.
-                </div>
-            </div>
+  <div class="row">
+    <div class="col-md-2 col-lg-3"></div>
+    <div class="col-md-8 col-lg-6">
+      <div class="card text-center shadow">
+        <div class="card-header">
+          Welcome! Please Register (This is a test)
         </div>
-        <div class="col-md-2 col-lg-3"></div>
+        <div class="card-body m-4">
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-floating mb-3">
+                  {{form.first_name}}
+                  <label for="floatingInput">Enter First Name</label>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-floating mb-3">
+                  {{form.last_name}}
+                  <label for="floatingInput">Enter Last Name</label>
+                </div>
+              </div>
+            </div>
+            <br> 
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3">
+                  {{form.username}}
+                  <label for="floatingInput">Enter Username</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3">
+                  {{form.email}}
+                  <label for="floatingInput">Enter Email Address</label>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="form-floating mb-3">
+              {{form.password1}}
+              <label for="floatingInput">Enter Password</label>
+            </div> 
+            <div class="form-floating mb-3">
+              {{form.password2}}
+              <label for="floatingInput">Confirm Password</label>
+            </div> 
+            <br>
+            {% if form.errors %}
+              {% for key, value in form.errors.items %}
+              <!-- Alert -->
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> {{value | striptags}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              {% endfor %}
+            {% endif %}
+            <center>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-dark btn-md">Register</button>
+            </div>
+            </center>  
+          </form>
+          <br>
+          Have an account? <a href="{% url 'signIn'  %}" style="text-decoration: none;">testLogin</a>.
+        </div>
+      </div>
     </div>
-
+    <div class="col-md-2 col-lg-3"></div>
+  </div>
 </div>
-
 {% endblock content %}

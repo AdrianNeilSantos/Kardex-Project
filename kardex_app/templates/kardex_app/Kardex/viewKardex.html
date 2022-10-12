@@ -1,33 +1,24 @@
 {% extends 'kardex_app/main.html' %}
-
-
 {% block content %}
-
 {% load static %}
-
 <div class="text-center">
     <h1>View Kardex</h1>
     <strong>Cardex Owner: </strong> {{kardex.patientName}}
     <br>
 </div>
-
-
 <!-- wrapper -->
 <div class="container-fluid">
   <!-- Inner -->
   <div class="carousel-inner py-4">
-    
     <div class="carousel-item active">
       <div class="container">
         <div class="row">
-
-            <!-- Single item -->
+          <!-- Single item -->
           <div class="col-lg-4">
             <div class="card">
-                <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
+              <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
               <div class="card-body">
                 <h5 class="card-title">{{kardex.patientName}}</h5>
-
                 <div class="text-left">
                     <strong>Sex: </strong> {{kardex.sex}} <br>
                     <strong>age: </strong> {{kardex.age}} <br>
@@ -37,36 +28,23 @@
                     <strong>doctorInCharge: </strong> {{kardex.doctorInCharge}} <br>
                     <strong>hospitalName: </strong> {{kardex.hospitalName}} <br>
                 </div>
-
-
-                    <a href="{% url 'updateKardex' kardex.id %}" class="btn btn-warning">
-                        <span class="material-icons">edit</span>
-                        Update
-                    </a>
-
-
+                  <a href="{% url 'updateKardex' kardex.id %}" class="btn btn-warning">
+                    <span class="material-icons">edit</span>
+                    Update
+                  </a>
                     <a href="{% url 'deleteKardex' kardex.id %}" class="btn btn-danger">
-                        <span class="material-icons">delete</span>
-                        Delete
+                      <span class="material-icons">delete</span>
+                      Delete
                     </a>
-
-
-
-
               </div>
             </div>
           </div>
-         
-
         </div>
       </div>
     </div>
-
   </div>
   <!-- Inner -->
 </div>
 <!-- Carousel wrapper -->
-
 {{kardexs}}
-
 {% endblock content %}
