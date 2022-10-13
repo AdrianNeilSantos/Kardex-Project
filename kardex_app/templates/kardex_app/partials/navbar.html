@@ -72,12 +72,22 @@
           <i class="fa-solid fa-user fs-4 fw-bold"></i>
           <span class="fs-5">{{request.user.last_name}}, {{request.user.first_name}}</span>
         </a>
-        {% endif %}
+
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-dark" type="submit">Search</button>
         </form>
+        {% endif %}
       </div>
+
+      {% if request.user.is_authenticated %}
+      <div class="d-flex align-items-center">
+        <a href="{% url 'sign-out' %}" class="dark-link me-3">
+          Logout
+        </a>
+
+      </div>
+      {% endif %}
     </div>
   </div>
 </nav>
