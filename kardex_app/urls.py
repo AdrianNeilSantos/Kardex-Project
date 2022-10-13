@@ -7,21 +7,23 @@ urlpatterns = [
 
     # Authentication
     path('register/', views.register, name="register"),
-    path('signIn/', views.signIn, name="signIn"),
-    path('changePassword/', views.changePassword, name="changePassword"),
-    path('forgotPassword/', views.forgotPassword, name="forgotPassword"),
+    path('sign-in/', views.signIn, name="sign-in"),
+    path('sign-out/', views.signOut, name="sign-out"),
+    path('change-password/', views.changePassword, name="change-password"),
+    path('forgot-password/', views.forgotPassword, name="forgot-password"),
 
     # End of Authentication
 
     #Kardex 
     path('dashboard/', views.dashboard, name="dashboard"),
-    path('createKardex/', views.createKardex, name="createKardex"),
-    path('updateKardex/<str:pk>', views.updateKardex, name="updateKardex"),
-    path('deleteKardex/<str:pk>', views.deleteKardex, name="deleteKardex"),
+    path('create-kardex/', views.createKardex, name="create-kardex"),
+    path('update-kardex/<str:pk>', views.updateKardex, name="update-kardex"),
+    path('view-kardex/<str:pk>', views.viewKardex, name="view-kardex"),
+    path('delete-kardex/<str:pk>', views.deleteKardex, name="delete-kardex"),
 
     #End of Kardex
 
     #Generate Reports
-    path('generateReports/', views.generateReports, name="generateReports"),
+    path('generate-reports/', views.generateReports, name="generate-reports"),
     #End of Generate Reports
 ]

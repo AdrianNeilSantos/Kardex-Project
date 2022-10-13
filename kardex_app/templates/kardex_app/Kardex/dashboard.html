@@ -1,84 +1,57 @@
 {% extends 'kardex_app/main.html' %}
-
-
 {% block content %}
-
 {% load static %}
-
 <div class="text-center">
-    <h1>Dashboard</h1>
-    <strong>Total No. of Kardex: </strong> {{kardexs|length}}
-    <br>
-    <a href="{% url 'createKardex' %}" class="btn btn-success"><span class="material-icons">add</span>Add</a>
+  <h1>Dashboard</h1>
+  <strong>Total No. of Kardex: </strong> {{kardexs|length}}
+  <br>
+  <a href="{% url 'create-kardex' %}" class="btn btn-success"><span class="material-icons">add</span>Add</a>
 </div>
-
-
 <!-- wrapper -->
 <div class="container-fluid">
   <!-- Inner -->
   <div class="carousel-inner py-4">
-    
     <div class="carousel-item active">
       <div class="container">
         <div class="row">
-
         {% for kardex in kardexs %}
-            <!-- Single item -->
+          <!-- Single item -->
           <div class="col-lg-4">
             <div class="card">
                 <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
               <div class="card-body">
                 <h5 class="card-title">{{kardex.patientName}}</h5>
-
                 <div class="text-left">
-                    <strong>Sex: </strong> {{kardex.sex}} <br>
-                    <strong>age: </strong> {{kardex.age}} <br>
-                    <strong>dateTime: </strong> {{kardex.dateTime}} <br>
-                    <strong>hospitalNum: </strong> {{kardex.hospitalNum}} <br>
-                    <strong>bedNum: </strong> {{kardex.bedNum}} <br>
-                    <strong>doctorInCharge: </strong> {{kardex.doctorInCharge}} <br>
-                    <strong>hospitalName: </strong> {{kardex.hospitalName}} <br>
+                  <strong>Sex: </strong> {{kardex.sex}} <br>
+                  <strong>age: </strong> {{kardex.age}} <br>
+                  <strong>dateTime: </strong> {{kardex.dateTime}} <br>
+                  <strong>hospitalNum: </strong> {{kardex.hospitalNum}} <br>
+                  <strong>bedNum: </strong> {{kardex.bedNum}} <br>
+                  <strong>doctorInCharge: </strong> {{kardex.doctorInCharge}} <br>
+                  <strong>hospitalName: </strong> {{kardex.hospitalName}} <br>
                 </div>
-
- 
-                    <a href="#!" class="btn btn-primary">
-                        <span class="material-icons">visibility</span>
-                        View
-                    </a>
-
-
-                    <a href="{% url 'updateKardex' kardex.id %}" class="btn btn-warning">
-                        <span class="material-icons">edit</span>
-                        Update
-                    </a>
-
-
-                    <a href="{% url 'deleteKardex' kardex.id %}" class="btn btn-danger">
-                        <span class="material-icons">delete</span>
-                        Delete
-                    </a>
-
-
-
-
+                  <a href="{% url 'view-kardex' kardex.id %}" class="btn btn-primary">
+                    <span class="material-icons">visibility</span>
+                    View
+                  </a>
+                  <a href="{% url 'update-kardex' kardex.id %}" class="btn btn-warning">
+                    <span class="material-icons">edit</span>
+                    Update
+                  </a>
+                  <a href="{% url 'delete-kardex' kardex.id %}" class="btn btn-danger">
+                    <span class="material-icons">delete</span>
+                    Delete
+                  </a>
               </div>
             </div>
           </div>
-         
-
         {% endfor %}
-
-
-
         </div>
       </div>
     </div>
-
   </div>
   <!-- Inner -->
 </div>
 <!-- Carousel wrapper -->
-
 {{kardexs}}
-
 {% endblock content %}
