@@ -1,0 +1,31 @@
+*::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+*::-webkit-scrollbar-thumb {
+  /* border-radius: 7px !important; */
+  background-color: rgb(195,207,217);
+}
+
+.m-24 {
+  margin: 24px;
+}
+
+.ms-24 {
+  margin-left: 24px;
+}
+
+.me-24 {
+  margin-right: 24px;
+}
+
+.mx-24 {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+.my-24 {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}

@@ -1,0 +1,27 @@
+body {
+  overflow-x: hidden !important;
+  width: 100vw !important;
+}
+
+.viz-section {
+  position: relative;
+  right: 1.6667vw;
+  width: 103.3334vw;
+}
+
+.viz-slider {
+  width: 100%;
+}
+
+.viz-holder {
+  margin: 0 8px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  border: 2px solid black;
+  border-radius: 4px;
+  width: calc(0.25 * 103.3334vw - 16px);
+  height: calc(0.7778 * (0.25 * 103.3334vw - 16px));
+}
+
+.viz-holder:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
