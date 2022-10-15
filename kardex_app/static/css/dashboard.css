@@ -25,3 +25,17 @@ body {
 .viz-holder:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
+
+.bar:hover {
+  opacity: 0.7;
+}
+
+[id^="tooltip"] {
+  position: absolute;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  background-color: white;
+  padding: 6px;
+  height: 60px;
+  text-align: center;
+  pointer-events: none;
+}
