@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
 <link rel="stylesheet" href= {% static "css/dashboard.css" %}>
 <div class="dashboard-body w-100">
-  <section class="viz-section my-24">
+  <section class="viz-section my-4">
     <div class="viz-slider">
       <div class="viz-container">
         <div id="nurseLoginViz" class="viz-holder"></div>
@@ -20,6 +20,111 @@
       </div>
       <div class="viz-container">
         <div id="wardOccupancyViz" class="viz-holder"></div>
+      </div>
+    </div>
+  </section>
+  <section class="kardex-section position-relative container d-flex flex-column my-4 px-64">
+    <div class="w-100 d-flex justify-content-between mb-3">
+      <div class="d-flex align-items-center">
+        <button type="button" class="btn btn-outline-dark fw-bold me-3">
+          0 Filters Selected
+        </button>
+        <span class="fw-bold me-2">Date Range</span>
+        <input
+          type="text"
+          class="form-control w-128 me-2"
+          placeholder="YYYY-MM-DD"
+        >
+        <span class="fw-bold me-2">to</span>
+        <input
+          type="text"
+          class="form-control w-128"
+          placeholder="YYYY-MM-DD"
+        >
+      </div>
+      <div class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button type="button" class="btn btn-outline-dark me-3">Search</button>
+        <div class="dropdown">
+          <button
+            class="btn btn-outline-dark dropdown-toggle fw-bold px-4"
+            type="button"
+            id="sortingDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Edited - Latest
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="sortingDropdown">
+            <li><a class="dropdown-item" href="#">Edited - Latest</a></li>
+            <li><a class="dropdown-item" href="#">Edited - Oldest</a></li>
+            <li><a class="dropdown-item" href="#">Name - Descending</a></li>
+            <li><a class="dropdown-item" href="#">Name - Ascending</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex">
+      <div class="z-2 col-6 d-flex mt-1 ms-32">
+        <button type="button" class="btn btn-outline-dark fw-bold me-2">Prev</button>
+        <div class="input-group w-128 me-2">
+          <span class="input-group-text" id="pageLabel">Page</span>
+          <input
+            type="number"
+            class="form-control"
+            value="1"
+            aria-label="Page"
+            aria-describedby="pageLabel"
+          >
+        </div>
+        <button type="button" class="btn btn-outline-dark fw-bold me-3">Next</button>
+        <button type="button" class="btn btn-outline-dark fw-bold">Refresh</button>
+      </div>
+      <div class="col-6 mb-2">
+        <span class="fs-5">
+          Showing 1-100 out of 1282 Available Kardex across 13 pages
+        </span>
+      </div>
+    </div>
+    <div class="kardex-group-container d-flex flex-wrap px-5">
+      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+    </div>
+    <div class="d-flex">
+      <div class="z-2 col-6 d-flex mb-1 ms-32">
+        <button type="button" class="btn btn-outline-dark fw-bold me-2">Prev</button>
+        <div class="input-group w-128 me-2">
+          <span class="input-group-text" id="pageLabel">Page</span>
+          <input
+            type="number"
+            class="form-control"
+            value="1"
+            aria-label="Page"
+            aria-describedby="pageLabel"
+          >
+        </div>
+        <button type="button" class="btn btn-outline-dark fw-bold me-3">Next</button>
+        <button type="button" class="btn btn-outline-dark fw-bold">Refresh</button>
+      </div>
+      <div class="col-6 mt-2">
+        <span class="fs-5">
+          Showing 1-100 out of 1282 Available Kardex across 13 pages
+        </span>
       </div>
     </div>
   </section>

@@ -102,7 +102,7 @@ const generateChart = (targetId) => {
     .attr('data-date', (d) => d[0])
     .attr('data-gdp', (d) => d[1])
     .attr('class', 'bar')
-    .attr('fill', 'green')
+    .attr('fill', '#5C8A74')
     .on('mouseover', (e, d) => {
       overlay
         .transition()

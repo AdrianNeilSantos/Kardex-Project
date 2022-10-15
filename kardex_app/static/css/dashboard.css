@@ -16,7 +16,7 @@ body {
 .viz-holder {
   margin: 0 8px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: 4px;
   width: calc(0.25 * 103.3334vw - 16px);
   height: calc(0.7778 * (0.25 * 103.3334vw - 16px));
@@ -38,4 +38,18 @@ body {
   height: 60px;
   text-align: center;
   pointer-events: none;
+}
+
+.w-128 {
+  width: 128px;
+}
+
+.z-2 {
+  position: relative;
+  z-index: 2;
+}
+
+.kardex-group-container {
+  position: relative;
+  bottom: 8px;
 }
