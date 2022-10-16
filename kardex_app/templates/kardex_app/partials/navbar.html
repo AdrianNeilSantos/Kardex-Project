@@ -79,7 +79,81 @@
             <button class="btn btn-outline-dark" type="submit">Search</button>
           </form>
         </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.view_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+            Profile
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.view_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+            Kardex
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.view_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+            Reports
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.view_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+            Nurses
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Tests
+          </a>
+          <ul class="dropdown-menu">
+            <li class="nav-item active">
+              <a class="nav-link {% if request.resolver_match.view_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.view_name == 'sign-in' %}active{% endif %}" href="{% url 'sign-in' %}">Sign In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.view_name == 'register' %}active{% endif %}" href="{% url 'register' %}">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.view_name == 'change-password' %}active{% endif %}" href="{% url 'change-password' %}">changePassword</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.view_name == 'forgot-password' %}active{% endif %}" href="{% url 'forgot-password' %}">forgotPassword</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.view_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.view_name == 'create-kardex' %}active{% endif %}" href="{% url 'create-kardex' %}">createKardex</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.view_name == 'generate-reports' %}active{% endif %}" href="{% url 'generate-reports' %}">generateReports</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center">
+        {% if request.user.is_authenticated %}
+        <!-- Display user -->
+        <a href="#" class="dark-link me-3">
+          <i class="fa-solid fa-user fs-4 fw-bold"></i>
+          <span class="fs-5">{{request.user.last_name}}, {{request.user.first_name}}</span>
+        </a>
+
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-dark" type="submit">Search</button>
+        </form>
+        {% endif %}
       </div>
+
+      {% if request.user.is_authenticated %}
+      <div class="d-flex align-items-center">
+        <a href="{% url 'sign-out' %}" class="dark-link me-3">
+          Logout
+        </a>
+      </div>
+      {% endif %}
     </div>
   </div>
 </nav>

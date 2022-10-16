@@ -43,7 +43,8 @@ def signIn(request):
     return render(request, 'kardex_app/authentication/sign-in.html')
 
 def signOut(request):
-    return render(request, 'kardex_app/authentication/sign-in.html')
+    logout(request)
+    return redirect('sign-in')
 
 def changePassword(request):
     return render(request, 'kardex_app/authentication/change-password.html')

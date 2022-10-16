@@ -32,3 +32,6 @@ class Nurse(AbstractUser):
     name = models.CharField(max_length=50, null=True, blank=True)
     birthday = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     sex = models.CharField(max_length=10, null=True, default='Male', blank=True)
+    
+    def __str__(self):
+        return self.username
