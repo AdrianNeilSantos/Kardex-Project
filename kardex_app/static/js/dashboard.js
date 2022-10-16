@@ -4,6 +4,10 @@ window.onload = async () => {
   generateCharts();
 };
 
+window.onresize = () => {
+  generateCharts();
+};
+
 const vizSlider = tns({
   container: '.viz-slider',
   items: 4,
@@ -31,7 +35,6 @@ const generateCharts = () => {
   const vizHolders = document.querySelectorAll('.viz-holder');
   vizHolders.forEach((vizHolder) => {
     vizHolder.innerHTML = '';
-    console.log('vizHolder', vizHolder.id)
     generateChart(vizHolder.id);
   });
 };
@@ -50,10 +53,10 @@ const formatQtr = (str) => {
 }
 
 const generateChart = (targetId) => {
-  console.log('data', Object.keys(d3))
   const w = 0.25 * 1.0334 * window.innerWidth - 16;
   const h = 0.7778 * w;
   const padding = w/10;
+  console.log('w', w)
 
   const xScale = d3
     .scaleTime()
@@ -84,10 +87,11 @@ const generateChart = (targetId) => {
 
   svg
     .append('text')
-    .attr('x', ((w - (padding * 2)) / 3))
-    .attr('y', Math.max(padding / 2, 32))
+    .attr('x', w / 2)
+    .attr('y', padding)
     .attr('id', 'title')
-    .attr('class', 'fs-2')
+    .attr('text-anchor', 'middle')
+    .style('font-size', window.innerWidth / 1440 * 24)
     .text('United States GDP');
 
   svg
