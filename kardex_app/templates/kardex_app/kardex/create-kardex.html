@@ -4,18 +4,18 @@
 {% load static %}
 <link rel="stylesheet" href= {% static "css/kardex.css" %}>
 <div class="create-kardex-body w-100">
-  <section class="large-kardex container d-flex flex-column align-items-center mt-4 mb-3">
+  <section class="large-kardex container-fluid container-lg d-flex flex-column align-items-center mt-4 mb-3">
     <div class="d-flex align-items-center mb-3 mb-3">
       <input
         type="text"
         class="underline-field w-156 form-control me-2"
         placeholder="Name of Ward"
       >
-      <h1 class="fw-bold">WARD</h1>
+      <h2 class="fw-bold">WARD</h2>
     </div>
-    <div class="grid-wrapper">
+    <div class="grid-wrapper w-100">
       <div class="ivf-cell d-flex flex-column p-3">
-        <span class="h2 fw-bold">IVF:</span>
+        <span class="cell-header text-break h4 fw-bold">IVF:</span>
         <textarea
           class="overline-field form-control"
           rows="3"
@@ -23,7 +23,7 @@
         ></textarea>
       </div>
       <div class="laboratory-work-ups-cell d-flex flex-column p-3">
-        <span class="h2 fw-bold">LABORATORY WORK-UPS:</span>
+        <span class="cell-header text-break h4 fw-bold">LABORATORY WORK-UPS:</span>
         <textarea
           class="overline-field form-control"
           rows="3"
@@ -31,7 +31,7 @@
         ></textarea>
       </div>
       <div class="medications-cell d-flex flex-column p-3">
-        <span class="h2 fw-bold">MEDICATIONS:</span>
+        <span class="cell-header text-break h4 fw-bold">MEDICATIONS:</span>
         <textarea
           class="overline-field form-control"
           rows="3"
@@ -39,7 +39,7 @@
         ></textarea>
       </div>
       <div class="side-drip-cell d-flex flex-column p-3">
-        <span class="h2 fw-bold">SIDE DRIP:</span>
+        <span class="cell-header text-break h4 fw-bold">SIDE DRIP:</span>
         <textarea
           class="overline-field form-control"
           rows="3"
@@ -47,7 +47,7 @@
         ></textarea>
       </div>
       <div class="special-notations-cell d-flex flex-column p-3">
-        <span class="h2 fw-bold">SPECIAL NOTATIONS:</span>
+        <span class="cell-header text-break h4 fw-bold">SPECIAL NOTATIONS:</span>
         <textarea
           class="overline-field form-control"
           rows="3"
@@ -55,7 +55,7 @@
         ></textarea>
       </div>
       <div class="referrals-cell d-flex flex-column p-3">
-        <span class="h2 fw-bold">REFERRALS:</span>
+        <span class="cell-header text-break h4 fw-bold">REFERRALS:</span>
         <textarea
           class="overline-field form-control"
           rows="3"
@@ -64,8 +64,8 @@
       </div>
     </div>
   </section>
-  <section class="lower-fields container d-flex">
-    <div class="lower-left-fields d-flex flex-column pe-4">
+  <section class="lower-fields container-fluid container-lg d-flex flex-column flex-md-row">
+    <div class="lower-left-fields d-flex flex-column pe-0 pe-md-4">
       <div class="d-flex align-items-center mb-3">
         <span class="text-nowrap fs-2 fw-bold me-3">NAME:</span>
         <input
@@ -98,19 +98,6 @@
           placeholder="Hospital #"
         >
       </div>
-      <div class="d-flex align-items-center mb-3">
-        <input
-          type="text"
-          class="underline-field w-156 form-control"
-          placeholder="New Field Name"
-        >
-        <span class="fs-2 fw-bold me-3">:</span>
-        <input
-          type="text"
-          class="underline-field form-control"
-          placeholder="New Field Value"
-        >
-      </div>
     </div>
     <div class="lower-right-fields d-flex flex-column">
       <div class="d-flex align-items-center mb-3">
@@ -139,11 +126,26 @@
       </div>
     </div>
   </section>
-  <section class="submit-row container d-flex align-items-center mt-2 mb-4">
+  <section class="extra-fields container-fluid container-lg">
+    <div class="add-field d-flex align-items-center mb-3 pe-0 pe-md-4">
+      <input
+        type="text"
+        class="underline-field w-156 form-control"
+        placeholder="New Field Name"
+      >
+      <span class="fs-2 fw-bold me-3">:</span>
+      <input
+        type="text"
+        class="underline-field form-control"
+        placeholder="New Field Value"
+      >
+    </div>
+  </section>
+  <section class="submit-row container-fluid container-lg d-flex flex-column align-items-start flex-md-row align-items-md-center mt-2 mb-4">
     <button type="button" class="btn btn-outline-success px-4 me-3">Finish Adding Kardex</button>
     <span class="fw-bold">or click a button below to add them as a new field in the Kardex</span>
   </section>
-  <section class="suggestion-btns container d-flex flex-wrap">
+  <section class="suggestion-btns container-fluid container-lg d-flex flex-wrap">
     <button
       type="button"
       class="btn btn-outline-dark me-3 mb-3"
@@ -194,7 +196,7 @@
     </button>
     <button
       type="button"
-      class="btn btn-outline-dark me-3 mb-3"
+      class="btn btn-outline-dark h-auto me-3 mb-3"
     >
       Transfer in, Transfer out, or Transfer to another Hospital
     </button>

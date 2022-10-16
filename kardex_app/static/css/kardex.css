@@ -1,6 +1,6 @@
 .grid-wrapper {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, calc(100% / 3));
   gap: 0;
   grid-auto-rows: auto;
 }
@@ -60,9 +60,29 @@
 }
 
 .lower-left-fields {
-  flex-grow: 2;
+  width: calc(100% * 2/3);
 }
 
 .lower-right-fields {
-  flex-grow: 1;
+  width: calc(100% / 3);
 }
+
+.add-field {
+  width: calc(100% * 2/3);
+}
+
+@media only screen and (max-width: 767px) {
+  .cell-header {
+    font-size: 1.25rem;
+  }
+
+  .lower-left-fields, .lower-right-fields, .add-field {
+    width: 100%;
+  }
+}
+
+/* @media only screen and (max-width: 576px) {
+  .cell-header {
+    font-size: 1rem;
+  }
+} */
