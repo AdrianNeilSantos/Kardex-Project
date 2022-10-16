@@ -19,7 +19,10 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12 col-lg-6 my-auto">
-        <img src="{% static '/images/main.jpg' %}" alt="My image" style="float: right; width: 90%;">
+        <img src="{% static '/images/main.jpg' %}" alt="My image" style="display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 95%;">
       </div>
       <div class="col-sm-12 col-lg-6 d-flex justify-content-center my-auto">
         <div class="card shadow" style="width: 35rem; height: 30rem;">
@@ -68,8 +71,6 @@
       </div>
     </div>
   </div>
-  <br>
-  <br>
 
   {% include 'kardex_app/partials/footer.html' %} 
 
