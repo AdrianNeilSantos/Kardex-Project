@@ -1,0 +1,68 @@
+.grid-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  grid-auto-rows: auto;
+}
+
+.ivf-cell {
+  grid-column: 1;
+  grid-row: 1;
+  border-top: 2px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 2px solid black;
+}
+
+.laboratory-work-ups-cell {
+  grid-column: 2;
+  grid-row: 1;
+  border-top: 2px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+}
+
+.medications-cell {
+  grid-column: 3;
+  grid-row: 1 / 4;
+  border-top: 2px solid black;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+  border-left: 1px solid black;
+}
+
+.side-drip-cell {
+  grid-column: 1;
+  grid-row: 2;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 2px solid black;
+}
+
+.special-notations-cell {
+  grid-column: 2;
+  grid-row: 2 / 4;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 2px solid black;
+  border-left: 1px solid black;
+}
+
+.referrals-cell {
+  grid-column: 1;
+  grid-row: 3;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 2px solid black;
+  border-left: 2px solid black;
+}
+
+.lower-left-fields {
+  flex-grow: 2;
+}
+
+.lower-right-fields {
+  flex-grow: 1;
+}
