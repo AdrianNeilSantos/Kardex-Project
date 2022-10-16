@@ -23,27 +23,29 @@
       </div>
     </div>
   </section>
-  <section class="kardex-section position-relative container d-flex flex-column my-4 px-64">
-    <div class="w-100 d-flex justify-content-between mb-3">
-      <div class="d-flex align-items-center">
-        <button type="button" class="btn btn-outline-dark fw-bold me-3">
+  <section class="kardex-section position-relative container-fluid container-xxl d-flex flex-column my-4 px-md-64">
+    <div class="w-100 d-flex flex-column flex-xl-row justify-content-xl-between align-items-center">
+      <div class="d-flex flex-column align-items-center flex-md-row mb-3">
+        <button type="button" class="btn btn-outline-dark fw-bold mb-3 me-md-3 mb-md-0">
           0 Filters Selected
         </button>
-        <span class="fw-bold me-2">Date Range</span>
-        <input
-          type="text"
-          class="form-control w-128 me-2"
-          placeholder="YYYY-MM-DD"
-        >
-        <span class="fw-bold me-2">to</span>
-        <input
-          type="text"
-          class="form-control w-128"
-          placeholder="YYYY-MM-DD"
-        >
+        <div class="d-flex align-items-center">
+          <span class="fw-bold me-2">Date Range</span>
+          <input
+            type="text"
+            class="form-control w-156 text-center me-2"
+            placeholder="YYYY-MM-DD"
+          >
+          <span class="fw-bold me-2">to</span>
+          <input
+            type="text"
+            class="form-control w-156 text-center"
+            placeholder="YYYY-MM-DD"
+          >
+        </div>
       </div>
-      <div class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <div class="d-flex align-items-center mb-3">
+        <input class="form-control w-156 me-2" type="search" placeholder="Search" aria-label="Search">
         <button type="button" class="btn btn-outline-dark me-3">Search</button>
         <div class="dropdown">
           <button
@@ -63,8 +65,8 @@
         </div>
       </div>
     </div>
-    <div class="d-flex">
-      <div class="z-2 col-6 d-flex mt-1 ms-32">
+    <div class="d-flex flex-column align-items-center flex-xl-row">
+      <div class="col-xl-6 d-flex mb-3 ms-xl-32">
         <button type="button" class="btn btn-outline-dark fw-bold me-2">Prev</button>
         <div class="input-group w-128 me-2">
           <span class="input-group-text" id="pageLabel">Page</span>
@@ -79,34 +81,34 @@
         <button type="button" class="btn btn-outline-dark fw-bold me-3">Next</button>
         <button type="button" class="btn btn-outline-dark fw-bold">Refresh</button>
       </div>
-      <div class="col-6 mb-2">
-        <span class="fs-5">
+      <div class="col-xl-6 d-flex align-items-center">
+        <span class="fs-5 text-center text-xl-start">
           Showing 1-100 out of 1282 Available Kardex across 13 pages
         </span>
       </div>
     </div>
     <div class="kardex-group-container d-flex flex-wrap px-5">
-      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
         {% include 'kardex_app/partials/small-kardex.html' %}
       </div>
-      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
         {% include 'kardex_app/partials/small-kardex.html' %}
       </div>
-      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
         {% include 'kardex_app/partials/small-kardex.html' %}
       </div>
-      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
         {% include 'kardex_app/partials/small-kardex.html' %}
       </div>
-      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
         {% include 'kardex_app/partials/small-kardex.html' %}
       </div>
-      <div class="col-12 col-md-6 col-lg-4 mb-4 px-2">
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
         {% include 'kardex_app/partials/small-kardex.html' %}
       </div>
     </div>
-    <div class="d-flex">
-      <div class="z-2 col-6 d-flex mb-1 ms-32">
+    <div class="d-flex flex-column align-items-center flex-xl-row">
+      <div class="order-2 order-xl-1 col-xl-6 d-flex mb-3 ms-xl-32">
         <button type="button" class="btn btn-outline-dark fw-bold me-2">Prev</button>
         <div class="input-group w-128 me-2">
           <span class="input-group-text" id="pageLabel">Page</span>
@@ -121,8 +123,8 @@
         <button type="button" class="btn btn-outline-dark fw-bold me-3">Next</button>
         <button type="button" class="btn btn-outline-dark fw-bold">Refresh</button>
       </div>
-      <div class="col-6 mt-2">
-        <span class="fs-5">
+      <div class="order-1 order-xl-2 col-xl-6 mb-3">
+        <span class="fs-5 text-center text-xl-start">
           Showing 1-100 out of 1282 Available Kardex across 13 pages
         </span>
       </div>

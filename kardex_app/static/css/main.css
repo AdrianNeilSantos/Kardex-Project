@@ -17,9 +17,21 @@ body {
   overflow-y: auto;
 }
 
+input, button, .input-group-text {
+  height: 36px;
+}
+
 .btn-outline-dark {
   border: 1px solid black;
   background-color: white;
+}
+
+.w-128 {
+  width: 128px;
+}
+
+.w-156 {
+  width: 156px;
 }
 
 .m-32 {

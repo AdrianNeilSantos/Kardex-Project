@@ -24,6 +24,7 @@ body {
 
 .viz-holder:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  cursor: pointer;
 }
 
 .bar:hover {
@@ -40,16 +41,7 @@ body {
   pointer-events: none;
 }
 
-.w-128 {
-  width: 128px;
-}
-
 .z-2 {
   position: relative;
   z-index: 2;
-}
-
-.kardex-group-container {
-  position: relative;
-  bottom: 8px;
 }
