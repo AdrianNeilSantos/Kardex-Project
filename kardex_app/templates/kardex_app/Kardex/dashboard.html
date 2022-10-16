@@ -1,6 +1,166 @@
 {% extends 'kardex_app/main.html' %}
 {% block content %}
 {% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
+<link rel="stylesheet" href= {% static "css/dashboard.css" %}>
+<div class="modal fade" id="vizModal" tabindex="-1" aria-labelledby="vizModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-fullscreen p-md-5">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="vizModalLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-column justify-content-center align-items-center">
+        <div id="modalViz" class="modal-viz-holder"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="dashboard-body w-100">
+  <section class="viz-section my-4">
+    <div class="viz-slider">
+      <div class="viz-container">
+        <div id="nurseLoginViz" class="viz-holder"></div>
+      </div>
+      <div class="viz-container">
+        <div id="loggedPatientsViz" class="viz-holder"></div>
+      </div>
+      <div class="viz-container">
+        <div id="discardedKardexViz" class="viz-holder"></div>
+      </div>
+      <div class="viz-container">
+        <div id="reportsGeneratedViz" class="viz-holder"></div>
+      </div>
+      <div class="viz-container">
+        <div id="wardOccupancyViz" class="viz-holder"></div>
+      </div>
+    </div>
+  </section>
+  <section class="kardex-section position-relative container-fluid container-xxl d-flex flex-column my-4 px-md-64">
+    <div class="w-100 d-flex flex-column flex-xl-row justify-content-xl-between align-items-center">
+      <div class="d-flex flex-column align-items-center flex-md-row mb-3">
+        <button type="button" class="btn btn-outline-dark fw-bold mb-3 me-md-3 mb-md-0">
+          0 Filters Selected
+        </button>
+        <div class="d-flex flex-column align-items-center flex-sm-row">
+          <span class="fw-bold me-2">Date Range</span>
+          <div class="d-flex align-items-center">
+            <input
+              type="text"
+              class="form-control w-156 text-center me-2"
+              placeholder="YYYY-MM-DD"
+            >
+            <span class="fw-bold me-2">to</span>
+            <input
+              type="text"
+              class="form-control w-156 text-center"
+              placeholder="YYYY-MM-DD"
+            >
+          </div>
+        </div>
+      </div>
+      <div class="d-flex flex-column align-items-center flex-sm-row mb-3">
+        <div class="d-flex mb-3 mb-sm-0">
+          <input class="form-control w-156 me-2" type="search" placeholder="Search" aria-label="Search">
+          <button type="button" class="btn btn-outline-dark me-3">Search</button>
+        </div>
+        <div class="dropdown">
+          <button
+            class="btn btn-outline-dark dropdown-toggle fw-bold px-4"
+            type="button"
+            id="sortingDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Edited - Latest
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="sortingDropdown">
+            <li><a class="dropdown-item" href="#">Edited - Latest</a></li>
+            <li><a class="dropdown-item" href="#">Edited - Oldest</a></li>
+            <li><a class="dropdown-item" href="#">Name - Descending</a></li>
+            <li><a class="dropdown-item" href="#">Name - Ascending</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-column align-items-center flex-xl-row">
+      <div class="col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 mb-xl-0 ms-xl-32">
+        <div class="d-flex mb-3 mb-sm-0">
+          <button type="button" class="btn btn-outline-dark fw-bold me-2">Prev</button>
+          <div class="input-group w-128 me-2">
+            <span class="input-group-text" id="pageLabel">Page</span>
+            <input
+              type="number"
+              class="form-control"
+              value="1"
+              aria-label="Page"
+              aria-describedby="pageLabel"
+            >
+          </div>
+          <button type="button" class="btn btn-outline-dark fw-bold me-3">Next</button>
+        </div>
+        <button type="button" class="btn btn-outline-dark fw-bold">Refresh</button>
+      </div>
+      <div class="col-xl-6 d-flex align-items-center">
+        <span class="fs-5 text-center text-xl-start">
+          Showing 1-100 out of 1282 Available Kardex across 13 pages
+        </span>
+      </div>
+    </div>
+    <div class="kardex-group-container d-flex flex-wrap px-5">
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' %}
+      </div>
+    </div>
+    <div class="d-flex flex-column align-items-center flex-xl-row">
+      <div class="order-2 order-xl-1 col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 ms-xl-32">
+        <div class="d-flex mb-3 mb-sm-0">
+          <button type="button" class="btn btn-outline-dark fw-bold me-2">Prev</button>
+          <div class="input-group w-128 me-2">
+            <span class="input-group-text" id="pageLabel">Page</span>
+            <input
+              type="number"
+              class="form-control"
+              value="1"
+              aria-label="Page"
+              aria-describedby="pageLabel"
+            >
+          </div>
+          <button type="button" class="btn btn-outline-dark fw-bold me-3">Next</button>
+        </div>
+        <button type="button" class="btn btn-outline-dark fw-bold">Refresh</button>
+      </div>
+      <div class="order-1 order-xl-2 col-xl-6 d-flex align-items-center mb-3">
+        <span class="fs-5 text-center text-xl-start">
+          Showing 1-100 out of 1282 Available Kardex across 13 pages
+        </span>
+      </div>
+    </div>
+  </section>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.6.0/min/tiny-slider.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.1/d3.min.js" integrity="sha512-MefNfAGJ/pEy89xLOFs3V6pYPs6AmUhXJrRlydI/9wZuGrqxmrdQ80zKHUcyadAcpH67teDZcBeS6oMJLPtTqw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src={% static "js/dashboard.js" %} type="module"></script>
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <div class="text-center">
   <h1>Dashboard</h1>
   <strong>Total No. of Kardex: </strong> {{kardexs|length}}
