@@ -13,10 +13,6 @@
   background-color: rgb(195,207,217);
 }
 
-body {
-  overflow-y: auto;
-}
-
 input, button, .input-group-text {
   height: 36px;
 }

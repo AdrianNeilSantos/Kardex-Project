@@ -31,11 +31,20 @@ const fetchDataset = async () => {
     .catch((err) => console.log(err));
 };
 
+const removeChildren = (targetId) => {
+  const target = document.querySelector(`#${targetId}`);
+  let child = target.firstElementChild;
+  while (child) {
+    target.removeChild(child);
+    child = target.firstElementChild;
+  }
+}
+
 const generateCharts = () => {
   const vizHolders = document.querySelectorAll('.viz-holder');
   vizHolders.forEach((vizHolder) => {
-    vizHolder.innerHTML = '';
-    generateChart(vizHolder.id);
+    removeChildren(vizHolder.id);
+    generateChart(vizHolder.id, dataset);
   });
 };
 
@@ -52,23 +61,33 @@ const formatQtr = (str) => {
    }
 }
 
-const generateChart = (targetId) => {
-  const w = 0.25 * 1.0334 * window.innerWidth - 16;
-  const h = 0.7778 * w;
+const generateChart = (targetId, chartData) => {
+  let w, h;
+  if (targetId.toLowerCase().includes('modal')) {
+    if (window.innerWidth >= 768) {
+      w = window.innerWidth - 96 - 64;
+      h = w;
+    } else {
+      w = window.innerWidth - 32;
+      h = w;
+    }
+  } else {
+    w = 0.25 * 1.0334 * window.innerWidth - 16;
+    h = 0.7778 * w;
+  }
   const padding = w/10;
-  console.log('w', w)
 
   const xScale = d3
     .scaleTime()
     .domain([
-      d3.min(dataset.data, (d) => new Date(d[0])),
-      d3.max(dataset.data, (d) => new Date(d[0]))
+      d3.min(chartData.data, (d) => new Date(d[0])),
+      d3.max(chartData.data, (d) => new Date(d[0]))
     ])
     .range([padding, w - padding]);
   const yScale = d3.scaleLinear()
     .domain([
       0,
-      d3.max(dataset.data, (d) => d[1])
+      d3.max(chartData.data, (d) => d[1])
     ])
     .range([h - padding, padding]);
 
@@ -96,12 +115,12 @@ const generateChart = (targetId) => {
 
   svg
     .selectAll('rect')
-    .data(dataset.data)
+    .data(chartData.data)
     .enter()
     .append('rect')
     .attr('x', (d) => xScale(new Date(d[0])))
     .attr('y', (d) => yScale(d[1]))
-    .attr('width', (w - padding) / dataset.data.length)
+    .attr('width', (w - padding) / chartData.data.length)
     .attr('height', (d) => h - yScale(d[1]) - padding)
     .attr('data-date', (d) => d[0])
     .attr('data-gdp', (d) => d[1])
@@ -113,17 +132,36 @@ const generateChart = (targetId) => {
         .duration(200)
         .style('opacity', 0.9);
 
+      const modal = document.querySelector('.modal-content').getBoundingClientRect();
       overlay
         .html(`${formatQtr(d[0])}<br>$${d[1]} Billion`)
         .attr('data-date', d[0])
-        .style('left', `${e.pageX + 48}px`)
-        .style('top', `${e.pageY - 80}px`);
+        .style('left', () => {
+          console.log(targetId, targetId.toLowerCase().includes('modal'))
+          return targetId.toLowerCase().includes('modal')
+            ? `${e.pageX - modal.left + 48}px`
+            : `${e.pageX + 48}px`;
+        })
+        .style('top', () => {
+          return targetId.toLowerCase().includes('modal')
+            ? `${e.pageY - modal.top - 80}px`
+            : `${e.pageY - 80}px`;
+        });
     })
     .on('mouseout', (d) => {
       overlay
         .transition()
         .duration(500)
         .style('opacity', 0);
+    })
+    .on('click', () => {
+      removeChildren('modalViz');
+      generateChart('modalViz', chartData);
+
+      const vizModal = new bootstrap.Modal(document.querySelector('#vizModal'));
+      vizModal.show();
+
+      document.querySelector('.modal-title').textContent = 'United States GDP';
     });
 
   const xAxis = d3.axisBottom(xScale);
