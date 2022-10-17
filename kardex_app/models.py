@@ -29,7 +29,6 @@ class Kardex(models.Model):
 # Create your models here.
 class Nurse(AbstractUser):
     # blank: False = required
-    name = models.CharField(max_length=50, null=True, blank=True)
     birthday = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     sex = models.CharField(max_length=10, null=True, default='Male', blank=True)
     
