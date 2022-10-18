@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordResetForm
 from django.db.models import Q
@@ -63,7 +63,24 @@ def signOut(request):
     return redirect('sign-in')
 
 def changePassword(request):
-    return render(request, 'kardex_app/Authentication/password-change.html')
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('/password-change')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    
+    data = {
+      "form": form,
+    }
+
+    return render(request, 'kardex_app/Authentication/password-change.html', data)
+
 
 def forgotPassword(request):
     return render(request, 'kardex_app/Authentication/password-forgot.html')
