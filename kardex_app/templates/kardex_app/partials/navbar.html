@@ -49,10 +49,13 @@
                 <a class="nav-link {% if request.resolver_match.view_name == 'register' %}active{% endif %}" href="{% url 'register' %}">Register</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'change-password' %}active{% endif %}" href="{% url 'change-password' %}">changePassword</a>
+                <a class="nav-link {% if request.resolver_match.view_name == 'password-change' %}active{% endif %}" href="{% url 'password-change' %}">changePassword</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'forgot-password' %}active{% endif %}" href="{% url 'forgot-password' %}">forgotPassword</a>
+                <a class="nav-link {% if request.resolver_match.view_name == 'password-forgot' %}active{% endif %}" href="{% url 'password-forgot' %}">forgotPassword</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.view_name == 'password-reset' %}active{% endif %}" href="{% url 'password-reset' %}">Reset Password</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.view_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">dashboard</a>

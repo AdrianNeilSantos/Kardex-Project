@@ -5,6 +5,22 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordResetForm
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_protect
+# for email
+from django.http import HttpResponse
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail, BadHeaderError
+from django.contrib.auth.forms import PasswordResetForm
+from django.template.loader import render_to_string
+
+
+
+
+
 
 # Create your views here.
 def home(request):
@@ -23,7 +39,7 @@ def register(request):
 
     data = {"form": form}
 
-    return render(request, 'kardex_app/authentication/register.html', data)
+    return render(request, 'kardex_app/Authentication/register.html', data)
 
 def signIn(request):
     if(request.method == "POST"):
@@ -40,17 +56,45 @@ def signIn(request):
             print("Login Fail.")
             messages.error(request, "Incorrect password or username.")
 
-    return render(request, 'kardex_app/authentication/sign-in.html')
+    return render(request, 'kardex_app/Authentication/sign-in.html')
 
 def signOut(request):
     logout(request)
     return redirect('sign-in')
 
 def changePassword(request):
-    return render(request, 'kardex_app/authentication/change-password.html')
+    return render(request, 'kardex_app/Authentication/password-change.html')
 
 def forgotPassword(request):
-    return render(request, 'kardex_app/authentication/forgot-password.html')
+    return render(request, 'kardex_app/Authentication/password-forgot.html')
+
+def password_reset_request(request):
+	if request.method == "POST":
+		password_reset_form = PasswordResetForm(request.POST)
+		if password_reset_form.is_valid():
+			data = password_reset_form.cleaned_data['email']
+			associated_users = Nurse.objects.filter(Q(email=data))
+			if associated_users.exists():
+				for user in associated_users:
+					subject = "Password Reset Requested"
+					email_template_name = 'kardex_app/Authentication/password-reset-email.html'
+					c = {
+					"email":user.email,
+					'domain':'127.0.0.1:8000',
+					'site_name': 'Website',
+					"uid": urlsafe_base64_encode(force_bytes(user.pk)),
+					"user": user,
+					'token': default_token_generator.make_token(user),
+					'protocol': 'http',
+					}
+					email = render_to_string(email_template_name, c)
+					try:
+						send_mail(subject, email, 'saianph1@gmail.com' , [user.email], fail_silently=False)
+					except BadHeaderError:
+						return HttpResponse('Invalid header found.')
+					return redirect ("/password-reset/done/")
+	password_reset_form = PasswordResetForm()
+	return render(request=request, template_name='kardex_app/Authentication/password-reset.html', context={"password_reset_form":password_reset_form})
 
 # End of Authentication
 

@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
 
 urlpatterns = [
     path('', views.home, name="home"),
@@ -9,9 +10,13 @@ urlpatterns = [
     path('register/', views.register, name="register"),
     path('sign-in/', views.signIn, name="sign-in"),
     path('sign-out/', views.signOut, name="sign-out"),
-    path('change-password/', views.changePassword, name="change-password"),
-    path('forgot-password/', views.forgotPassword, name="forgot-password"),
+    path('password-change/', views.changePassword, name="password-change"),
+    path('password-forgot/', views.forgotPassword, name="password-forgot"),
 
+    path("password-reset", views.password_reset_request, name="password-reset"),
+    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='kardex_app/Authentication/password-reset-done.html'), name='password-reset-done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='kardex_app/Authentication/password-reset-confirm.html', success_url = reverse_lazy('password-reset-complete')), name='password-reset-confirm'),
+    path('password-reset-complete', auth_views.PasswordResetCompleteView.as_view(template_name='kardex_app/Authentication/password-reset-complete.html'), name='password-reset-complete'),   
     # End of Authentication
 
     #Kardex 
