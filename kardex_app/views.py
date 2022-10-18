@@ -65,13 +65,11 @@ def dashboard(request):
 
 def createKardex(request):
     form = KardexForm()
-
     if(request.method == "POST"):
         form = KardexForm(request.POST)
         if(form.is_valid()):
             form.save()
             return redirect("/dashboard")
-
     data = {"form": form}
     return render(request, 'kardex_app/kardex/create-kardex.html', data)
 
@@ -101,6 +99,50 @@ def deleteKardex(request, pk):
 
 
 #End of Kardex
+
+
+#Nurse
+
+def nurseDashboard(request):
+    nurses = Nurse.objects.all()
+    data = {"nurses": nurses}
+    return render(request, 'kardex_app/Nurse/dashboard.html', data)
+
+def createNurse(request):
+    form = NurseCreationForm()
+    if(request.method == "POST"):
+        form = NurseCreationForm(request.POST)
+        if(form.is_valid()):
+            form.save()
+            return redirect("/nurse-dashboard")
+    data = {"form": form}
+    return render(request, 'kardex_app/Nurse/create-nurse.html', data)
+
+def updateNurse(request, pk):
+    nurse = Nurse.objects.get(id=pk)
+    form = NurseUpdateForm(instance=nurse)
+
+    if(request.method == "POST"):
+        form = NurseUpdateForm(request.POST, instance=nurse)
+        if(form.is_valid()):
+            form.save()
+            return redirect("/nurse-dashboard")
+
+    data = {"form": form}
+    return render(request, 'kardex_app/Nurse/update-nurse.html', data)
+
+def viewNurse(request, pk):
+    nurse = Nurse.objects.get(id=pk)
+    data = {"nurse": nurse}
+    return render(request, 'kardex_app/Nurse/view-nurse.html', data)
+
+
+def deleteNurse(request, pk):
+    nurse = Nurse.objects.get(id=pk)
+    nurse.delete()
+    return redirect("/nurse-dashboard")
+
+#End of Nurse
 
 
 

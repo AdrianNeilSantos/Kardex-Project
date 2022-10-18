@@ -22,6 +22,14 @@ urlpatterns = [
     path('delete-kardex/<str:pk>', views.deleteKardex, name="delete-kardex"),
 
     #End of Kardex
+    path('nurse-dashboard/', views.nurseDashboard, name="nurse-dashboard"),
+    path('create-nurse/', views.createNurse, name="create-nurse"),
+    path('update-nurse/<str:pk>', views.updateNurse, name="update-nurse"),
+    path('view-nurse/<str:pk>', views.viewNurse, name="view-nurse"),
+    path('delete-nurse/<str:pk>', views.deleteNurse, name="delete-nurse"),
+    #Nurse
+
+    #End of Nurse
 
     #Generate Reports
     path('generate-reports/', views.generateReports, name="generate-reports"),
