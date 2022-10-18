@@ -64,12 +64,12 @@ const formatQtr = (str) => {
 const generateChart = (targetId, chartData) => {
   let w, h;
   if (targetId.toLowerCase().includes('modal')) {
-    if (window.innerWidth >= 768) {
-      w = window.innerWidth - 96 - 64;
+    if (window.innerWidth <= window.innerHeight) {
+      w = window.innerWidth - 96 - 130 - 64;
       h = w;
     } else {
-      w = window.innerWidth - 32;
-      h = w;
+      h = window.innerHeight - 96 - 130 - 64;
+      w = h;
     }
   } else {
     w = 0.25 * 1.0334 * window.innerWidth - 16;
@@ -102,6 +102,13 @@ const generateChart = (targetId, chartData) => {
     .append('svg')
     .attr('width', w)
     .attr('height', h)
+    .style('transform', () => {
+      if (targetId.toLowerCase().includes('modal')) {
+        return `translate(-${w/4}px, 0)`;
+      } else {
+        return '';
+      }
+    })
     .attr('class', 'chart-svg');
 
   svg
