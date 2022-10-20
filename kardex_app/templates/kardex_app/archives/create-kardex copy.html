@@ -160,25 +160,20 @@
     <section class="extra-fields container-fluid container-lg">
       <div class="add-field d-flex align-items-center mb-3 pe-0 pe-md-4">
         <input
-          id="newFieldNameInput"
+          name="extra_fields"
+          id="extraFieldsInput"
           type="text"
           class="underline-field w-156 form-control"
           placeholder="New Field Name"
         >
         <span class="fs-2 fw-bold me-3">:</span>
         <input
-          id="newFieldValueInput"
+          name="extra_field_values"
+          id="extraFieldValuesInput"
           type="text"
           class="underline-field form-control"
           placeholder="New Field Value"
         >
-        <button
-          type="button"
-          id="addFieldBtn"
-          class="btn btn-outline-success ms-3"
-        >
-          <i class="text-success fa-solid fa-plus"></i>
-        </button>
       </div>
     </section>
     <input
@@ -195,32 +190,6 @@
       type="text"
       class="d-none"
     >
-    <input
-      name="extra_fields"
-      id="extraFieldsInput"
-      type="text"
-      class="d-none"
-      placeholder="New Field Name"
-    >
-    <input
-      name="extra_field_values"
-      id="extraFieldValuesInput"
-      type="text"
-      class="d-none"
-      placeholder="New Field Value"
-    >
-    <input
-      name="label_markers"
-      id="labelMarkersInput"
-      type="text"
-      class="d-none"
-    >
-    <input
-      name="label_values"
-      id="labelValuesInput"
-      type="text"
-      class="d-none"
-    >
   </form>
   <section class="submit-row container-fluid container-lg d-flex flex-column align-items-start flex-md-row align-items-md-center mt-2 mb-4">
     <button type="button" id="createKardexBtn" class="btn btn-outline-success px-4 me-3">Finish Creating Kardex</button>
@@ -229,55 +198,55 @@
   <section class="suggestion-btns container-fluid container-lg d-flex flex-wrap">
     <button
       type="button"
-      class="suggestion-btn btn btn-outline-dark me-3 mb-3"
+      class="btn btn-outline-dark me-3 mb-3"
     >
       Bed #
     </button>
     <button
       type="button"
-      class="suggestion-btn btn btn-outline-dark me-3 mb-3"
+      class="btn btn-outline-dark me-3 mb-3"
     >
       Clinical Area
     </button>
     <button
       type="button"
-      class="suggestion-btn btn btn-outline-dark me-3 mb-3"
+      class="btn btn-outline-dark me-3 mb-3"
     >
       Department
     </button>
     <button
       type="button"
-      class="suggestion-btn btn btn-outline-dark me-3 mb-3"
+      class="btn btn-outline-dark me-3 mb-3"
     >
-      Diagnostic Work-Ups
+      Diagnosic Work-Ups
     </button>
     <button
       type="button"
-      class="suggestion-btn btn btn-outline-dark me-3 mb-3"
+      class="btn btn-outline-dark me-3 mb-3"
     >
       Diet Remarks
     </button>
     <button
       type="button"
-      class="suggestion-btn btn btn-outline-dark me-3 mb-3"
+      class="btn btn-outline-dark me-3 mb-3"
     >
       Doctor in Charge
     </button>
     <button
       type="button"
-      class="suggestion-btn btn btn-outline-dark me-3 mb-3"
+      class="btn btn-outline-dark me-3 mb-3"
     >
       Hospital Name
     </button>
     <button
       type="button"
-      class="suggestion-btn btn btn-outline-dark me-3 mb-3"
+      class="btn btn-outline-dark me-3 mb-3"
     >
       Shift Schedule
     </button>
     <button
       type="button"
-      class="suggestion-btn btn btn-outline-dark h-auto me-3 mb-3"
+      class="btn btn-outline-dark h-auto me-3 mb-3"
     >
       Transfer in, Transfer out, or Transfer to another Hospital
     </button>
@@ -292,7 +261,33 @@
       </div>
     </div>
   </div>
-  {{data.errors}}
-  {{ data.non_field_errors }}
+</div>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<div class="container">
+  <h1>Create Kardex Page</h1>
+  <br>
+  <div class="card">
+      <div class="card-header">
+        Create Kardex Form
+      </div>
+      <div class="card-body">
+        <form action="" method="post">
+          {% csrf_token %}
+          {{form|crispy}}
+          <!-- Insert Input Fields -->
+          <!-- Create Button -->
+          <button class="btn btn-outline-success" type="submit">
+            <span class="material-icons">add</span>
+            Create Kardex
+          </button>
+          <!-- Cancel Button -->
+          <a href="{% url 'dashboard' %}" class="btn btn-outline-danger">
+            <span class="material-icons">block</span>
+            Cancel
+          </a>
+        </form>
+      </div>
+  </div>
 </div>
 {% endblock content %}

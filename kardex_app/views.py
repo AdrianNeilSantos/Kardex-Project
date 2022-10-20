@@ -128,6 +128,9 @@ def createKardex(request):
     form = KardexForm()
     if(request.method == "POST"):
         form = KardexForm(request.POST)
+        print(request.POST)
+        print(form.errors)
+        print(form.non_field_errors)
         if(form.is_valid()):
             form.save()
             return redirect("/dashboard")

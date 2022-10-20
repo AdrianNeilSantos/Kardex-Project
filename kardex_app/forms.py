@@ -1,7 +1,10 @@
-from django.forms import ModelForm, TextInput, PasswordInput, CharField, HiddenInput, NumberInput
+from django.forms import ModelForm, TextInput, PasswordInput, CharField, IntegerField, DateTimeField, HiddenInput, NumberInput
+from django.contrib.postgres.forms import SimpleArrayField
 from django.contrib.auth.forms import UserCreationForm
-
 from django.contrib.auth import get_user_model
+
+from datetime import datetime
+
 from .models import *
 
 User = get_user_model()
