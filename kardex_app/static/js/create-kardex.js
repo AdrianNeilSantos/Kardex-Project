@@ -141,7 +141,8 @@ const checkSubmitEligibility = () => {
   dateTime.length && !/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/.test(dateTime)
     && errors.push('DATE/TIME should follow the format "YYYY-MM-DDTHH:MM", where YYYY is a year from 1900 to 2100, MM is a month from 01 to 12, DD is a day from 01 to 31, HH is an hour from 00 to 23, and MM is a minute from 00 to 59');
 
-  const extraFieldNameInputs = Array.from(document.querySelectorAll('[id^="extraFieldNameInput"]'));
+  const extraFieldNameInputs = Array.from(document.querySelectorAll('[id^="extraFieldNameInput"]'))
+    .concat(newFieldNameInput);
   for (let i = 0; i < extraFieldNameInputs.length; i++) {
     if (!extraFieldNameInputs[i].value.length) {
       errors.push('All extra fields must have a name. Check if there exists an input with a placeholder "New Field Name" and either fill them or remove them.');
@@ -149,7 +150,22 @@ const checkSubmitEligibility = () => {
     }
   }
 
-  // errors.push('error')
+  for (let i = 0; i < extraFieldNameInputs.length; i++) {
+    if (extraFieldNameInputs[i].value.includes(';;')) {
+      errors.push('";;" is not allowed in extra field names. Please remove it/them from the extra field names.');
+      break;
+    }
+  }
+
+  const extraFieldValueInputs = Array.from(document.querySelectorAll('[id^="extraFieldValueInput"]'))
+    .concat(newFieldValueInput);
+  for (let i = 0; i < extraFieldValueInputs.length; i++) {
+    if (extraFieldValueInputs[i].value.includes(';;')) {
+      errors.push('";;" is not allowed in extra field values. Please remove it/them from the extra field values.');
+      break;
+    }
+  }
+
   !errors.length
     ? submitCreateKardexForm()
     : displayErrors(errors);

@@ -19,8 +19,20 @@ from django.template.loader import render_to_string
 
 
 
+def splitToLists(query_dict):
+    list_keys = ['extra_fields', 'extra_field_values', 'label_markers', 'label_values']
+    for key in query_dict.keys():
+        if (key in list_keys):
+            query_dict[key] = query_dict[key].split(';;')
+    return query_dict
 
-
+def stripValues(query_dict):
+    for key in query_dict.keys():
+        if isinstance(query_dict[key], str):
+            query_dict[key] = query_dict[key].strip()
+        else:
+            query_dict[key] = [value.strip() for value in query_dict[key]]
+    return query_dict
 
 # Create your views here.
 def home(request):
@@ -127,8 +139,11 @@ def dashboard(request):
 def createKardex(request):
     form = KardexForm()
     if(request.method == "POST"):
-        form = KardexForm(request.POST)
-        print(request.POST)
+        post = request.POST.copy() # to make it mutable
+        post.update(splitToLists(post))
+        post.update(stripValues(post))
+        form = KardexForm(post)
+        print(post)
         print(form.errors)
         print(form.non_field_errors)
         if(form.is_valid()):

@@ -17,6 +17,7 @@ class Kardex(models.Model):
     name = models.CharField(max_length=255, null=True, blank=True)
     age = models.IntegerField(
         null=True,
+        blank=True,
         validators=[
             MaxValueValidator(125),
             MinValueValidator(0)
@@ -48,6 +49,7 @@ class Kardex(models.Model):
         null=True,
         blank=True
     )
+    date_added = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return self.patientName
