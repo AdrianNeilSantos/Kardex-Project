@@ -1,0 +1,74 @@
+{% extends 'kardex_app/main.html' %}
+{% block content %}
+{% load static %}
+<div class="text-center">
+    <h1>View Kardex</h1>
+    <strong>Cardex Owner: </strong> {{kardex.patientName}}
+    <br>
+</div>
+<!-- wrapper -->
+<div class="container-fluid">
+  <!-- Inner -->
+  <div class="carousel-inner py-4">
+    <div class="carousel-item active">
+      <div class="container">
+        <div class="row">
+          <!-- Single item -->
+          <div class="col-lg-4">
+            <div class="card">
+              <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
+              <div class="card-body">
+                <h5 class="card-title">{{kardex.patientName}}</h5>
+                <div class="text-left">
+                    <strong>Sex: </strong> {{kardex.sex}} <br>
+                    <strong>age: </strong> {{kardex.age}} <br>
+                    <strong>dateTime: </strong> {{kardex.dateTime}} <br>
+                    <strong>hospitalNum: </strong> {{kardex.hospitalNum}} <br>
+                    <strong>bedNum: </strong> {{kardex.bedNum}} <br>
+                    <strong>doctorInCharge: </strong> {{kardex.doctorInCharge}} <br>
+                    <strong>hospitalName: </strong> {{kardex.hospitalName}} <br>
+                </div>
+                  <a href="{% url 'update-kardex' kardex.id %}" class="btn btn-warning">
+                    <span class="material-icons">edit</span>
+                    Update
+                  </a>
+                  <!-- Delete Button Trigger -->
+                  <a type="submit"  class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete_kardex_{{kardex.id}}">
+                    <span class="material-icons">delete</span>
+                    Delete
+                  </a>
+
+                  <!-- Delete Modal -->
+                  <div class="modal fade" id="delete_kardex_{{kardex.id}}" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                          <h2 class="modal-title" id="exampleModalLabel">Delete Item</h2>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <h2>Are you sure that you want to delete this kardex of <strong>{{kardex.patientName}}</strong>? </h2>
+                          </div>
+                          <div class="modal-footer">
+                            <a href="{% url 'delete-kardex' kardex.id %}" class="btn btn-danger">
+                              <span class="material-icons">delete</span>
+                              Delete
+                            </a>
+                            <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</a>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Inner -->
+</div>
+<!-- Carousel wrapper -->
+{{kardexs}}
+{% endblock content %}

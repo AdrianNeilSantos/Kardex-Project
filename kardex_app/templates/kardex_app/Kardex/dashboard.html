@@ -89,7 +89,7 @@
       </div>
     </div>
     <div class="d-flex flex-column align-items-center flex-xl-row">
-      <div class="col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 mb-xl-0 ms-xl-32">
+      <div class="col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 mb-xl-0 ms-xl-4 ps-xl-2">
         <div class="d-flex mb-3 mb-sm-0">
           <button type="button" class="btn btn-outline-dark fw-bold me-2">Prev</button>
           <div class="input-group w-128 me-2">
@@ -112,33 +112,15 @@
         </span>
       </div>
     </div>
-    <div class="kardex-group-container d-flex flex-wrap px-5">
+    <div class="kardex-group-container d-flex flex-wrap px-2 px-sm-5">
       {% for kardex in kardexs %}
       <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
         {% include 'kardex_app/partials/small-kardex.html' with kardex=kardex %}
       </div>
       {% endfor %}
-      <!-- <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
-        {% include 'kardex_app/partials/small-kardex.html' %}
-      </div>
-      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
-        {% include 'kardex_app/partials/small-kardex.html' %}
-      </div>
-      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
-        {% include 'kardex_app/partials/small-kardex.html' %}
-      </div>
-      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
-        {% include 'kardex_app/partials/small-kardex.html' %}
-      </div>
-      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
-        {% include 'kardex_app/partials/small-kardex.html' %}
-      </div>
-      <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
-        {% include 'kardex_app/partials/small-kardex.html' %}
-      </div> -->
     </div>
     <div class="d-flex flex-column align-items-center flex-xl-row">
-      <div class="order-2 order-xl-1 col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 ms-xl-32">
+      <div class="order-2 order-xl-1 col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 ms-xl-4 ps-xl-2">
         <div class="d-flex mb-3 mb-sm-0">
           <button type="button" class="btn btn-outline-dark fw-bold me-2">Prev</button>
           <div class="input-group w-128 me-2">

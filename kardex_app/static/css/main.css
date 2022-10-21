@@ -42,6 +42,10 @@ input, button, .input-group-text {
   width: 156px;
 }
 
+.h-2rem {
+  height: 2.25rem;
+}
+
 .m-32 {
   margin: 32px;
 }

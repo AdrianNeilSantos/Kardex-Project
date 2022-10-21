@@ -5,7 +5,10 @@ const medicationsInput = document.querySelector('#medicationsInput');
 const sideDripInput = document.querySelector('#sideDripInput');
 const specialNotationsInput = document.querySelector('#specialNotationsInput');
 const referralsInput = document.querySelector('#referralsInput');
+
 const nameInput = document.querySelector('#nameInput');
+nameInput.addEventListener('keyup', (e) => e.target.value = e.target.value.replace(/\s{2}/g, ' '));
+
 const ageSexInput = document.querySelector('#ageSexInput');
 const dateTimeInput = document.querySelector('#dateTimeInput');
 const hospitalNumInput = document.querySelector('#hospitalNumInput');
@@ -40,14 +43,19 @@ const handleSuggestionBtns = (extraFieldNames) => {
 const newFieldNameInput = document.querySelector('#newFieldNameInput');
 const newFieldValueInput = document.querySelector('#newFieldValueInput');
 const editExtraFields = () => {
-  const extraFieldNameInputs = Array.from(document.querySelectorAll('[id^="extraFieldNameInput"]'))
-    .concat(newFieldNameInput);
-  const extraFieldNames = extraFieldNameInputs.map((el) => el.value);
+  const filledExtraFieldNameInputs = Array.from(document.querySelectorAll('[id^="extraFieldNameInput"]'))
+    .concat(newFieldNameInput)
+    .filter((el) => el.value.trim() !== '');
+  const extraFieldNames = filledExtraFieldNameInputs.map((el) => el.value.trim());
 
-  const extraFieldValueInputArr = Array.from(document.querySelectorAll('[id^="extraFieldValueInput"]'))
-    .concat(newFieldValueInput);
-  const extraFieldValues = extraFieldValueInputArr.map((el) => el.value);
+  const filledExtraFieldNameInputsIdx = filledExtraFieldNameInputs.map((el) => el.id.slice(-1));
+  const extraFieldValueInputs = Array.from(document.querySelectorAll('[id^="extraFieldValueInput"]'))
+    .concat(newFieldValueInput)
+    .filter((el) => filledExtraFieldNameInputsIdx.includes(el.id.slice(-1)));
+  const extraFieldValues = extraFieldValueInputs.map((el) => el.value.trim());
 
+  console.log('test', extraFieldNames);
+  console.log('test', extraFieldValues);
   const extraFieldsInput = document.querySelector('#extraFieldsInput');  
   extraFieldsInput.value = extraFieldNames.join(';;');
 
@@ -132,6 +140,9 @@ const checkSubmitEligibility = () => {
   !name.length
     && errors.push('NAME is required. Please enter the patient\'s name.');
 
+  !/^[a-z ]+$/i.test(name)
+    && errors.push('NAME must only contain letters and spaces.');
+
   const ageSex = ageSexInput.value;
   ageSex.length && !/^[0-9]+\/[a-zA-Z]+$/.test(ageSex)
     && errors.push('AGE/SEX should follow the format "age/sex", where age is a number from 0 to 125 and sex is e.g., Male, Female');
@@ -143,9 +154,12 @@ const checkSubmitEligibility = () => {
 
   const extraFieldNameInputs = Array.from(document.querySelectorAll('[id^="extraFieldNameInput"]'))
     .concat(newFieldNameInput);
+  const extraFieldValueInputs = Array.from(document.querySelectorAll('[id^="extraFieldValueInput"]'))
+    .concat(newFieldValueInput);
+
   for (let i = 0; i < extraFieldNameInputs.length; i++) {
-    if (!extraFieldNameInputs[i].value.length) {
-      errors.push('All extra fields must have a name. Check if there exists an input with a placeholder "New Field Name" and either fill them or remove them.');
+    if (extraFieldValueInputs[i].value.length && !extraFieldNameInputs[i].value.length) {
+      errors.push('All extra fields with a corresponding value must have a name. Check if there exists an input with a placeholder "New Field Name" where there is a value on the right-hand side and either fill them or remove them.');
       break;
     }
   }
@@ -157,8 +171,11 @@ const checkSubmitEligibility = () => {
     }
   }
 
-  const extraFieldValueInputs = Array.from(document.querySelectorAll('[id^="extraFieldValueInput"]'))
-    .concat(newFieldValueInput);
+  // filter(name => name) removes empty elements
+  const extraFieldNames = extraFieldNameInputs.map(el => el.value);
+  new Set(extraFieldNames.filter(name => name)).size !== extraFieldNames.filter(name => name).length
+    && errors.push('Duplicate extra field names are not allowed. Please check if there are any duplicate and either edit them or remove them.');
+
   for (let i = 0; i < extraFieldValueInputs.length; i++) {
     if (extraFieldValueInputs[i].value.includes(';;')) {
       errors.push('";;" is not allowed in extra field values. Please remove it/them from the extra field values.');

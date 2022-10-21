@@ -1,6 +1,6 @@
 {% load static %}
 <link rel="stylesheet" href= {% static "css/small-kardex.css" %}>
-<div class="small-kardex py-3 w-100">
+<div class="small-kardex pt-3 pb-1 w-100">
   <div class="small-kardex-stripes d-flex flex-column">
     <span class="small-kardex-text">
       <b>{{ kardex.formatted_name }}</b><br>
@@ -17,5 +17,33 @@
       &nbsp;&nbsp;<span class="cut-text">Suarez, Arnold Raul Abe</span>&nbsp;(4:38 PM - 2022/10/15)<br>
       &nbsp;&nbsp;<span class="cut-text">Arcilla, Roman Garrison Pandapatan</span>&nbsp;(3:52 PM - 2022/10/15)<br>
     </span>
+    <!-- <a
+      class="text-success text-decoration-none"
+      href="{% url 'view-kardex' kardex.id|default:'1' %}"
+    >
+      View Kardex
+    </a>
+    <a
+      class="text-primary text-decoration-none"
+      href="{% url 'update-kardex' kardex.id|default:'1' %}"
+    >
+      Update Kardex
+    </a> -->
+  </div>
+  <div class="d-flex justify-content-end">
+    <a
+      class="text-success text-decoration-none"
+      href="{% url 'view-kardex' kardex.id|default:'1' %}"
+    >
+      View Kardex
+      <i class="fa-solid fa-magnifying-glass me-3"></i>
+    </a>
+    <a
+      class="text-primary text-decoration-none"
+      href="{% url 'update-kardex' kardex.id|default:'1' %}"
+    >
+      Update Kardex
+      <i class="fa-solid fa-pen me-2"></i>
+    </a>
   </div>
 </div>
