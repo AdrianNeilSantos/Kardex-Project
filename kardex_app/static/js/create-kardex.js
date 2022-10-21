@@ -64,8 +64,8 @@ newFieldValueInput.addEventListener('keyup', editExtraFields);
 
 const extraFieldsDiv = document.querySelector('.extra-fields');
 const removeExtraField = (e) => {
-  const removeFieldBtn = e.target;
-  const extraFieldToRemove = removeFieldBtn.parentElement;
+  const removeFieldBtnPart = e.target;
+  const extraFieldToRemove = removeFieldBtnPart.closest('.extra-field');
   extraFieldsDiv.removeChild(extraFieldToRemove);
 
   // to fix ids of remaining extra fields upon removal of one

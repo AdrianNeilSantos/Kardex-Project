@@ -152,9 +152,6 @@ def createKardex(request):
         post.update(splitToLists(post))
         post.update(stripValues(post))
         form = KardexForm(post)
-        print(post)
-        print(form.errors)
-        print(form.non_field_errors)
         if(form.is_valid()):
             form.save()
             return redirect("/dashboard")
