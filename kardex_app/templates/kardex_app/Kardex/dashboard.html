@@ -113,7 +113,12 @@
       </div>
     </div>
     <div class="kardex-group-container d-flex flex-wrap px-5">
+      {% for kardex in kardexs %}
       <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
+        {% include 'kardex_app/partials/small-kardex.html' with kardex=kardex %}
+      </div>
+      {% endfor %}
+      <!-- <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
         {% include 'kardex_app/partials/small-kardex.html' %}
       </div>
       <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
@@ -130,7 +135,7 @@
       </div>
       <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
         {% include 'kardex_app/partials/small-kardex.html' %}
-      </div>
+      </div> -->
     </div>
     <div class="d-flex flex-column align-items-center flex-xl-row">
       <div class="order-2 order-xl-1 col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 ms-xl-32">

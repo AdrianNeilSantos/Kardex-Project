@@ -130,8 +130,17 @@ def password_reset_request(request):
 
 #Kardex
 def dashboard(request):
-    kardexs = Kardex.objects.all()
-    data = {"kardexs": kardexs}
+    kardexs = list(Kardex.objects.all())
+    for kardex in kardexs:
+        if kardex.name is None:
+            kardex.formatted_name = ''
+        else:
+            kardex.formatted_name = f"{kardex.name.split().pop()}, {' '.join(kardex.name.split()[:-1])}"
+        if kardex.date_time is None:
+            kardex.formatted_datetime = kardex.date_added.strftime("%m/%d/%Y - %I:%M %p")
+        else:
+            kardex.formatted_datetime = kardex.date_time.strftime("%m/%d/%Y - %I:%M %p")
+    data = { 'kardexs': kardexs }
 
     return render(request, 'kardex_app/kardex/dashboard.html', data)
 
