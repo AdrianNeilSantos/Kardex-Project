@@ -51,9 +51,9 @@ def register(request):
             messages.success(request, "Account was created for "+form.cleaned_data.get("username"))
             return redirect('/sign-in')
 
-    data = {"form": form}
+    context = {"form": form}
 
-    return render(request, 'kardex_app/Authentication/register.html', data)
+    return render(request, 'kardex_app/Authentication/register.html', context)
 
 def signIn(request):
     if(request.method == "POST"):
@@ -89,11 +89,11 @@ def changePassword(request):
     else:
         form = PasswordChangeForm(request.user)
     
-    data = {
+    context = {
       "form": form,
     }
 
-    return render(request, 'kardex_app/Authentication/password-change.html', data)
+    return render(request, 'kardex_app/Authentication/password-change.html', context)
 
 
 def forgotPassword(request):
@@ -145,9 +145,9 @@ def dashboard(request):
             kardex.formatted_datetime = kardex.date_added.strftime("%m/%d/%Y - %I:%M %p")
         else:
             kardex.formatted_datetime = kardex.date_time.strftime("%m/%d/%Y - %I:%M %p")
-    data = { 'kardexs': kardexs }
+    context = { 'kardexs': kardexs }
 
-    return render(request, 'kardex_app/kardex/dashboard.html', data)
+    return render(request, 'kardex_app/kardex/dashboard.html', context)
 
 
 def createKardex(request):
@@ -163,8 +163,8 @@ def createKardex(request):
         if(form.is_valid()):
             form.save()
             return redirect("/dashboard")
-    data = {"form": form}
-    return render(request, 'kardex_app/kardex/create-kardex.html', data)
+    context = {"form": form}
+    return render(request, 'kardex_app/kardex/create-kardex.html', context)
 
 def updateKardex(request, pk):
     if (not request.user.is_authenticated):
@@ -173,13 +173,21 @@ def updateKardex(request, pk):
     kardex = Kardex.objects.get(id=pk)
     form = KardexForm(instance=kardex)
     if(request.method == "POST"):
-        form = KardexForm(request.POST, instance=kardex)
+        post = request.POST.copy()
+        post.update(splitToLists(post))
+        post.update(stripValues(post))
+        form = KardexForm(post, instance=kardex)
         if(form.is_valid()):
             form.save()
             return redirect("/dashboard")
 
-    data = {"form": form}
-    return render(request, 'kardex_app/kardex/update-kardex.html', data)
+    kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
+    kardex.formatted_edited_at = [date_time.strftime("%m/%d/%Y - %I:%M %p") for date_time in kardex.edited_at]
+    context = {
+        "form": form,
+        "kardex": kardex
+    }
+    return render(request, 'kardex_app/kardex/update-kardex.html', context)
 
 def viewKardex(request, pk):
     if (not request.user.is_authenticated):
@@ -188,8 +196,8 @@ def viewKardex(request, pk):
     kardex = Kardex.objects.get(id=pk)
     kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
     kardex.formatted_edited_at = [date_time.strftime("%m/%d/%Y - %I:%M %p") for date_time in kardex.edited_at]
-    data = {"kardex": kardex}
-    return render(request, 'kardex_app/kardex/view-kardex.html', data)
+    context = {"kardex": kardex}
+    return render(request, 'kardex_app/kardex/view-kardex.html', context)
 
 
 def deleteKardex(request, pk):
@@ -208,8 +216,8 @@ def deleteKardex(request, pk):
 
 def nurseDashboard(request):
     nurses = Nurse.objects.all()
-    data = {"nurses": nurses}
-    return render(request, 'kardex_app/Nurse/dashboard.html', data)
+    context = {"nurses": nurses}
+    return render(request, 'kardex_app/Nurse/dashboard.html', context)
 
 def createNurse(request):
     form = NurseCreationForm()
@@ -218,8 +226,8 @@ def createNurse(request):
         if(form.is_valid()):
             form.save()
             return redirect("/nurse-dashboard")
-    data = {"form": form}
-    return render(request, 'kardex_app/Nurse/create-nurse.html', data)
+    context = {"form": form}
+    return render(request, 'kardex_app/Nurse/create-nurse.html', context)
 
 def updateNurse(request, pk):
     nurse = Nurse.objects.get(id=pk)
@@ -231,13 +239,13 @@ def updateNurse(request, pk):
             form.save()
             return redirect("/nurse-dashboard")
 
-    data = {"form": form}
-    return render(request, 'kardex_app/Nurse/update-nurse.html', data)
+    context = {"form": form}
+    return render(request, 'kardex_app/Nurse/update-nurse.html', context)
 
 def viewNurse(request, pk):
     nurse = Nurse.objects.get(id=pk)
-    data = {"nurse": nurse}
-    return render(request, 'kardex_app/Nurse/view-nurse.html', data)
+    context = {"nurse": nurse}
+    return render(request, 'kardex_app/Nurse/view-nurse.html', context)
 
 
 def deleteNurse(request, pk):

@@ -54,16 +54,11 @@ const editExtraFields = () => {
     .filter((el) => filledExtraFieldNameInputsIdx.includes(el.id.slice(-1)));
   const extraFieldValues = extraFieldValueInputs.map((el) => el.value.trim());
 
-  console.log('test', extraFieldNames);
-  console.log('test', extraFieldValues);
   const extraFieldsInput = document.querySelector('#extraFieldsInput');  
   extraFieldsInput.value = extraFieldNames.join(';;');
 
   const extraFieldValuesInput = document.querySelector('#extraFieldValuesInput');
   extraFieldValuesInput.value = extraFieldValues.join(';;');
-
-  console.log('extraFieldsInput', extraFieldsInput.value);
-  console.log('extraFieldValuesInput', extraFieldValuesInput.value);
 
   handleSuggestionBtns(extraFieldNames);
 };
@@ -76,11 +71,12 @@ const removeExtraField = (e) => {
   const extraFieldToRemove = removeFieldBtnPart.closest('.extra-field');
   extraFieldsDiv.removeChild(extraFieldToRemove);
 
-  // to fix ids of remaining extra fields upon removal of one
+  // to fix ids of remaining extra fields and removal buttons upon removal of one
   const currExtraFields = document.querySelectorAll('.extra-field');
   currExtraFields.forEach((el, i) => {
     el.querySelector('[id^="extraFieldNameInput"]').id = `extraFieldNameInput${i + 1}`;
     el.querySelector('[id^="extraFieldValueInput"]').id = `extraFieldValueInput${i + 1}`;
+    el.querySelector('[id^="removeFieldBtn"]').id = `removeFieldBtn${i + 1}`;
   });
 
   editExtraFields();
@@ -111,7 +107,8 @@ const addField = (fieldName = '') => {
 
   const removeBtn = document.createElement('button');
   removeBtn.type = 'button';
-  removeBtn.classList.add(`removeFieldBtn${currExtraFields.length + 1}`, 'btn', 'btn-outline-danger', 'ms-3');
+  removeBtn.id = `removeFieldBtn${currExtraFields.length + 1}`;
+  removeBtn.classList.add('btn', 'btn-outline-danger', 'ms-3');
   removeBtn.appendChild(removeBtnIcon);
   removeBtn.addEventListener('click', removeExtraField);
 

@@ -15,7 +15,6 @@
           id="nameOfWardInput"
           type="text"
           class="underline-field bg-white w-156 form-control me-2"
-          placeholder="Name of Ward"
           value="{{ kardex.name_of_ward }}"
           disabled
         >
@@ -29,7 +28,6 @@
             id="ivfInput"
             class="overline-field bg-white form-control"
             rows="3"
-            placeholder="IVF"
             disabled
           >{{ kardex.ivf }}</textarea>
         </div>
@@ -40,7 +38,6 @@
             id="laboratoryWorkUpsInput"
             class="overline-field bg-white form-control"
             rows="3"
-            placeholder="Laboratory Work-Ups"
             disabled
           >{{ kardex.laboratory_work_ups }}</textarea>
         </div>
@@ -51,7 +48,6 @@
             id="medicationsInput"
             class="overline-field bg-white form-control"
             rows="3"
-            placeholder="Medications"
             disabled
           >{{ kardex.medications }}</textarea>
         </div>
@@ -62,7 +58,6 @@
             id="sideDripInput"
             class="overline-field bg-white form-control"
             rows="3"
-            placeholder="Side Drip"
             disabled
           >{{ kardex.side_drip }}</textarea>
         </div>
@@ -73,7 +68,6 @@
             id="specialNotationsInput"
             class="overline-field bg-white form-control"
             rows="3"
-            placeholder="Special Notations"
             disabled
           >{{ kardex.special_notations }}</textarea>
         </div>
@@ -84,7 +78,6 @@
             id="referralsInput"
             class="overline-field bg-white form-control"
             rows="3"
-            placeholder="Referrals"
             disabled
           >{{ kardex.referrals }}</textarea>
         </div>
@@ -99,7 +92,6 @@
             id="nameInput"
             type="text"
             class="underline-field bg-white form-control"
-            placeholder="Name"
             value="{{ kardex.name }}"
             disabled
           >
@@ -111,7 +103,6 @@
             id="ageSexInput"
             type="text"
             class="underline-field bg-white form-control"
-            placeholder="Age/Sex"
             value="{{ kardex.age }}/{{ kardex.sex }}"
             disabled
           >
@@ -123,8 +114,7 @@
             id="dateTimeInput"
             type="text"
             class="underline-field bg-white form-control"
-            placeholder="Date/Time"
-            value="{{ kardex.date_time }}"
+            value="{{ kardex.date_time|default:'' }}"
             disabled
           >
         </div>
@@ -135,7 +125,6 @@
             id="hospitalNumInput"
             type="text"
             class="underline-field bg-white form-control"
-            placeholder="Hospital #"
             value="{{ kardex.hospital_num }}"
             disabled
           >
@@ -149,7 +138,6 @@
             id="dxInput"
             class="underline-field bg-white form-control"
             rows="3"
-            placeholder="DX"
             disabled
           >{{ kardex.dx }}</textarea>
         </div>
@@ -160,7 +148,6 @@
             id="drsInput"
             type="text"
             class="underline-field bg-white form-control"
-            placeholder="DRS"
             value="{{ kardex.drs }}"
             disabled
           >
@@ -172,12 +159,32 @@
             id="dietInput"
             type="text"
             class="underline-field bg-white form-control"
-            placeholder="Diet"
             value="{{ kardex.diet }}"
             disabled
           >
         </div>
       </div>
+    </section>
+    <section class="extra-fields container-fluid container-lg">
+      {% for name, value in kardex.extra_fields|zip:kardex.extra_field_values %}
+      <div class="extra-field d-flex align-items-center mb-3 pe-0 pe-md-4">
+        <input
+          type="text"
+          id="extraFieldNameInput{{ forloop.counter }}"
+          class="underline-field bg-white w-156 form-control"
+          value="{{ name }}"
+          disabled
+        >
+        <span class="fs-2 fw-bold me-3">:</span>
+        <input
+          type="text"
+          id="extraFieldValueInput{{ forloop.counter }}"
+          class="underline-field bg-white form-control"
+          value="{{ value }}"
+          disabled
+        >
+      </div>
+      {% endfor %}
     </section>
     <input
       name="age"
@@ -198,14 +205,12 @@
       id="extraFieldsInput"
       type="text"
       class="d-none"
-      placeholder="New Field Name"
     >
     <input
       name="extra_field_values"
       id="extraFieldValuesInput"
       type="text"
       class="d-none"
-      placeholder="New Field Value"
     >
     <input
       name="label_markers"
@@ -221,9 +226,21 @@
     >
   </form>
   <section class="main-btns-row container-fluid container-lg d-flex flex-column align-items-start flex-md-row align-items-md-center mt-2 mb-4">
-    <button type="button" id="createAnotherKardexBtn" class="btn btn-outline-success px-4 me-3">Create Another Kardex?</button>
-    <button type="button" id="updateThisKardexBtn" class="btn btn-outline-primary px-4 me-3">Update this Kardex?</button>
-    <button type="button" id="removeThisKardexBtn" class="btn btn-outline-danger px-4 me-3">Remove this Kardex?</button>
+    <a href="{% url 'create-kardex' %}">
+      <button type="button" id="createAnotherKardexBtn" class="btn btn-outline-success px-4 me-3">
+        Create Another Kardex?
+      </button>
+    </a>
+    <a href="{% url 'update-kardex' kardex.id|default:'1' %}">
+      <button type="button" id="updateThisKardexBtn" class="btn btn-outline-primary px-4 me-3">
+        Update this Kardex?
+      </button>
+    </a>
+    <a href="#">
+      <button type="button" id="deleteThisKardexBtn" class="btn btn-outline-danger px-4 me-3">
+        Delete this Kardex?
+      </button>
+    </a>
   </section>
   <section class="edit-history container-fluid container-lg d-flex flex-column">
     <span class="fs-2 fw-bold">Previously Edited By:</span>
