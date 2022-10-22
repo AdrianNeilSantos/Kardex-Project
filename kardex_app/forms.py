@@ -21,7 +21,7 @@ class NurseCreationForm(UserCreationForm):
     password2 =  CharField( widget=PasswordInput(attrs=attrs) )
     class Meta:
         model = Nurse
-        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'username', 'email','picture', 'password1', 'password2']
         widgets = { 
             #insert bootstrap designs here
             'first_name': TextInput( attrs={ 'class': 'form-control', 'id':'floatingInput', 'placeholder':'Enter First Name', 'required': True, } ),
@@ -34,7 +34,7 @@ class NurseCreationForm(UserCreationForm):
 class NurseUpdateForm(ModelForm):
     class Meta:
         model = Nurse
-        fields = ['first_name', 'last_name', 'username', 'email', 'birthday', 'sex']
+        fields = ['first_name', 'last_name', 'username', 'email', 'birthday', 'sex', 'picture']
         widgets = {
              'username': TextInput( attrs={ 'class': 'form-control', 'id':'floatingInput', 'placeholder':'Enter Username', 'required': True, } ),
              'first_name': TextInput( attrs={ 'class': 'form-control', 'id':'floatingInput', 'placeholder':'Enter name', 'required': False, } ),
