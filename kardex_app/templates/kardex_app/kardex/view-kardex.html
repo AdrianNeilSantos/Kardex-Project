@@ -245,7 +245,7 @@
   <section class="edit-history container-fluid container-lg d-flex flex-column">
     <span class="fs-2 fw-bold">Previously Edited By:</span>
     <ol>
-      {% for name, date in kardex.edited_by_names|zip:kardex.formatted_edited_at %}
+      {% for name, date in kardex.edited_by_names|zip:kardex.formatted_edited_at reversed %}
       <li>
         <a>{{ name }}</a> ({{ date }})
       </li>

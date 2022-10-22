@@ -163,7 +163,7 @@ def createKardex(request):
         if(form.is_valid()):
             form.save()
             return redirect("/dashboard")
-    context = {"form": form}
+    context = { "form": form }
     return render(request, 'kardex_app/kardex/create-kardex.html', context)
 
 def updateKardex(request, pk):
@@ -183,9 +183,13 @@ def updateKardex(request, pk):
 
     kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
     kardex.formatted_edited_at = [date_time.strftime("%m/%d/%Y - %I:%M %p") for date_time in kardex.edited_at]
+    kardex_history = [query_dict.instance for query_dict in kardex.history.all()]
+    print(kardex_history[0].edited_by)
+    print(kardex_history[1].edited_by)
     context = {
         "form": form,
-        "kardex": kardex
+        "kardex": kardex,
+        'kardex_history': kardex_history
     }
     return render(request, 'kardex_app/kardex/update-kardex.html', context)
 
@@ -196,7 +200,11 @@ def viewKardex(request, pk):
     kardex = Kardex.objects.get(id=pk)
     kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
     kardex.formatted_edited_at = [date_time.strftime("%m/%d/%Y - %I:%M %p") for date_time in kardex.edited_at]
-    context = {"kardex": kardex}
+    kardex_history = [query_dict.instance for query_dict in kardex.history.all()]
+    context = {
+        'kardex': kardex,
+        'kardex_history': kardex_history
+    }
     return render(request, 'kardex_app/kardex/view-kardex.html', context)
 
 

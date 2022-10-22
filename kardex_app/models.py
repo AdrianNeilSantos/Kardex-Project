@@ -4,6 +4,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 
+from simple_history.models import HistoricalRecords
+
 # Create your models here.
 
 class Kardex(models.Model):
@@ -59,10 +61,11 @@ class Kardex(models.Model):
         null=True,
         blank=True
     )
+    history = HistoricalRecords()
     date_added = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return self.name or ''
 
 
 
@@ -74,7 +77,7 @@ class Nurse(AbstractUser):
     picture = models.ImageField(null=True, blank=True)
     
     def __str__(self):
-        return self.username
+        return self.username or ''
 
 
 

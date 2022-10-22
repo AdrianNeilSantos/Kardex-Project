@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'kardex_app',
     'crispy_forms',
     'crispy_bootstrap5',
+
+    'simple_history',
 ]
 
 
@@ -56,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'kardex_project.urls'

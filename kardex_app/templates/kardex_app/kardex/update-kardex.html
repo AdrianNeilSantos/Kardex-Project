@@ -260,12 +260,14 @@
       id="editedByInput"
       type="text"
       class="d-none"
+      value="{{ kardex.edited_by|join:';;' }};;"
     >
     <input
       name="edited_at"
       id="editedAtInput"
       type="text"
       class="d-none"
+      value="{{ kardex.edited_at|join:';;' }};;"
     >
   </form>
   <span id="userIdSpan" class="d-none">{{ request.user.id }}</span>
@@ -328,6 +330,16 @@
     >
       Transfer in, Transfer out, or Transfer to another Hospital
     </button>
+  </section>
+  <section class="edit-history container-fluid container-lg d-flex flex-column">
+    <span class="fs-2 fw-bold">Previously Edited By:</span>
+    <ol>
+      {% for name, date in kardex.edited_by_names|zip:kardex.formatted_edited_at reversed %}
+      <li>
+        <a>{{ name }}</a> ({{ date }})
+      </li>
+      {% endfor %}
+    </ol>
   </section>
   <div aria-live="assertive" aria-atomic="false">
     <div class="toast-container position-fixed end-0 bottom-0 p-3">
