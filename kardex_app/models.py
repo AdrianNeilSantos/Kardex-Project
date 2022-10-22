@@ -71,6 +71,7 @@ class Nurse(AbstractUser):
     # blank: False = required
     birthday = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     sex = models.CharField(max_length=10, default='Male', null=True, blank=True)
+    picture = models.ImageField(null=True, blank=True)
     
     def __str__(self):
         return self.username

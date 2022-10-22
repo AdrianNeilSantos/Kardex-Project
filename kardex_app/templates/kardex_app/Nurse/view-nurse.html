@@ -16,11 +16,17 @@
             <!-- Single item -->
             <div class="col-lg-4">
                 <div class="card">
-                    <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
+                    {% if nurse.picture %}
+                      <img src={{nurse.picture.url}} class="card-img-top" alt="">
+                    {% else %}
+                      <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
+                    {% endif %}
+
                   <div class="card-body">
                     <h5 class="card-title">{{nurse.username}}</h5>
                     <div class="text-left">
                       <strong>First Name: </strong> {{nurse.first_name}} <br>
+                      <strong>PIC URL: </strong> {{nurse.picture}} <br>
                       <strong>Last Name: </strong> {{nurse.last_name}} <br>
                       <strong>Sex: </strong> {{nurse.sex}} <br>
                       <strong>Birth date: </strong> {{nurse.birthday}} <br>

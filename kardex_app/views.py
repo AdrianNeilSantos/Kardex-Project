@@ -214,7 +214,7 @@ def nurseDashboard(request):
 def createNurse(request):
     form = NurseCreationForm()
     if(request.method == "POST"):
-        form = NurseCreationForm(request.POST)
+        form = NurseCreationForm(request.POST, request.FILES)
         if(form.is_valid()):
             form.save()
             return redirect("/nurse-dashboard")
@@ -226,7 +226,7 @@ def updateNurse(request, pk):
     form = NurseUpdateForm(instance=nurse)
 
     if(request.method == "POST"):
-        form = NurseUpdateForm(request.POST, instance=nurse)
+        form = NurseUpdateForm(request.POST, request.FILES, instance=nurse)
         if(form.is_valid()):
             form.save()
             return redirect("/nurse-dashboard")
