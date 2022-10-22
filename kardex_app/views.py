@@ -188,8 +188,6 @@ def viewKardex(request, pk):
     kardex = Kardex.objects.get(id=pk)
     kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
     kardex.formatted_edited_at = [date_time.strftime("%m/%d/%Y - %I:%M %p") for date_time in kardex.edited_at]
-    print(kardex.edited_by_names)
-    print(kardex.formatted_edited_at)
     data = {"kardex": kardex}
     return render(request, 'kardex_app/kardex/view-kardex.html', data)
 
