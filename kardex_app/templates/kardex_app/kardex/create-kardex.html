@@ -110,7 +110,7 @@
             id="dateTimeInput"
             type="text"
             class="underline-field form-control"
-            placeholder="Date/Time"
+            placeholder="Date/Time (YYYY-MM-DDTHH:MM)"
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -221,7 +221,20 @@
       type="text"
       class="d-none"
     >
+    <input
+      name="edited_by"
+      id="editedByInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="edited_at"
+      id="editedAtInput"
+      type="text"
+      class="d-none"
+    >
   </form>
+  <span id="userIdSpan" class="d-none">{{ request.user.id }}</span>
   <section class="submit-row container-fluid container-lg d-flex flex-column align-items-start flex-md-row align-items-md-center mt-2 mb-4">
     <button type="button" id="createKardexBtn" class="btn btn-outline-success px-4 me-3">Finish Creating Kardex</button>
     <span class="fw-bold">or click a button below to add them as a new field in the Kardex</span>

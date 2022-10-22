@@ -20,7 +20,11 @@ from django.template.loader import render_to_string
 
 
 def splitToLists(query_dict):
-    list_keys = ['extra_fields', 'extra_field_values', 'label_markers', 'label_values']
+    list_keys = [
+        'extra_fields', 'extra_field_values',
+        'label_markers', 'label_values',
+        'edited_by', 'edited_at',
+    ]
     for key in query_dict.keys():
         if (key in list_keys):
             query_dict[key] = query_dict[key].split(';;')
@@ -130,6 +134,9 @@ def password_reset_request(request):
 
 #Kardex
 def dashboard(request):
+    if (not request.user.is_authenticated):
+        return redirect('/sign-in')
+    
     kardexs = list(Kardex.objects.all())
     for kardex in kardexs:
         if kardex.name is None:
@@ -146,6 +153,9 @@ def dashboard(request):
 
 
 def createKardex(request):
+    if (not request.user.is_authenticated):
+        return redirect('/sign-in')
+    
     form = KardexForm()
     if(request.method == "POST"):
         post = request.POST.copy() # to make it mutable
@@ -159,9 +169,11 @@ def createKardex(request):
     return render(request, 'kardex_app/kardex/create-kardex.html', data)
 
 def updateKardex(request, pk):
+    if (not request.user.is_authenticated):
+        return redirect('/sign-in')
+    
     kardex = Kardex.objects.get(id=pk)
     form = KardexForm(instance=kardex)
-
     if(request.method == "POST"):
         form = KardexForm(request.POST, instance=kardex)
         if(form.is_valid()):
@@ -172,12 +184,18 @@ def updateKardex(request, pk):
     return render(request, 'kardex_app/kardex/update-kardex.html', data)
 
 def viewKardex(request, pk):
+    if (not request.user.is_authenticated):
+        return redirect('/sign-in')
+    
     kardex = Kardex.objects.get(id=pk)
     data = {"kardex": kardex}
     return render(request, 'kardex_app/kardex/view-kardex.html', data)
 
 
 def deleteKardex(request, pk):
+    if (not request.user.is_authenticated):
+        return redirect('/sign-in')
+    
     kardex = Kardex.objects.get(id=pk)
     kardex.delete()
     return redirect("/dashboard")

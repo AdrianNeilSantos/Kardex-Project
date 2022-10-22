@@ -148,7 +148,6 @@ const checkSubmitEligibility = () => {
     && errors.push('AGE/SEX should follow the format "age/sex", where age is a number from 0 to 125 and sex is e.g., Male, Female');
   
   const dateTime = dateTimeInput.value;
-  console.log(dateTime, !/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/.test(dateTime));
   dateTime.length && !/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/.test(dateTime)
     && errors.push('DATE/TIME should follow the format "YYYY-MM-DDTHH:MM", where YYYY is a year from 1900 to 2100, MM is a month from 01 to 12, DD is a day from 01 to 31, HH is an hour from 00 to 23, and MM is a minute from 00 to 59');
 
@@ -203,14 +202,20 @@ const displayErrors = (errors) => {
     setTimeout(() => {
       toastContainer.removeChild(errorToastClone);
     }, 7000);
-  })
+  });
 };
 
+const editedByInput = document.querySelector('#editedByInput');
+const editedAtInput = document.querySelector('#editedAtInput');
+const userIdSpan = document.querySelector('#userIdSpan');
 const submitCreateKardexForm = () => {
-  const formInputs = document.querySelectorAll('#createKardeForm input');
+  const formInputs = document.querySelectorAll('#createKardexForm .form-control');
   formInputs.forEach((el) => {
     el.value = el.value.trim();
   });
+
+  editedByInput.value = userIdSpan.textContent.trim();
+  editedAtInput.value = new Date().toISOString().split(':').slice(0, -1).join(':');
 
   const age = Number(ageSexInput.value.split('/')[0]);
   ageInput.value = age;
