@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("kardex_app", "0008_kardex_date_added_alter_kardex_age"),
+        ("kardex_app", "0009_kardex_edited_at_kardex_edited_by"),
     ]
 
     operations = [

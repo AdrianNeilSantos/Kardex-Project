@@ -17,8 +17,6 @@ from django.core.mail import send_mail, BadHeaderError
 from django.contrib.auth.forms import PasswordResetForm
 from django.template.loader import render_to_string
 
-
-
 def splitToLists(query_dict):
     list_keys = [
         'extra_fields', 'extra_field_values',
@@ -188,6 +186,10 @@ def viewKardex(request, pk):
         return redirect('/sign-in')
     
     kardex = Kardex.objects.get(id=pk)
+    kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
+    kardex.formatted_edited_at = [date_time.strftime("%m/%d/%Y - %I:%M %p") for date_time in kardex.edited_at]
+    print(kardex.edited_by_names)
+    print(kardex.formatted_edited_at)
     data = {"kardex": kardex}
     return render(request, 'kardex_app/kardex/view-kardex.html', data)
 

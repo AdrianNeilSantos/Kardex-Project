@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 {% load static %}
+{% load my_templatetags %}
 <link rel="stylesheet" href= {% static "css/kardex.css" %}>
 <script defer src={% static "js/view-kardex.js" %}></script>
 <div class="create-kardex-body w-100">
@@ -234,15 +235,11 @@
   <section class="edit-history container-fluid container-lg d-flex flex-column">
     <span class="fs-2 fw-bold">Previously Edited By:</span>
     <ol>
+      {% for name, date in kardex.edited_by_names|zip:kardex.formatted_edited_at %}
       <li>
-        <a>Arcilla, Roman Garrison Pandapatan</a> (2021-08-05 10:00:00) [Addition, Revision]
+        <a>{{ name }}</a> ({{ date }})
       </li>
-      <li>
-        <a>Arcilla, Roman Garrison Pandapatan</a> (2021-08-05 10:00:00) [Addition, Revision]
-      </li>
-      <li>
-        <a>Arcilla, Roman Garrison Pandapatan</a> (2021-08-05 10:00:00) [Addition, Revision]
-      </li>
+      {% endfor %}
     </ol>
   </section>
   <div aria-live="assertive" aria-atomic="false">

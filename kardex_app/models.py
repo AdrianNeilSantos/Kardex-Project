@@ -62,7 +62,7 @@ class Kardex(models.Model):
     date_added = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
-        return self.patientName
+        return self.name
 
 
 
