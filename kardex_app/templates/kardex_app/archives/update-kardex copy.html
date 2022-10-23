@@ -4,7 +4,8 @@
 {% load static %}
 {% load my_templatetags %}
 <link rel="stylesheet" href= {% static "css/kardex.css" %}>
-<div class="update--kardex-body w-100">
+<script defer src={% static "js/update-kardex.js" %}></script>
+<div class="update-kardex-body w-100">
   <section class="large-kardex container-fluid container-lg d-flex flex-column align-items-center mt-4 mb-3">
     <div class="d-flex align-items-center mb-3 mb-3">
       <input

@@ -7,7 +7,7 @@
       <b>{{ kardex.formatted_name }}</b><br>
       {{ kardex.sex }}, {{ kardex.age }} years old<br>
       {% timezone "Asia/Manila" %}
-        {{ kardex.date_added }}
+        {{ kardex.date_added|date:"N d, Y - h:i A" }}
       {% endtimezone %}<br>
       {% if kardex.hospital_num is not None %}Hospital #{{ kardex.hospital_num }}<br>{% endif %}
     </span>

@@ -45,6 +45,31 @@ def formatKardex(kardex):
     kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
     return kardex
 
+def formKardexDict(kardex):
+    kardex_dict = {
+        'Name of Ward': kardex.name_of_ward,
+        'IVF': kardex.ivf,
+        'Laboratory Work-Ups': kardex.laboratory_work_ups or '',
+        'Medications': kardex.medications or '',
+        'Side Drip': kardex.side_drip or '',
+        'Special Notations': kardex.special_notations or '',
+        'Referrals': kardex.referrals or '',
+        'Name': kardex.name,
+        'Age/Sex': f"{ kardex.age }/{ kardex.sex }" if kardex.age and kardex.sex else '',
+        'Date/Time': kardex.date_time or '',
+        'Hospital #': kardex.hospital_num or '',
+        'DX': kardex.dx or '',
+        'DRS': kardex.drs or '',
+        'Diet': kardex.diet or '',
+        'Extra Fields': ';;'.join(filter(None, kardex.extra_fields)) if len(kardex.extra_fields) else '',
+        'Extra Field Values': ';;'.join(filter(None, kardex.extra_field_values)) if len(kardex.extra_field_values) else '',
+        'Label Markers': ';;'.join(filter(None, kardex.label_markers)) if len(kardex.label_markers) else '',
+        'Label Values': ';;'.join(filter(None, kardex.label_values)) if len(kardex.label_values) else '',
+        'Edited By': kardex.edited_by or '',
+        'Edited At': kardex.edited_at or ''
+    }
+    return kardex_dict
+
 # Create your views here.
 def home(request):
     return render(request, 'kardex_app/main.html')
@@ -188,10 +213,10 @@ def updateKardex(request, pk):
             return redirect("/dashboard")
 
     kardex = formatKardex(kardex)
-    kardex_history = [query_dict.instance for query_dict in kardex.history.all()]
+    kardex_history = [formKardexDict(query_dict.instance) for query_dict in kardex.history.all()]
     context = {
-        "form": form,
-        "kardex": kardex,
+        'form': form,
+        'kardex': kardex,
         'kardex_history': kardex_history
     }
     return render(request, 'kardex_app/kardex/update-kardex.html', context)
@@ -202,7 +227,7 @@ def viewKardex(request, pk):
     
     kardex = Kardex.objects.get(id=pk)
     kardex = formatKardex(kardex)
-    kardex_history = [query_dict.instance for query_dict in kardex.history.all()]
+    kardex_history = [formKardexDict(query_dict.instance) for query_dict in kardex.history.all()]
     context = {
         'kardex': kardex,
         'kardex_history': kardex_history

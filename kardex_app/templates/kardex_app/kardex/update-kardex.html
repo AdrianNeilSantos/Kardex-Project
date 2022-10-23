@@ -3,6 +3,49 @@
 {% load static crispy_forms_tags tz my_templatetags %}
 <link rel="stylesheet" href= {% static "css/kardex.css" %}>
 <script defer src={% static "js/update-kardex.js" %}></script>
+{% timezone "Asia/Manila" %}
+{% for instance in kardex_history %}
+<div class="modal fade" id="comparisonModal{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-fullscreen p-md-5">
+    <div class="modal-content bg-transparent d-flex flex-row align-items-center mt-5 pt-5">
+      <div 
+        id="modalContainer{{ forloop.counter }}"
+        class="modal-container w-50 d-flex flex-column justify-content-center align-items-center mt-5 p-5"
+      >
+        <div
+          class="modal-card w-100 bg-white d-flex flex-column pt-3 pb-5"
+        >
+          <div
+            id="modalCardTitle{{ forloop.counter }}"
+            class="d-flex flex-column justify-content-center align-items-center"
+          >
+            <span class="fs-5 fw-bold">{{ instance|get_item:'Name' }}</span>
+            <span class="fs-5 fw-bold">({{ instance|get_item:'Edited At'|last|date:"h:i A - N d, Y" }})</span>
+          </div>
+          <hr>
+          <div
+            id="modalCardBody{{ forloop.counter }}"
+            class="d-flex flex-column px-3"
+          >
+            {% for key, value in instance.items %}
+            {% if key not in 'Extra Fields,Extra Field Values,Edited By,Edited At' %}
+            <div
+              id="{{ key|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
+              class="d-flex flex-column mb-3"
+            >
+              <span class="fw-bold">{{ key }}:</span>
+              <span>{{ value }}</span>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 <div class="update-kardex-body w-100">
   <form id="updateKardexForm" action="" method="post">
     {% csrf_token %}
@@ -332,13 +375,25 @@
   <section class="edit-history container-fluid container-lg d-flex flex-column">
     <span class="fs-2 fw-bold">Previously Edited By:</span>
     <ol>
-      {% timezone "Asia/Manila" %}
       {% for name, date in kardex.edited_by_names|zip:kardex.edited_at reversed %}
-      <li>
-        <a>{{ name }}</a> ({{ date }})
+      <li class="mb-2">
+        {{ name }} ({{ date|date:"h:i A - N d, Y" }})
+        <a
+          id="visit{{ forloop.counter }}Link"
+          href="#"
+          class="visit-link text-decoration-none text-success"
+        >
+          Visit Profile <i class="fa-solid fa-user"></i>
+        </a>
+        <a
+          id="compare{{ forloop.counter }}Link"
+          href="#"
+          class="compare-link text-decoration-none text-primary"
+        >
+          Compare <i class="fa-solid fa-magnifying-glass"></i>
+        </a>
       </li>
       {% endfor %}
-      {% endtimezone %}
     </ol>
   </section>
   <div aria-live="assertive" aria-atomic="false">
@@ -352,4 +407,5 @@
     </div>
   </div>
 </div>
+{% endtimezone %}
 {% endblock content %}
