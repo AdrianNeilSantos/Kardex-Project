@@ -1,11 +1,14 @@
 {% load static %}
+{% load tz %}
 <link rel="stylesheet" href= {% static "css/small-kardex.css" %}>
 <div class="small-kardex pt-3 pb-1 w-100">
   <div class="small-kardex-stripes d-flex flex-column">
     <span class="small-kardex-text">
       <b>{{ kardex.formatted_name }}</b><br>
       {{ kardex.sex }}, {{ kardex.age }} years old<br>
-      {{ kardex.formatted_datetime }}<br>
+      {% timezone "Asia/Manila" %}
+        {{ kardex.date_added }}
+      {% endtimezone %}<br>
       {% if kardex.hospital_num is not None %}Hospital #{{ kardex.hospital_num }}<br>{% endif %}
     </span>
     <br>

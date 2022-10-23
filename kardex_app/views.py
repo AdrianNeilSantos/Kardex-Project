@@ -17,6 +17,11 @@ from django.core.mail import send_mail, BadHeaderError
 from django.contrib.auth.forms import PasswordResetForm
 from django.template.loader import render_to_string
 
+from django.utils import timezone
+
+import datetime
+import pytz
+
 def splitToLists(query_dict):
     list_keys = [
         'extra_fields', 'extra_field_values',
@@ -35,6 +40,10 @@ def stripValues(query_dict):
         else:
             query_dict[key] = [value.strip() for value in query_dict[key]]
     return query_dict
+
+def formatKardex(kardex):
+    kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
+    return kardex
 
 # Create your views here.
 def home(request):
@@ -135,16 +144,13 @@ def dashboard(request):
     if (not request.user.is_authenticated):
         return redirect('/sign-in')
     
+    print(timezone.now())
     kardexs = list(Kardex.objects.all())
     for kardex in kardexs:
         if kardex.name is None:
             kardex.formatted_name = ''
         else:
             kardex.formatted_name = f"{kardex.name.split().pop()}, {' '.join(kardex.name.split()[:-1])}"
-        if kardex.date_time is None:
-            kardex.formatted_datetime = kardex.date_added.strftime("%m/%d/%Y - %I:%M %p")
-        else:
-            kardex.formatted_datetime = kardex.date_time.strftime("%m/%d/%Y - %I:%M %p")
     context = { 'kardexs': kardexs }
 
     return render(request, 'kardex_app/kardex/dashboard.html', context)
@@ -181,11 +187,8 @@ def updateKardex(request, pk):
             form.save()
             return redirect("/dashboard")
 
-    kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
-    kardex.formatted_edited_at = [date_time.strftime("%m/%d/%Y - %I:%M %p") for date_time in kardex.edited_at]
+    kardex = formatKardex(kardex)
     kardex_history = [query_dict.instance for query_dict in kardex.history.all()]
-    print(kardex_history[0].edited_by)
-    print(kardex_history[1].edited_by)
     context = {
         "form": form,
         "kardex": kardex,
@@ -198,8 +201,7 @@ def viewKardex(request, pk):
         return redirect('/sign-in')
     
     kardex = Kardex.objects.get(id=pk)
-    kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
-    kardex.formatted_edited_at = [date_time.strftime("%m/%d/%Y - %I:%M %p") for date_time in kardex.edited_at]
+    kardex = formatKardex(kardex)
     kardex_history = [query_dict.instance for query_dict in kardex.history.all()]
     context = {
         'kardex': kardex,

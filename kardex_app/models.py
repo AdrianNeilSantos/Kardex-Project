@@ -3,6 +3,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
+from django.utils import timezone
 
 from simple_history.models import HistoricalRecords
 
@@ -62,7 +63,7 @@ class Kardex(models.Model):
         blank=True
     )
     history = HistoricalRecords()
-    date_added = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=timezone.now, null=True, blank=True)
 
     def __str__(self):
         return self.name or ''

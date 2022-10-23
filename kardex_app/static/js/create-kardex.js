@@ -211,8 +211,9 @@ const submitCreateKardexForm = () => {
     el.value = el.value.trim();
   });
 
+  // +00:00 is required as ArrayField incorrectly offsets datetime
   editedByInput.value = userIdSpan.textContent.trim();
-  editedAtInput.value = new Date().toISOString().split(':').slice(0, -1).join(':');
+  editedAtInput.value = new Date().toISOString().split(':').slice(0, -1).join(':') + '+00:00';
 
   const age = Number(ageSexInput.value.split('/')[0]);
   ageInput.value = age;

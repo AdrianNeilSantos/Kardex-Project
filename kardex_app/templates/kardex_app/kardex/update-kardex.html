@@ -1,8 +1,6 @@
 {% extends 'kardex_app/main.html' %}
-{% load crispy_forms_tags %}
 {% block content %}
-{% load static %}
-{% load my_templatetags %}
+{% load static crispy_forms_tags tz my_templatetags %}
 <link rel="stylesheet" href= {% static "css/kardex.css" %}>
 <script defer src={% static "js/update-kardex.js" %}></script>
 <div class="update-kardex-body w-100">
@@ -334,11 +332,13 @@
   <section class="edit-history container-fluid container-lg d-flex flex-column">
     <span class="fs-2 fw-bold">Previously Edited By:</span>
     <ol>
-      {% for name, date in kardex.edited_by_names|zip:kardex.formatted_edited_at reversed %}
+      {% timezone "Asia/Manila" %}
+      {% for name, date in kardex.edited_by_names|zip:kardex.edited_at reversed %}
       <li>
         <a>{{ name }}</a> ({{ date }})
       </li>
       {% endfor %}
+      {% endtimezone %}
     </ol>
   </section>
   <div aria-live="assertive" aria-atomic="false">
