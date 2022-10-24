@@ -6,40 +6,69 @@
 {% timezone "Asia/Manila" %}
 {% for instance in kardex_history %}
 <div class="modal fade" id="comparisonModal{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-fullscreen p-md-5">
-    <div class="modal-content bg-transparent d-flex flex-row align-items-center mt-5 pt-5">
-      <div 
-        id="modalContainer{{ forloop.counter }}"
-        class="modal-container w-50 d-flex flex-column justify-content-center align-items-center mt-5 p-5"
-      >
-        <div
-          class="modal-card w-100 bg-white d-flex flex-column pt-3 pb-5"
+  <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+    <div class="modal-content bg-transparent">
+      <div class="modal-header border-0 d-flex align-items-center">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-row align-items-center pt-5">
+        <div 
+          id="modalContainer{{ forloop.counter }}"
+          class="modal-container w-50 d-flex flex-column justify-content-center align-items-center my-auto p-4 pt-5"
         >
           <div
-            id="modalCardTitle{{ forloop.counter }}"
-            class="d-flex flex-column justify-content-center align-items-center"
+            class="modal-card w-100 bg-white d-flex flex-column pt-3 pb-5"
           >
-            <span class="fs-5 fw-bold">{{ instance|get_item:'Name' }}</span>
-            <span class="fs-5 fw-bold">({{ instance|get_item:'Edited At'|last|date:"h:i A - N d, Y" }})</span>
-          </div>
-          <hr>
-          <div
-            id="modalCardBody{{ forloop.counter }}"
-            class="d-flex flex-column px-3"
-          >
-            {% for key, value in instance.items %}
-            {% if key not in 'Extra Fields,Extra Field Values,Edited By,Edited At' %}
             <div
-              id="{{ key|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
-              class="d-flex flex-column mb-3"
+              id="modalCardTitle{{ forloop.counter }}"
+              class="d-flex flex-column justify-content-center align-items-center"
             >
-              <span class="fw-bold">{{ key }}:</span>
-              <span>{{ value }}</span>
+              <span class="fs-5 fw-bold">{{ instance|get_item:'Name' }}</span>
+              <span class="fs-5 fw-bold">({{ instance|get_item:'Edited At'|last|date:"h:i A - N d, Y" }})</span>
             </div>
-            {% endif %}
-            {% endfor %}
+            <hr>
+            <div
+              id="modalCardBody{{ forloop.counter }}"
+              class="d-flex flex-column px-3"
+            >
+              {% for key, value in instance.items %}
+              {% if key not in 'Extra Fields,Extra Field Values,Label Values,Label Markers,Edited By,Edited At' %}
+              <div
+                id="{{ key|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
+                class="d-flex flex-column mb-3"
+              >
+                <span class="fw-bold">{{ key }}:</span>
+                <span>{{ value }}</span>
+              </div>
+              {% endif %}
+              {% endfor %}
+              {% with extra_values=instance|get_item:'Extra Field Values' %}
+              {% for field, value in instance|get_item:'Extra Fields'|zip:extra_values %}
+              <div
+                id="{{ field|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
+                class="d-flex flex-column mb-3"
+              >
+                <span class="fw-bold">{{ field }}:</span>
+                <span>{{ value }}</span>
+              </div>
+              {% endfor %}
+              {% endwith %}
+              {% if instance|get_item:'Label Markers'|get_by_idx:0|length %}
+              {% with label_values=instance|get_item:'Label Values' %}
+              {% for marker, value in instance|get_item:'Label Markers'|zip:label_values %}
+              <div
+                id="label{{ marker|title|cut:' '|cut:'-'|cut:'/' }}{{ forloop.parentloop.counter }}"
+                class="d-flex flex-column mb-3"
+              >
+                <span class="fw-bold">{{ marker }}:</span>
+                <span>{{ value }}</span>
+              </div>
+              {% endfor %}
+              {% endwith %}
+              {% endif %}
+            </div>
+            <hr>
           </div>
-          <hr>
         </div>
       </div>
     </div>

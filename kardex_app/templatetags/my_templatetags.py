@@ -28,3 +28,7 @@ def is_instance(obj, data_type):
 @register.filter(name='get_item')
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+@register.filter(name='get_by_idx')
+def get_by_idx(els, idx):
+    return els[0]

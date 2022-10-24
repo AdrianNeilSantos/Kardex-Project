@@ -61,13 +61,14 @@ def formKardexDict(kardex):
         'DX': kardex.dx or '',
         'DRS': kardex.drs or '',
         'Diet': kardex.diet or '',
-        'Extra Fields': ';;'.join(filter(None, kardex.extra_fields)) if len(kardex.extra_fields) else '',
-        'Extra Field Values': ';;'.join(filter(None, kardex.extra_field_values)) if len(kardex.extra_field_values) else '',
-        'Label Markers': ';;'.join(filter(None, kardex.label_markers)) if len(kardex.label_markers) else '',
-        'Label Values': ';;'.join(filter(None, kardex.label_values)) if len(kardex.label_values) else '',
+        'Extra Fields': [field if field else '' for field in kardex.extra_fields],
+        'Extra Field Values': [value if value else '' for value in kardex.extra_field_values],
+        'Label Markers': [marker if marker else '' for marker in kardex.label_markers],
+        'Label Values': [value if value else '' for value in kardex.label_values],
         'Edited By': kardex.edited_by or '',
         'Edited At': kardex.edited_at or ''
     }
+    print(kardex_dict)
     return kardex_dict
 
 # Create your views here.
