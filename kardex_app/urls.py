@@ -38,5 +38,13 @@ urlpatterns = [
 
     #Generate Reports
     path('generate-reports/', views.generateReports, name="generate-reports"),
+    path('diet_list_PDF/', views.diet_list_PDF, name="diet_list_PDF"),
+    path('bed_tags_PDF/', views.bed_tags_PDF, name="bed_tags_PDF"),
+    path('intravenous_fluid_tags_PDF/', views.intravenous_fluid_tags_PDF, name="intravenous_fluid_tags_PDF"),
+    path('medication_cards_PDF/', views.medication_cards_PDF, name="medication_cards_PDF"),
+    path('medication_endorsement_sheet_PDF/', views.medication_endorsement_sheet_PDF, name="medication_endorsement_sheet_PDF"),
+    path('nursing_endorsement_sheet_PDF/', views.nursing_endorsement_sheet_PDF, name="nursing_endorsement_sheet_PDF"),
+    path('special_notes_PDF/', views.special_notes_PDF, name="special_notes_PDF"),
+    path('ward_census_PDF/', views.ward_census_PDF, name="ward_census_PDF"),
     #End of Generate Reports
 ]
