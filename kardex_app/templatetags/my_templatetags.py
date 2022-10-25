@@ -31,4 +31,4 @@ def get_item(dictionary, key):
 
 @register.filter(name='get_by_idx')
 def get_by_idx(els, idx):
-    return els[0]
+    return els[idx]
