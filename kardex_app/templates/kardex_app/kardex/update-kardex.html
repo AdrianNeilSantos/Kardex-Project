@@ -406,18 +406,28 @@
     <ol>
       {% for name, date in kardex.edited_by_names|zip:kardex.edited_at reversed %}
       <li class="mb-2">
-        {{ name }} ({{ date|date:"h:i A - N d, Y" }})
+        <a
+          href="#"
+          class="visit-link text-decoration-none"
+        >
+        {{ name }}
+        </a>
         <a
           id="visit{{ forloop.counter }}Link"
           href="#"
-          class="visit-link text-decoration-none text-success"
+          class="changes-link text-decoration-none text-dark"
         >
-          Visit Profile <i class="fa-solid fa-user"></i>
+          ({{ date|date:"h:i A - N d, Y" }})
+          {% if kardex_comparison_values|length > forloop.counter0 %}
+          <span>
+          [{% if 'Revision' in kardex_comparison_values|get_by_idx:forloop.counter0 %}Revisions{% endif %}{% if 'Addition' in kardex_comparison_values|get_by_idx:forloop.counter0 %}, Additions{% endif %}{% if 'Deletion' in kardex_comparison_values|get_by_idx:forloop.counter0 %}, Deletions{% endif %}]
+          </span>
+          {% endif %}
         </a>
         <a
           id="compare{{ forloop.counter }}Link"
           href="#"
-          class="compare-link text-decoration-none text-primary"
+          class="compare-link text-decoration-none text-success"
         >
           Compare <i class="fa-solid fa-magnifying-glass"></i>
         </a>
