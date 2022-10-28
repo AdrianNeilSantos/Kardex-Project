@@ -103,14 +103,46 @@
                 </div>
                 <!-- Nurse Action -->
                 <div class="card-footer d-flex flex-row-reverse">
+
+                  <!-- Delete Button Trigger -->
+                  <a type="submit" data-bs-toggle="modal" data-bs-target="#delete_nurse_{{nurse.id}}">
+                    <span class="material-icons">delete</span>
+                    Delete
+                  </a>
+
+                  <!-- Delete Modal -->
+                  <div class="modal fade" id="delete_nurse_{{nurse.id}}" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                          <h2 class="modal-title" id="exampleModalLabel">Delete Item</h2>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <h2>Are you sure that you want to delete nurse  <strong>{{nurse.first_name}} {{nurse.last_name}}</strong>? </h2>
+                          </div>
+                          <div class="modal-footer">
+                            <a href="{% url 'delete-nurse' nurse.id %}" class="btn btn-danger">
+                              <span class="material-icons">delete</span>
+                              Delete
+                            </a>
+                            <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</a>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+
+
                   <a href="" class="dark-link text-success">
                     <i class="fa-solid fa-envelope-open-text"></i>
                     Action Request
                   </a>
-                  <a href="" class="dark-link text-primary me-3">
+                  <a href="{% url 'view-nurse' nurse.id %}" class="dark-link text-primary me-3">
                     <i class="fa-solid fa-user"></i>
                     Visit Profile
                   </a>
+
+                  
                 </div>
               </div>
             </div>
