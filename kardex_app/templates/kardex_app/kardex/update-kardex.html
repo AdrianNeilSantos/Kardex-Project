@@ -35,9 +35,17 @@
               {% if key not in 'Extra Fields,Extra Field Values,Label Values,Label Markers,Edited By,Edited At' %}
               <div
                 id="{{ key|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
-                class="d-flex flex-column mb-3"
+                class="mb-3"
               >
                 <span class="fw-bold">{{ key }}:</span>
+                {% if forloop.parentloop.counter0 < kardex_comparisons|length %}
+                {% if kardex_comparisons|get_by_idx:forloop.parentloop.counter0|get_item:key == 'Revision' %}
+                <span class="fw-bold text-primary">(Revision)</span>
+                {% elif kardex_comparisons|get_by_idx:forloop.parentloop.counter0|get_item:key == 'Addition' %}
+                <span class="fw-bold text-success">(Addition)</span>
+                {% endif %}
+                {% endif %}
+                <br>
                 <span>{{ value }}</span>
               </div>
               {% endif %}
@@ -407,13 +415,13 @@
       {% for name, date in kardex.edited_by_names|zip:kardex.edited_at reversed %}
       <li class="mb-2">
         <a
+          id="visit{{ forloop.counter }}Link"
           href="#"
           class="visit-link text-decoration-none"
         >
-        {{ name }}
+          {{ name }}
         </a>
         <a
-          id="visit{{ forloop.counter }}Link"
           href="#"
           class="changes-link text-decoration-none text-dark"
         >

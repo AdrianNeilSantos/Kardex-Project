@@ -55,8 +55,8 @@ def formatKardex(kardex):
 
 def formKardexDict(kardex):
     kardex_dict = {
-        'Name of Ward': kardex.name_of_ward,
-        'IVF': kardex.ivf,
+        'Name of Ward': kardex.name_of_ward or '',
+        'IVF': kardex.ivf or '',
         'Laboratory Work-Ups': kardex.laboratory_work_ups or '',
         'Medications': kardex.medications or '',
         'Side Drip': kardex.side_drip or '',
@@ -279,9 +279,7 @@ def updateKardex(request, pk):
         for i in range(kardex_history_qset.count()-1)
     ]
     flat_kardex_comparisons = list(pd.json_normalize(kardex_comparisons).T.to_dict().values())
-    print('flat_kardex_comparisons', flat_kardex_comparisons[-1])
-    print(flat_kardex_comparisons[-1].values())
-    print(flattenNestedLists(flat_kardex_comparisons[-1].values()))
+    print('kardex_comparisons', kardex_comparisons)
     kardex_comparison_values = [
         flattenNestedLists(flat_dict.values()) for flat_dict in flat_kardex_comparisons
     ]
