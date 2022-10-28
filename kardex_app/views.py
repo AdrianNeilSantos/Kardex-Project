@@ -1,3 +1,4 @@
+from urllib import response
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
@@ -16,6 +17,10 @@ from django.utils.encoding import force_bytes
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib.auth.forms import PasswordResetForm
 from django.template.loader import render_to_string
+
+import os
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 from django.utils import timezone
 
@@ -368,5 +373,160 @@ def deleteNurse(request, pk):
 def generateReports(request):
     return render(request, 'kardex_app/generate-reports/generate-reports.html')
 
+
+def bed_tags_PDF(request):
+    template_path = "kardex_app/generate-reports/bed-tags.html"
+    kardexs = Kardex.objects.all()
+    context = {"user": request.user, "kardexs": kardexs}
+    fileName = "bed_tags"
+
+    # PDF Generator
+    #Note: Separating to a function is ideal but currently not working
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pdf = pisa.CreatePDF(html, dest=response)
+
+    if not pdf.err:
+        return response
+
+
+def diet_list_PDF(request):
+    template_path = "kardex_app/generate-reports/diet-list.html"
+    kardexs = Kardex.objects.all()
+    context = {"user": request.user, "kardexs": kardexs}
+    fileName = "diet_list"
+
+    # PDF Generator
+    #Note: Separating to a function is ideal but currently not working
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pdf = pisa.CreatePDF(html, dest=response)
+
+    if not pdf.err:
+        return response
+
+
+def intravenous_fluid_tags_PDF(request):
+    template_path = "kardex_app/generate-reports/intravenous-fluid-tags.html"
+    kardexs = Kardex.objects.all()
+    context = {"user": request.user, "kardexs": kardexs}
+    fileName = "intravenous-fluid-tags"
+
+    # PDF Generator
+    #Note: Separating to a function is ideal but currently not working
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pdf = pisa.CreatePDF(html, dest=response)
+
+    if not pdf.err:
+        return response
+
+
+def medication_cards_PDF(request):
+    template_path = "kardex_app/generate-reports/medication-cards.html"
+    kardexs = Kardex.objects.all()
+    context = {"user": request.user, "kardexs": kardexs}
+    fileName = "medication-cards"
+
+    # PDF Generator
+    #Note: Separating to a function is ideal but currently not working
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pdf = pisa.CreatePDF(html, dest=response)
+
+    if not pdf.err:
+        return response
+
+
+def medication_endorsement_sheet_PDF(request):
+    template_path = "kardex_app/generate-reports/medication-endorsement-sheet.html"
+    kardexs = Kardex.objects.all()
+    context = {"user": request.user, "kardexs": kardexs}
+    fileName = "medication-endorsement-sheet"
+
+    # PDF Generator
+    #Note: Separating to a function is ideal but currently not working
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pdf = pisa.CreatePDF(html, dest=response)
+
+    if not pdf.err:
+        return response
+
+def nursing_endorsement_sheet_PDF(request):
+    template_path = "kardex_app/generate-reports/nursing-endorsement-sheet.html"
+    kardexs = Kardex.objects.all()
+    context = {"user": request.user, "kardexs": kardexs}
+    fileName = "nursing-endorsement-sheet"
+
+    # PDF Generator
+    #Note: Separating to a function is ideal but currently not working
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pdf = pisa.CreatePDF(html, dest=response)
+
+    if not pdf.err:
+        return response
+
+def special_notes_PDF(request):
+    template_path = "kardex_app/generate-reports/special-notes.html"
+    kardexs = Kardex.objects.all()
+    context = {"user": request.user, "kardexs": kardexs}
+    fileName = "special-notes"
+
+    # PDF Generator
+    #Note: Separating to a function is ideal but currently not working
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pdf = pisa.CreatePDF(html, dest=response)
+
+    if not pdf.err:
+        return response
+
+
+def ward_census_PDF(request):
+    template_path = "kardex_app/generate-reports/ward-census.html"
+    kardexs = Kardex.objects.all()
+    context = {"user": request.user, "kardexs": kardexs}
+    fileName = "ward-census"
+
+    # PDF Generator
+    #Note: Separating to a function is ideal but currently not working
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pdf = pisa.CreatePDF(html, dest=response)
+
+    if not pdf.err:
+        return response
+
+#Utility Function
+
+def render_to_PDF(template_src, context_dict, fileName):
+    template_path = template_src
+    context = context_dict
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pdf = pisa.CreatePDF(html, dest=response)
+
+    if not pdf.err:
+        return response
 
 #End of generate-reports
