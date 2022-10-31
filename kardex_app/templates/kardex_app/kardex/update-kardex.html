@@ -40,9 +40,9 @@
                 <span class="fw-bold">{{ key }}:</span>
                 {% if forloop.parentloop.counter0 < kardex_comparisons|length %}
                 {% if kardex_comparisons|get_by_idx:forloop.parentloop.counter0|get_item:key == 'Revision' %}
-                <span class="fw-bold text-primary">(Revision)</span>
+                <span class="change-span fw-bold text-primary">(Revision)</span>
                 {% elif kardex_comparisons|get_by_idx:forloop.parentloop.counter0|get_item:key == 'Addition' %}
-                <span class="fw-bold text-success">(Addition)</span>
+                <span class="change-span fw-bold text-success">(Addition)</span>
                 {% endif %}
                 {% endif %}
                 <br>
@@ -430,7 +430,7 @@
           ({{ date|date:"h:i A - N d, Y" }})
           {% if kardex_comparison_values|length > forloop.counter0 %}
           <span>
-          [{% if 'Revision' in kardex_comparison_values|get_by_idx:forloop.counter0 %}Revisions{% endif %}{% if 'Addition' in kardex_comparison_values|get_by_idx:forloop.counter0 %}, Additions{% endif %}{% if 'Deletion' in kardex_comparison_values|get_by_idx:forloop.counter0 %}, Deletions{% endif %}]
+          [{% if 'Revision' in kardex_comparison_values|get_by_idx:forloop.counter0 %}Revisions{% endif %}{% if 'Addition' in kardex_comparison_values|get_by_idx:forloop.counter0 %} Additions{% endif %}{% if 'Deletion' in kardex_comparison_values|get_by_idx:forloop.counter0 %} Deletions{% endif %}]
           </span>
           {% endif %}
         </a>
