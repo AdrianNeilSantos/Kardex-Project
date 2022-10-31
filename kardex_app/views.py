@@ -284,8 +284,6 @@ def updateKardex(request, pk):
         for i in range(kardex_history_qset.count()-1)
     ]
     flat_kardex_comparisons = list(pd.json_normalize(kardex_comparisons).T.to_dict().values())
-    print('kardex_comparisons', kardex_comparisons)
-    print('kardex_history', kardex_history)
     kardex_comparison_values = [
         flattenNestedLists(flat_dict.values()) for flat_dict in flat_kardex_comparisons
     ]
@@ -304,10 +302,21 @@ def viewKardex(request, pk):
     
     kardex = Kardex.objects.get(id=pk)
     kardex = formatKardex(kardex)
-    kardex_history = [formKardexDict(query_dict.instance) for query_dict in kardex.history.all()]
+    kardex_history_qset = kardex.history.all()
+    kardex_history = [formKardexDict(query_dict.instance) for query_dict in kardex_history_qset]
+    kardex_comparisons = [
+        formKardexComparisons(kardex_history_qset[i+1].instance, kardex_history_qset[i].instance) \
+        for i in range(kardex_history_qset.count()-1)
+    ]
+    flat_kardex_comparisons = list(pd.json_normalize(kardex_comparisons).T.to_dict().values())
+    kardex_comparison_values = [
+        flattenNestedLists(flat_dict.values()) for flat_dict in flat_kardex_comparisons
+    ]
     context = {
         'kardex': kardex,
-        'kardex_history': kardex_history
+        'kardex_history': kardex_history,
+        'kardex_comparisons': kardex_comparisons,
+        'kardex_comparison_values': kardex_comparison_values
     }
     return render(request, 'kardex_app/kardex/view-kardex.html', context)
 
