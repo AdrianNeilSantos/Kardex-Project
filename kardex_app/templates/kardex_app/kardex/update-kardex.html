@@ -51,6 +51,7 @@
               {% endif %}
               {% endfor %}
               {% with extra_values=instance|get_item:'Extra Field Values' %}
+              {% if extra_values|length > 0 %}
               {% for field, value in instance|get_item:'Extra Fields'|zip:extra_values %}
               <div
                 id="{{ field|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
@@ -60,6 +61,7 @@
                 <span>{{ value }}</span>
               </div>
               {% endfor %}
+              {% endif %}
               {% endwith %}
               {% if instance|get_item:'Label Markers'|get_by_idx:0|length %}
               {% with label_values=instance|get_item:'Label Values' %}
