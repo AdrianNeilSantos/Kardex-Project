@@ -50,9 +50,9 @@
               </div>
               {% endif %}
               {% endfor %}
-              {% with extra_values=instance|get_item:'Extra Field Values' %}
-              {% if extra_values|length > 0 %}
-              {% for field, value in instance|get_item:'Extra Fields'|zip:extra_values %}
+              {% with extra_fields=instance|get_item:'Extra Fields' extra_values=instance|get_item:'Extra Field Values' %}
+              {% if extra_fields|length > 0 and extra_values|length > 0 and extra_fields|get_by_idx:0 != "NULL" and extra_fields|get_by_idx:0 != "" %}
+              {% for field, value in extra_fields|zip:extra_values %}
               <div
                 id="{{ field|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
                 class="d-flex flex-column mb-3"
