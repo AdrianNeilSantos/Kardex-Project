@@ -40,9 +40,9 @@
                 <span class="fw-bold">{{ key }}:</span>
                 {% if forloop.parentloop.counter0 < kardex_comparisons|length %}
                 {% if kardex_comparisons|get_by_idx:forloop.parentloop.counter0|get_item:key == 'Revision' %}
-                <span class="change-span fw-bold text-primary">(Revision)</span>
+                <span class="change-span d-none fw-bold text-primary">(Revision)</span>
                 {% elif kardex_comparisons|get_by_idx:forloop.parentloop.counter0|get_item:key == 'Addition' %}
-                <span class="change-span fw-bold text-success">(Addition)</span>
+                <span class="change-span d-none fw-bold text-success">(Addition)</span>
                 {% endif %}
                 {% endif %}
                 <br>
@@ -51,7 +51,7 @@
               {% endif %}
               {% endfor %}
               {% with extra_fields=instance|get_item:'Extra Fields' extra_values=instance|get_item:'Extra Field Values' %}
-              {% if extra_fields|length > 0 and extra_values|length > 0 and extra_fields|get_by_idx:0 != "NULL" and extra_fields|get_by_idx:0 != "" %}
+              {% if extra_fields|length > 0 and extra_values|length > 0 and extra_fields|get_by_idx:0 != '' and extra_fields|get_by_idx:0 != 'NULL' %}
               {% for field, value in extra_fields|zip:extra_values %}
               <div
                 id="{{ field|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
@@ -96,7 +96,7 @@
           id="nameOfWardInput"
           class="underline-field w-156 form-control me-2"
           placeholder="Name of Ward"
-          value="{{ kardex.name_of_ward }}"
+          value="{{ kardex.name_of_ward|default:'' }}"
         >
         <h2 class="fw-bold">WARD</h2>
       </div>
@@ -109,7 +109,7 @@
             class="overline-field form-control"
             rows="3"
             placeholder="IVF"
-          >{{ kardex.ivf }}</textarea>
+          >{{ kardex.ivf|default:'' }}</textarea>
         </div>
         <div class="laboratory-work-ups-cell d-flex flex-column p-3">
           <span class="cell-header text-break h4 fw-bold">LABORATORY WORK-UPS:</span>
@@ -119,7 +119,7 @@
             class="overline-field form-control"
             rows="3"
             placeholder="Laboratory Work-Ups"
-          >{{ kardex.laboratory_work_ups }}</textarea>
+          >{{ kardex.laboratory_work_ups|default:'' }}</textarea>
         </div>
         <div class="medications-cell d-flex flex-column p-3">
           <span class="cell-header text-break h4 fw-bold">MEDICATIONS:</span>
@@ -129,7 +129,7 @@
             class="overline-field form-control"
             rows="3"
             placeholder="Medications"
-          >{{ kardex.medications }}</textarea>
+          >{{ kardex.medications|default:'' }}</textarea>
         </div>
         <div class="side-drip-cell d-flex flex-column p-3">
           <span class="cell-header text-break h4 fw-bold">SIDE DRIP:</span>
@@ -139,7 +139,7 @@
             class="overline-field form-control"
             rows="3"
             placeholder="Side Drip"
-          >{{ kardex.side_drip }}</textarea>
+          >{{ kardex.side_drip|default:'' }}</textarea>
         </div>
         <div class="special-notations-cell d-flex flex-column p-3">
           <span class="cell-header text-break h4 fw-bold">SPECIAL NOTATIONS:</span>
@@ -149,7 +149,7 @@
             class="overline-field form-control"
             rows="3"
             placeholder="Special Notations"
-          >{{ kardex.special_notations }}</textarea>
+          >{{ kardex.special_notations|default:'' }}</textarea>
         </div>
         <div class="referrals-cell d-flex flex-column p-3">
           <span class="cell-header text-break h4 fw-bold">REFERRALS:</span>
@@ -159,7 +159,7 @@
             class="overline-field form-control"
             rows="3"
             placeholder="Referrals"
-          >{{ kardex.referrals }}</textarea>
+          >{{ kardex.referrals|default:'' }}</textarea>
         </div>
       </div>
     </section>
@@ -173,7 +173,7 @@
             id="nameInput"
             class="underline-field form-control"
             placeholder="Name"
-            value="{{ kardex.name }}"
+            value="{{ kardex.name|default:'' }}"
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -184,7 +184,7 @@
             id="ageSexInput"
             class="underline-field form-control"
             placeholder="Age/Sex"
-            value="{{ kardex.age }}/{{ kardex.sex }}"
+            value="{{ kardex.age }}/{{ kardex.sex|default:'' }}"
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -206,7 +206,7 @@
             id="hospitalNumInput"
             class="underline-field form-control"
             placeholder="Hospital #"
-            value="{{ kardex.hospital_num }}"
+            value="{{ kardex.hospital_num|default:'' }}"
           >
         </div>
       </div>
@@ -219,7 +219,7 @@
             class="underline-field form-control"
             rows="3"
             placeholder="DX"
-          >{{ kardex.dx }}</textarea>
+          >{{ kardex.dx|default:'' }}</textarea>
         </div>
         <div class="d-flex align-items-center mb-3">
           <span class="text-nowrap fs-2 fw-bold me-3">DRS:</span>
@@ -229,7 +229,7 @@
             type="text"
             class="underline-field form-control"
             placeholder="DRS"
-            value="{{ kardex.drs }}"
+            value="{{ kardex.drs|default:'' }}"
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -240,12 +240,14 @@
             type="text"
             class="underline-field form-control"
             placeholder="Diet"
-            value="{{ kardex.diet }}"
+            value="{{ kardex.diet|default:'' }}"
           >
         </div>
       </div>
     </section>
     <section class="extra-fields container-fluid container-lg">
+      {% if kardex.extra_fields|length > 0 and kardex.extra_fields|get_by_idx:0 != '' and kardex.extra_fields|get_by_idx:0.strip != 'None' %}
+      {{ kardex.extra_fields|get_by_idx:0 }}
       {% for name, value in kardex.extra_fields|zip:kardex.extra_field_values %}
       <div class="extra-field d-flex align-items-center mb-3 pe-0 pe-md-4">
         <input
@@ -272,6 +274,7 @@
         </button>
       </div>
       {% endfor %}
+      {% endif %}
       <div class="add-field d-flex align-items-center mb-3 pe-0 pe-md-4">
         <input
           type="text"
@@ -434,12 +437,21 @@
           </span>
           {% endif %}
         </a>
+        {% if forloop.counter != kardex.edited_by_names|length %}
         <a
-          id="compare{{ forloop.counter }}Link"
+          id="comparePrev{{ forloop.counter }}Link"
           href="#"
-          class="compare-link text-decoration-none text-success"
+          class="compare-prev-link text-decoration-none text-primary"
         >
-          Compare <i class="fa-solid fa-magnifying-glass"></i>
+          Compare with Previous <i class="fa-solid fa-magnifying-glass"></i>
+        </a>
+        {% endif %}
+        <a
+          id="compareCurr{{ forloop.counter }}Link"
+          href="#"
+          class="compare-curr-link text-decoration-none text-success"
+        >
+          Compare with Current <i class="fa-solid fa-magnifying-glass"></i>
         </a>
       </li>
       {% endfor %}

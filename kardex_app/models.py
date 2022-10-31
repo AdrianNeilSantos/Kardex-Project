@@ -33,22 +33,22 @@ class Kardex(models.Model):
     drs = models.CharField(max_length=255, null=True, blank=True)
     diet = models.CharField(max_length=255, null=True, blank=True)
     extra_fields = ArrayField(
-        models.CharField(max_length=255, null=True, blank=True),
+        models.CharField(max_length=255, blank=True, default=''),
         null=True,
         blank=True
     )
     extra_field_values = ArrayField(
-        models.TextField(null=True, blank=True),
+        models.TextField(blank=True, default=''),
         null=True,
         blank=True
     )
     label_markers = ArrayField(
-        models.CharField(max_length=255, null=True, blank=True),
+        models.CharField(max_length=255, blank=True, default=''),
         null=True,
         blank=True
     )
     label_values = ArrayField(
-        models.CharField(max_length=255, null=True, blank=True),
+        models.CharField(max_length=255, blank=True, default=''),
         null=True,
         blank=True
     )
@@ -75,6 +75,8 @@ class Nurse(AbstractUser):
     # blank: False = required
     birthday = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     sex = models.CharField(max_length=10, default='Male', null=True, blank=True)
+    ward = models.CharField(max_length=255, null=True, blank=True)
+    department = models.CharField(max_length=255, null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
     
     def __str__(self):
