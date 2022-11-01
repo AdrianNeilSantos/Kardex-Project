@@ -1,4 +1,5 @@
-const updateKardexForm = document.querySelector('#updateKardexForm');
+/* global bootstrap */
+
 const nameOfWardInput = document.querySelector('#nameOfWardInput');
 const ivfInput = document.querySelector('#ivfInput');
 const laboratoryWorkUps = document.querySelector('#laboratoryWorkUpsInput');
@@ -17,20 +18,13 @@ const dxInput = document.querySelector('#dxInput');
 const drsInput = document.querySelector('#drsInput');
 const dietInput = document.querySelector('#dietInput');
 
-const ageInput = document.querySelector('#ageInput');
-const sexInput = document.querySelector('#sexInput');
-const extraFieldsInput = document.querySelector('#extraFieldsInput');
-const extraFieldValuesInput = document.querySelector('#extraFieldValuesInput');
-const labelMarkersInput = document.querySelector('#labelMarkersInput');
-const labelValuesInput = document.querySelector('#labelValuesInput');
-
-const inputs = document.querySelectorAll('input');
-const showInfoToast = () => {
-  console.log('test');
-  // const infoToast = document.querySelector('.info-toast');
-  // new bootstrap.Toast(infoToast).show();
-};
-document.querySelectorAll('.form-control').forEach((el) => el.addEventListener('click', (e) => console.log(e.target)));
+// const inputs = document.querySelectorAll('input');
+// const showInfoToast = () => {
+//   console.log('test');
+//   // const infoToast = document.querySelector('.info-toast');
+//   // new bootstrap.Toast(infoToast).show();
+// };
+// document.querySelectorAll('.form-control').forEach((el) => el.addEventListener('click', (e) => console.log(e.target)));
 
 const versionModals = Array.from(document.querySelectorAll('[id^="comparisonModal"]'));
 const closeModal = (e) => {
@@ -133,7 +127,7 @@ const compareWCurr = (idx) => {
   activatedVersionModal.show();
 };
 compareCurrLinks.forEach((el) => {
-  el.addEventListener('click', (e) => compareWCurr(e.target.id.replace(/\D/g, '')))
+  el.addEventListener('click', (e) => compareWCurr(e.target.id.replace(/\D/g, '')));
 });
 
 const comparePrevLinks = document.querySelectorAll('[id^="comparePrev"][id$="Link"]');
@@ -159,5 +153,5 @@ const compareWPrev = (idx) => {
   activatedVersionModal.show();
 };
 comparePrevLinks.forEach((el) => {
-  el.addEventListener('click', (e) => compareWPrev(e.target.id.replace(/\D/g, '')))
+  el.addEventListener('click', (e) => compareWPrev(e.target.id.replace(/\D/g, '')));
 });
