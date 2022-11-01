@@ -26,113 +26,6 @@ from django.utils import timezone
 
 import pandas as pd
 
-# code adapted from and thanks to
-# https://stackoverflow.com/a/17867797
-def flattenNestedLists(A):
-    rt = []
-    for i in A:
-        if isinstance(i, list): rt.extend(flattenNestedLists(i))
-        else: rt.append(i)
-    return rt
-
-def splitToLists(query_dict):
-    list_keys = [
-        'extra_fields', 'extra_field_values',
-        'label_markers', 'label_values',
-        'edited_by', 'edited_at',
-    ]
-    for key in query_dict.keys():
-        if (key in list_keys):
-            query_dict[key] = query_dict[key].split(';;')
-    return query_dict
-
-def stripValues(query_dict):
-    for key in query_dict.keys():
-        if isinstance(query_dict[key], str):
-            query_dict[key] = query_dict[key].strip()
-        else:
-            query_dict[key] = [value.strip() for value in query_dict[key]]
-    return query_dict
-
-def formatKardex(kardex):
-    kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
-    return kardex
-
-def formKardexDict(kardex):
-    kardex_dict = {
-        'Name of Ward': kardex.name_of_ward or '',
-        'IVF': kardex.ivf or '',
-        'Laboratory Work-Ups': kardex.laboratory_work_ups or '',
-        'Medications': kardex.medications or '',
-        'Side Drip': kardex.side_drip or '',
-        'Special Notations': kardex.special_notations or '',
-        'Referrals': kardex.referrals or '',
-        'Name': kardex.name,
-        'Age/Sex': f"{ kardex.age }/{ kardex.sex }" if kardex.age and kardex.sex else '',
-        'Date/Time': kardex.date_time or '',
-        'Hospital #': kardex.hospital_num or '',
-        'DX': kardex.dx or '',
-        'DRS': kardex.drs or '',
-        'Diet': kardex.diet or '',
-        'Extra Fields': [field if field else '' for field in kardex.extra_fields],
-        'Extra Field Values': [value if value else '' for value in kardex.extra_field_values],
-        'Label Markers': [marker if marker else '' for marker in kardex.label_markers],
-        'Label Values': [value if value else '' for value in kardex.label_values],
-        'Edited By': kardex.edited_by or '',
-        'Edited At': kardex.edited_at or ''
-    }
-    return kardex_dict
-
-def formKardexComparisons(kardex1, kardex2):
-    kardex_comparisons = {
-        'Name of Ward': 'Revision' if kardex1.name_of_ward != kardex2.name_of_ward else '',
-        'IVF': 'Revision' if kardex1.ivf != kardex2.ivf else '',
-        'Laboratory Work-Ups': 'Revision' if kardex1.laboratory_work_ups != kardex2.laboratory_work_ups else '',
-        'Medications': 'Revision' if kardex1.medications != kardex2.medications else '',
-        'Side Drip': 'Revision' if kardex1.side_drip != kardex2.side_drip else '',
-        'Special Notations': 'Revision' if kardex1.special_notations != kardex2.special_notations else '',
-        'Referrals': 'Revision' if kardex1.referrals != kardex2.referrals else '',
-        'Name': 'Revision' if kardex1.name != kardex2.name else '',
-        'Age/Sex': 'Revision' if f"{ kardex1.age }/{ kardex1.sex }" != f"{ kardex2.age }/{ kardex2.sex }" else '',
-        'Date/Time': 'Revision' if kardex1.date_time != kardex2.date_time else '',
-        'Hospital #': 'Revision' if kardex1.hospital_num != kardex2.hospital_num else '',
-        'DX': 'Revision' if kardex1.dx != kardex2.dx else '',
-        'DRS': 'Revision' if kardex1.drs != kardex2.drs else '',
-        'Diet': 'Revision' if kardex1.diet != kardex2.diet else '',
-        'Extra Fields': ['Revision' if field1 != field2 else '' \
-            for field1, field2 in zip(kardex1.extra_fields, kardex2.extra_fields)
-        ],
-        'Extra Field Values': ['Revision' if value1 != value2 else '' \
-            for value1, value2 in zip(kardex1.extra_field_values, kardex2.extra_field_values)
-        ],
-        'Label Markers': ['Revision' if marker1 != marker2 else '' \
-            for marker1, marker2 in zip(kardex1.label_markers, kardex2.label_markers)
-        ],
-        'Label Values': ['Revision' if value1 != value2 else '' \
-            for value1, value2 in zip(kardex1.label_values, kardex2.label_values)
-        ],
-    }
-    if (len(kardex1.extra_fields) != len(kardex2.extra_fields)):
-        kardex_comparisons['Extra Fields'] += \
-            ['Deletion' for i in range(len(kardex2.extra_fields), len(kardex1.extra_fields))] \
-            if len(kardex1.extra_fields) > len(kardex2.extra_fields) \
-            else ['Addition' for i in range(len(kardex1.extra_fields), len(kardex2.extra_fields))]
-    if (len(kardex1.extra_field_values) != len(kardex2.extra_field_values)):
-        kardex_comparisons['Extra Field Values'] += \
-            ['Deletion' for i in range(len(kardex2.extra_field_values), len(kardex1.extra_field_values))] \
-            if len(kardex1.extra_field_values) > len(kardex2.extra_field_values) \
-            else ['Addition' for i in range(len(kardex1.extra_field_values), len(kardex2.extra_field_values))]
-    if (len(kardex1.label_markers) != len(kardex2.label_markers)):
-        kardex_comparisons['Label Markers'] += \
-            ['Deletion' for i in range(len(kardex2.label_markers), len(kardex1.label_markers))] \
-            if len(kardex1.label_markers) > len(kardex2.label_markers) \
-            else ['Addition' for i in range(len(kardex1.label_markers), len(kardex2.label_markers))]
-    if (len(kardex1.label_values) != len(kardex2.label_values)):
-        kardex_comparisons['Label Values'] += \
-            ['Deletion' for i in range(len(kardex2.label_values), len(kardex1.label_values))] \
-            if len(kardex1.label_values) > len(kardex2.label_values) \
-            else ['Addition' for i in range(len(kardex1.label_values), len(kardex2.label_values))]
-    return kardex_comparisons
 
 # Create your views here.
 def home(request):
@@ -540,3 +433,114 @@ def render_to_PDF(template_src, context_dict, fileName):
         return response
 
 #End of generate-reports
+
+
+
+
+# code adapted from and thanks to
+# https://stackoverflow.com/a/17867797
+def flattenNestedLists(A):
+    rt = []
+    for i in A:
+        if isinstance(i, list): rt.extend(flattenNestedLists(i))
+        else: rt.append(i)
+    return rt
+
+def splitToLists(query_dict):
+    list_keys = [
+        'extra_fields', 'extra_field_values',
+        'label_markers', 'label_values',
+        'edited_by', 'edited_at',
+    ]
+    for key in query_dict.keys():
+        if (key in list_keys):
+            query_dict[key] = query_dict[key].split(';;')
+    return query_dict
+
+def stripValues(query_dict):
+    for key in query_dict.keys():
+        if isinstance(query_dict[key], str):
+            query_dict[key] = query_dict[key].strip()
+        else:
+            query_dict[key] = [value.strip() for value in query_dict[key]]
+    return query_dict
+
+def formatKardex(kardex):
+    kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
+    return kardex
+
+def formKardexDict(kardex):
+    kardex_dict = {
+        'Name of Ward': kardex.name_of_ward or '',
+        'IVF': kardex.ivf or '',
+        'Laboratory Work-Ups': kardex.laboratory_work_ups or '',
+        'Medications': kardex.medications or '',
+        'Side Drip': kardex.side_drip or '',
+        'Special Notations': kardex.special_notations or '',
+        'Referrals': kardex.referrals or '',
+        'Name': kardex.name,
+        'Age/Sex': f"{ kardex.age }/{ kardex.sex }" if kardex.age and kardex.sex else '',
+        'Date/Time': kardex.date_time or '',
+        'Hospital #': kardex.hospital_num or '',
+        'DX': kardex.dx or '',
+        'DRS': kardex.drs or '',
+        'Diet': kardex.diet or '',
+        'Extra Fields': [field if field else '' for field in kardex.extra_fields],
+        'Extra Field Values': [value if value else '' for value in kardex.extra_field_values],
+        'Label Markers': [marker if marker else '' for marker in kardex.label_markers],
+        'Label Values': [value if value else '' for value in kardex.label_values],
+        'Edited By': kardex.edited_by or '',
+        'Edited At': kardex.edited_at or ''
+    }
+    return kardex_dict
+
+def formKardexComparisons(kardex1, kardex2):
+    kardex_comparisons = {
+        'Name of Ward': 'Revision' if kardex1.name_of_ward != kardex2.name_of_ward else '',
+        'IVF': 'Revision' if kardex1.ivf != kardex2.ivf else '',
+        'Laboratory Work-Ups': 'Revision' if kardex1.laboratory_work_ups != kardex2.laboratory_work_ups else '',
+        'Medications': 'Revision' if kardex1.medications != kardex2.medications else '',
+        'Side Drip': 'Revision' if kardex1.side_drip != kardex2.side_drip else '',
+        'Special Notations': 'Revision' if kardex1.special_notations != kardex2.special_notations else '',
+        'Referrals': 'Revision' if kardex1.referrals != kardex2.referrals else '',
+        'Name': 'Revision' if kardex1.name != kardex2.name else '',
+        'Age/Sex': 'Revision' if f"{ kardex1.age }/{ kardex1.sex }" != f"{ kardex2.age }/{ kardex2.sex }" else '',
+        'Date/Time': 'Revision' if kardex1.date_time != kardex2.date_time else '',
+        'Hospital #': 'Revision' if kardex1.hospital_num != kardex2.hospital_num else '',
+        'DX': 'Revision' if kardex1.dx != kardex2.dx else '',
+        'DRS': 'Revision' if kardex1.drs != kardex2.drs else '',
+        'Diet': 'Revision' if kardex1.diet != kardex2.diet else '',
+        'Extra Fields': ['Revision' if field1 != field2 else '' \
+            for field1, field2 in zip(kardex1.extra_fields, kardex2.extra_fields)
+        ],
+        'Extra Field Values': ['Revision' if value1 != value2 else '' \
+            for value1, value2 in zip(kardex1.extra_field_values, kardex2.extra_field_values)
+        ],
+        'Label Markers': ['Revision' if marker1 != marker2 else '' \
+            for marker1, marker2 in zip(kardex1.label_markers, kardex2.label_markers)
+        ],
+        'Label Values': ['Revision' if value1 != value2 else '' \
+            for value1, value2 in zip(kardex1.label_values, kardex2.label_values)
+        ],
+    }
+    if (len(kardex1.extra_fields) != len(kardex2.extra_fields)):
+        kardex_comparisons['Extra Fields'] += \
+            ['Deletion' for i in range(len(kardex2.extra_fields), len(kardex1.extra_fields))] \
+            if len(kardex1.extra_fields) > len(kardex2.extra_fields) \
+            else ['Addition' for i in range(len(kardex1.extra_fields), len(kardex2.extra_fields))]
+    if (len(kardex1.extra_field_values) != len(kardex2.extra_field_values)):
+        kardex_comparisons['Extra Field Values'] += \
+            ['Deletion' for i in range(len(kardex2.extra_field_values), len(kardex1.extra_field_values))] \
+            if len(kardex1.extra_field_values) > len(kardex2.extra_field_values) \
+            else ['Addition' for i in range(len(kardex1.extra_field_values), len(kardex2.extra_field_values))]
+    if (len(kardex1.label_markers) != len(kardex2.label_markers)):
+        kardex_comparisons['Label Markers'] += \
+            ['Deletion' for i in range(len(kardex2.label_markers), len(kardex1.label_markers))] \
+            if len(kardex1.label_markers) > len(kardex2.label_markers) \
+            else ['Addition' for i in range(len(kardex1.label_markers), len(kardex2.label_markers))]
+    if (len(kardex1.label_values) != len(kardex2.label_values)):
+        kardex_comparisons['Label Values'] += \
+            ['Deletion' for i in range(len(kardex2.label_values), len(kardex1.label_values))] \
+            if len(kardex1.label_values) > len(kardex2.label_values) \
+            else ['Addition' for i in range(len(kardex1.label_values), len(kardex2.label_values))]
+    return kardex_comparisons
