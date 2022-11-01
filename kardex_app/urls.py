@@ -27,12 +27,14 @@ urlpatterns = [
     path('delete-kardex/<str:pk>', views.deleteKardex, name="delete-kardex"),
 
     #End of Kardex
+    #Nurse
+    path('view-profile/', views.viewProfile, name="view-profile"),
     path('nurse-dashboard/', views.nurseDashboard, name="nurse-dashboard"),
     path('create-nurse/', views.createNurse, name="create-nurse"),
     path('update-nurse/<str:pk>', views.updateNurse, name="update-nurse"),
     path('view-nurse/<str:pk>', views.viewNurse, name="view-nurse"),
     path('delete-nurse/<str:pk>', views.deleteNurse, name="delete-nurse"),
-    #Nurse
+
 
     #End of Nurse
 

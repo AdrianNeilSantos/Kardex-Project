@@ -26,10 +26,11 @@ from django.utils import timezone
 
 import pandas as pd
 
+login_URL = "/sign-in/"
 
 # Create your views here.
 def home(request):
-    return render(request, 'kardex_app/main.html')
+    return render(request, 'kardex_app/home.html')
 
 
 # Authentication
@@ -56,7 +57,7 @@ def signIn(request):
         if nurse is not None:
             login(request, nurse)
             print("Login Success.")
-            return redirect('/')
+            return redirect('/dashboard/')
         else:
             print("Login Fail.")
             messages.error(request, "Incorrect password or username.")
@@ -122,10 +123,9 @@ def password_reset_request(request):
 
 
 #Kardex
-def dashboard(request):
-    if (not request.user.is_authenticated):
-        return redirect('/sign-in')
-    
+
+@login_required(login_url=login_URL)
+def dashboard(request):    
     print(timezone.now())
     kardexs = list(Kardex.objects.all())
     for kardex in kardexs:
@@ -137,11 +137,8 @@ def dashboard(request):
 
     return render(request, 'kardex_app/kardex/dashboard.html', context)
 
-
+@login_required(login_url=login_URL)
 def createKardex(request):
-    if (not request.user.is_authenticated):
-        return redirect('/sign-in')
-    
     form = KardexForm()
     if(request.method == "POST"):
         post = request.POST.copy() # to make it mutable
@@ -154,10 +151,9 @@ def createKardex(request):
     context = { "form": form }
     return render(request, 'kardex_app/kardex/create-kardex.html', context)
 
-def updateKardex(request, pk):
-    if (not request.user.is_authenticated):
-        return redirect('/sign-in')
-    
+
+@login_required(login_url=login_URL)
+def updateKardex(request, pk):    
     kardex = Kardex.objects.get(id=pk)
     form = KardexForm(instance=kardex)
     if(request.method == "POST"):
@@ -189,10 +185,9 @@ def updateKardex(request, pk):
     }
     return render(request, 'kardex_app/kardex/update-kardex.html', context)
 
-def viewKardex(request, pk):
-    if (not request.user.is_authenticated):
-        return redirect('/sign-in')
-    
+
+@login_required(login_url=login_URL)
+def viewKardex(request, pk):    
     kardex = Kardex.objects.get(id=pk)
     kardex = formatKardex(kardex)
     kardex_history_qset = kardex.history.all()
@@ -214,10 +209,8 @@ def viewKardex(request, pk):
     return render(request, 'kardex_app/kardex/view-kardex.html', context)
 
 
+@login_required(login_url=login_URL)
 def deleteKardex(request, pk):
-    if (not request.user.is_authenticated):
-        return redirect('/sign-in')
-    
     kardex = Kardex.objects.get(id=pk)
     kardex.delete()
     return redirect("/dashboard")
@@ -227,6 +220,22 @@ def deleteKardex(request, pk):
 
 
 #Nurse
+
+def viewProfile(request):
+    nurse = Nurse.objects.get(id=request.user.id)
+
+    form = NurseUpdateForm(instance=nurse)
+
+    if(request.method == "POST"):
+        form = NurseUpdateForm(request.POST, request.FILES, instance=nurse)
+        if(form.is_valid()):
+            form.save()
+            return redirect("/view-profile")
+
+    context = {"nurse": nurse, "form": form}
+    return render(request, 'kardex_app/Nurse/view-profile.html', context)
+
+
 
 def nurseDashboard(request):
     nurses = Nurse.objects.all()
