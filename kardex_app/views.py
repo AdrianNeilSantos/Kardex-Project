@@ -1,4 +1,3 @@
-from urllib import response
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
@@ -28,25 +27,25 @@ import pandas as pd
 
 # code adapted from and thanks to
 # https://stackoverflow.com/a/17867797
-def flattenNestedLists(A):
+def flatten_nested_lists(A):
     rt = []
     for i in A:
-        if isinstance(i, list): rt.extend(flattenNestedLists(i))
+        if isinstance(i, list): rt.extend(flatten_nested_lists(i))
         else: rt.append(i)
     return rt
 
-def splitToLists(query_dict):
+def split_to_lists(query_dict):
     list_keys = [
         'extra_fields', 'extra_field_values',
         'label_markers', 'label_values',
         'edited_by', 'edited_at',
     ]
     for key in query_dict.keys():
-        if (key in list_keys):
+        if key in list_keys:
             query_dict[key] = query_dict[key].split(';;')
     return query_dict
 
-def stripValues(query_dict):
+def strip_values(query_dict):
     for key in query_dict.keys():
         if isinstance(query_dict[key], str):
             query_dict[key] = query_dict[key].strip()
@@ -54,11 +53,11 @@ def stripValues(query_dict):
             query_dict[key] = [value.strip() for value in query_dict[key]]
     return query_dict
 
-def formatKardex(kardex):
+def format_kardex(kardex):
     kardex.edited_by_names = [f"{Nurse.objects.get(id=id).username}" for id in kardex.edited_by]
     return kardex
 
-def formKardexDict(kardex):
+def form_kardex_dict(kardex):
     kardex_dict = {
         'Name of Ward': kardex.name_of_ward or '',
         'IVF': kardex.ivf or '',
@@ -83,7 +82,7 @@ def formKardexDict(kardex):
     }
     return kardex_dict
 
-def formKardexComparisons(kardex1, kardex2):
+def form_kardex_comparisons(kardex1, kardex2):
     kardex_comparisons = {
         'Name of Ward': 'Revision' if kardex1.name_of_ward != kardex2.name_of_ward else '',
         'IVF': 'Revision' if kardex1.ivf != kardex2.ivf else '',
@@ -112,22 +111,22 @@ def formKardexComparisons(kardex1, kardex2):
             for value1, value2 in zip(kardex1.label_values, kardex2.label_values)
         ],
     }
-    if (len(kardex1.extra_fields) != len(kardex2.extra_fields)):
+    if len(kardex1.extra_fields) != len(kardex2.extra_fields):
         kardex_comparisons['Extra Fields'] += \
             ['Deletion' for i in range(len(kardex2.extra_fields), len(kardex1.extra_fields))] \
             if len(kardex1.extra_fields) > len(kardex2.extra_fields) \
             else ['Addition' for i in range(len(kardex1.extra_fields), len(kardex2.extra_fields))]
-    if (len(kardex1.extra_field_values) != len(kardex2.extra_field_values)):
+    if len(kardex1.extra_field_values) != len(kardex2.extra_field_values):
         kardex_comparisons['Extra Field Values'] += \
             ['Deletion' for i in range(len(kardex2.extra_field_values), len(kardex1.extra_field_values))] \
             if len(kardex1.extra_field_values) > len(kardex2.extra_field_values) \
             else ['Addition' for i in range(len(kardex1.extra_field_values), len(kardex2.extra_field_values))]
-    if (len(kardex1.label_markers) != len(kardex2.label_markers)):
+    if len(kardex1.label_markers) != len(kardex2.label_markers):
         kardex_comparisons['Label Markers'] += \
             ['Deletion' for i in range(len(kardex2.label_markers), len(kardex1.label_markers))] \
             if len(kardex1.label_markers) > len(kardex2.label_markers) \
             else ['Addition' for i in range(len(kardex1.label_markers), len(kardex2.label_markers))]
-    if (len(kardex1.label_values) != len(kardex2.label_values)):
+    if len(kardex1.label_values) != len(kardex2.label_values):
         kardex_comparisons['Label Values'] += \
             ['Deletion' for i in range(len(kardex2.label_values), len(kardex1.label_values))] \
             if len(kardex1.label_values) > len(kardex2.label_values) \
@@ -142,9 +141,9 @@ def home(request):
 # Authentication
 def register(request):
     form = NurseCreationForm()
-    if( request.method == "POST"):
+    if request.method == "POST":
         form = NurseCreationForm(request.POST)
-        if( form.is_valid() ):
+        if form.is_valid():
             form.save()
             messages.success(request, "Account was created for "+form.cleaned_data.get("username"))
             return redirect('/sign-in')
@@ -153,28 +152,25 @@ def register(request):
 
     return render(request, 'kardex_app/Authentication/register.html', context)
 
-def signIn(request):
-    if(request.method == "POST"):
+def sign_in(request):
+    if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
         nurse = authenticate(request, username=username, password=password)
-        
         if nurse is not None:
             login(request, nurse)
             print("Login Success.")
             return redirect('/')
-        else:
-            print("Login Fail.")
-            messages.error(request, "Incorrect password or username.")
+        print("Login Fail.")
+        messages.error(request, "Incorrect password or username.")
 
     return render(request, 'kardex_app/Authentication/sign-in.html')
 
-def signOut(request):
+def sign_out(request):
     logout(request)
     return redirect('sign-in')
 
-def changePassword(request):
+def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -186,7 +182,6 @@ def changePassword(request):
             messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(request.user)
-    
     context = {
       "form": form,
     }
@@ -194,7 +189,7 @@ def changePassword(request):
     return render(request, 'kardex_app/Authentication/password-change.html', context)
 
 
-def forgotPassword(request):
+def forgot_password(request):
     return render(request, 'kardex_app/Authentication/password-forgot.html')
 
 def password_reset_request(request):
@@ -230,9 +225,8 @@ def password_reset_request(request):
 
 #Kardex
 def dashboard(request):
-    if (not request.user.is_authenticated):
+    if not request.user.is_authenticated:
         return redirect('/sign-in')
-    
     print(timezone.now())
     kardexs = list(Kardex.objects.all())
     for kardex in kardexs:
@@ -245,48 +239,46 @@ def dashboard(request):
     return render(request, 'kardex_app/kardex/dashboard.html', context)
 
 
-def createKardex(request):
-    if (not request.user.is_authenticated):
+def create_kardex(request):
+    if not request.user.is_authenticated:
         return redirect('/sign-in')
-    
     form = KardexForm()
-    if(request.method == "POST"):
+    if request.method == "POST":
         post = request.POST.copy() # to make it mutable
-        post.update(splitToLists(post))
-        post.update(stripValues(post))
+        post.update(split_to_lists(post))
+        post.update(strip_values(post))
         form = KardexForm(post)
-        if(form.is_valid()):
+        if form.is_valid():
             form.save()
             return redirect("/dashboard")
     context = { "form": form }
     return render(request, 'kardex_app/kardex/create-kardex.html', context)
 
-def updateKardex(request, pk):
-    if (not request.user.is_authenticated):
+def update_kardex(request, pk):
+    if not request.user.is_authenticated:
         return redirect('/sign-in')
-    
     kardex = Kardex.objects.get(id=pk)
     form = KardexForm(instance=kardex)
-    if(request.method == "POST"):
+    if request.method == "POST":
         post = request.POST.copy()
-        post.update(splitToLists(post))
-        post.update(stripValues(post))
+        post.update(split_to_lists(post))
+        post.update(strip_values(post))
         form = KardexForm(post, instance=kardex)
-        if(form.is_valid()):
+        if form.is_valid():
             form.save()
             return redirect("/dashboard")
 
-    kardex = formatKardex(kardex)
+    kardex = format_kardex(kardex)
     kardex_history_qset = kardex.history.all()
-    kardex_history = [formKardexDict(query_dict.instance) for query_dict in kardex_history_qset]
+    kardex_history = [form_kardex_dict(query_dict.instance) for query_dict in kardex_history_qset]
     kardex_comparisons = [
-        formKardexComparisons(kardex_history_qset[i+1].instance, kardex_history_qset[i].instance) \
+        form_kardex_comparisons(kardex_history_qset[i+1].instance, kardex_history_qset[i].instance) \
         for i in range(kardex_history_qset.count()-1)
     ]
     flat_kardex_comparisons = list(pd.json_normalize(kardex_comparisons).T.to_dict().values())
     print('kardex_comparisons', kardex_comparisons)
     kardex_comparison_values = [
-        flattenNestedLists(flat_dict.values()) for flat_dict in flat_kardex_comparisons
+        flatten_nested_lists(flat_dict.values()) for flat_dict in flat_kardex_comparisons
     ]
     context = {
         'form': form,
@@ -297,69 +289,62 @@ def updateKardex(request, pk):
     }
     return render(request, 'kardex_app/kardex/update-kardex.html', context)
 
-def viewKardex(request, pk):
-    if (not request.user.is_authenticated):
+def view_kardex(request, pk):
+    if not request.user.is_authenticated:
         return redirect('/sign-in')
-    
     kardex = Kardex.objects.get(id=pk)
-    kardex = formatKardex(kardex)
-    kardex_history = [formKardexDict(query_dict.instance) for query_dict in kardex.history.all()]
+    kardex = format_kardex(kardex)
+    kardex_history = [form_kardex_dict(query_dict.instance) for query_dict in kardex.history.all()]
     context = {
         'kardex': kardex,
         'kardex_history': kardex_history
     }
     return render(request, 'kardex_app/kardex/view-kardex.html', context)
 
-
-def deleteKardex(request, pk):
-    if (not request.user.is_authenticated):
+def delete_kardex(request, pk):
+    if not request.user.is_authenticated:
         return redirect('/sign-in')
-    
     kardex = Kardex.objects.get(id=pk)
     kardex.delete()
     return redirect("/dashboard")
-
-
 #End of Kardex
 
-
 #Nurse
-
-def nurseDashboard(request):
+def nurse_dashboard(request):
     nurses = Nurse.objects.all()
     context = {"nurses": nurses}
     return render(request, 'kardex_app/Nurse/dashboard.html', context)
 
-def createNurse(request):
+def create_nurse(request):
     form = NurseCreationForm()
-    if(request.method == "POST"):
+    if request.method == "POST":
         form = NurseCreationForm(request.POST, request.FILES)
-        if(form.is_valid()):
+        if form.is_valid():
             form.save()
             return redirect("/nurse-dashboard")
     context = {"form": form}
     return render(request, 'kardex_app/Nurse/create-nurse.html', context)
 
-def updateNurse(request, pk):
+def update_nurse(request, pk):
     nurse = Nurse.objects.get(id=pk)
     form = NurseUpdateForm(instance=nurse)
 
-    if(request.method == "POST"):
+    if request.method == "POST":
         form = NurseUpdateForm(request.POST, request.FILES, instance=nurse)
-        if(form.is_valid()):
+        if form.is_valid():
             form.save()
             return redirect("/nurse-dashboard")
 
     context = {"form": form}
     return render(request, 'kardex_app/Nurse/update-nurse.html', context)
 
-def viewNurse(request, pk):
+def view_nurse(request, pk):
     nurse = Nurse.objects.get(id=pk)
     context = {"nurse": nurse}
     return render(request, 'kardex_app/Nurse/view-nurse.html', context)
 
 
-def deleteNurse(request, pk):
+def delete_nurse(request, pk):
     nurse = Nurse.objects.get(id=pk)
     nurse.delete()
     return redirect("/nurse-dashboard")
@@ -370,11 +355,11 @@ def deleteNurse(request, pk):
 
 
 #generate-reports
-def generateReports(request):
+def generate_reports(request):
     return render(request, 'kardex_app/generate-reports/generate-reports.html')
 
 
-def bed_tags_PDF(request):
+def bed_tags_pdf(request):
     template_path = "kardex_app/generate-reports/bed-tags.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
@@ -392,7 +377,7 @@ def bed_tags_PDF(request):
         return response
 
 
-def diet_list_PDF(request):
+def diet_list_pdf(request):
     template_path = "kardex_app/generate-reports/diet-list.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
@@ -410,7 +395,7 @@ def diet_list_PDF(request):
         return response
 
 
-def intravenous_fluid_tags_PDF(request):
+def intravenous_fluid_tags_pdf(request):
     template_path = "kardex_app/generate-reports/intravenous-fluid-tags.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
@@ -428,7 +413,7 @@ def intravenous_fluid_tags_PDF(request):
         return response
 
 
-def medication_cards_PDF(request):
+def medication_cards_pdf(request):
     template_path = "kardex_app/generate-reports/medication-cards.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
@@ -446,7 +431,7 @@ def medication_cards_PDF(request):
         return response
 
 
-def medication_endorsement_sheet_PDF(request):
+def medication_endorsement_sheet_pdf(request):
     template_path = "kardex_app/generate-reports/medication-endorsement-sheet.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
@@ -463,7 +448,7 @@ def medication_endorsement_sheet_PDF(request):
     if not pdf.err:
         return response
 
-def nursing_endorsement_sheet_PDF(request):
+def nursing_endorsement_sheet_pdf(request):
     template_path = "kardex_app/generate-reports/nursing-endorsement-sheet.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
@@ -480,7 +465,7 @@ def nursing_endorsement_sheet_PDF(request):
     if not pdf.err:
         return response
 
-def special_notes_PDF(request):
+def special_notes_pdf(request):
     template_path = "kardex_app/generate-reports/special-notes.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
@@ -498,7 +483,7 @@ def special_notes_PDF(request):
         return response
 
 
-def ward_census_PDF(request):
+def ward_census_pdf(request):
     template_path = "kardex_app/generate-reports/ward-census.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
@@ -517,7 +502,7 @@ def ward_census_PDF(request):
 
 #Utility Function
 
-def render_to_PDF(template_src, context_dict, fileName):
+def render_to_pdf(template_src, context_dict, fileName):
     template_path = template_src
     context = context_dict
     response = HttpResponse(content_type='application/pdf')
