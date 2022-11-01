@@ -26,10 +26,11 @@ from django.utils import timezone
 
 import pandas as pd
 
+login_URL = "/sign-in/"
 
 # Create your views here.
 def home(request):
-    return render(request, 'kardex_app/main.html')
+    return render(request, 'kardex_app/home.html')
 
 
 # Authentication
@@ -56,7 +57,7 @@ def signIn(request):
         if nurse is not None:
             login(request, nurse)
             print("Login Success.")
-            return redirect('/')
+            return redirect('/dashboard/')
         else:
             print("Login Fail.")
             messages.error(request, "Incorrect password or username.")
@@ -122,10 +123,9 @@ def password_reset_request(request):
 
 
 #Kardex
-def dashboard(request):
-    if (not request.user.is_authenticated):
-        return redirect('/sign-in')
-    
+
+@login_required(login_url=login_URL)
+def dashboard(request):    
     print(timezone.now())
     kardexs = list(Kardex.objects.all())
     for kardex in kardexs:
@@ -137,11 +137,8 @@ def dashboard(request):
 
     return render(request, 'kardex_app/kardex/dashboard.html', context)
 
-
+@login_required(login_url=login_URL)
 def createKardex(request):
-    if (not request.user.is_authenticated):
-        return redirect('/sign-in')
-    
     form = KardexForm()
     if(request.method == "POST"):
         post = request.POST.copy() # to make it mutable
@@ -154,10 +151,9 @@ def createKardex(request):
     context = { "form": form }
     return render(request, 'kardex_app/kardex/create-kardex.html', context)
 
-def updateKardex(request, pk):
-    if (not request.user.is_authenticated):
-        return redirect('/sign-in')
-    
+
+@login_required(login_url=login_URL)
+def updateKardex(request, pk):    
     kardex = Kardex.objects.get(id=pk)
     form = KardexForm(instance=kardex)
     if(request.method == "POST"):
@@ -189,10 +185,9 @@ def updateKardex(request, pk):
     }
     return render(request, 'kardex_app/kardex/update-kardex.html', context)
 
-def viewKardex(request, pk):
-    if (not request.user.is_authenticated):
-        return redirect('/sign-in')
-    
+
+@login_required(login_url=login_URL)
+def viewKardex(request, pk):    
     kardex = Kardex.objects.get(id=pk)
     kardex = formatKardex(kardex)
     kardex_history_qset = kardex.history.all()
@@ -214,10 +209,8 @@ def viewKardex(request, pk):
     return render(request, 'kardex_app/kardex/view-kardex.html', context)
 
 
+@login_required(login_url=login_URL)
 def deleteKardex(request, pk):
-    if (not request.user.is_authenticated):
-        return redirect('/sign-in')
-    
     kardex = Kardex.objects.get(id=pk)
     kardex.delete()
     return redirect("/dashboard")
@@ -227,6 +220,22 @@ def deleteKardex(request, pk):
 
 
 #Nurse
+
+def viewProfile(request):
+    nurse = Nurse.objects.get(id=request.user.id)
+
+    form = NurseUpdateForm(instance=nurse)
+
+    if(request.method == "POST"):
+        form = NurseUpdateForm(request.POST, request.FILES, instance=nurse)
+        if(form.is_valid()):
+            form.save()
+            return redirect("/view-profile")
+
+    context = {"nurse": nurse, "form": form}
+    return render(request, 'kardex_app/Nurse/view-profile.html', context)
+
+
 
 def nurseDashboard(request):
     nurses = Nurse.objects.all()
@@ -278,145 +287,73 @@ def generateReports(request):
 
 
 def bed_tags_PDF(request):
-    template_path = "kardex_app/generate-reports/bed-tags.html"
+    template_path = "kardex_app/generate-reports/PDFs/bed-tags.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
     fileName = "bed_tags"
 
-    # PDF Generator
-    #Note: Separating to a function is ideal but currently not working
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
-    template = get_template(template_path)
-    html = template.render(context)
-    pdf = pisa.CreatePDF(html, dest=response)
-
-    if not pdf.err:
-        return response
-
+    return render_to_PDF(template_path, context, fileName)
 
 def diet_list_PDF(request):
-    template_path = "kardex_app/generate-reports/diet-list.html"
+    template_path = "kardex_app/generate-reports/PDFs/diet-list.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
     fileName = "diet_list"
 
-    # PDF Generator
-    #Note: Separating to a function is ideal but currently not working
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
-    template = get_template(template_path)
-    html = template.render(context)
-    pdf = pisa.CreatePDF(html, dest=response)
-
-    if not pdf.err:
-        return response
+    return render_to_PDF(template_path, context, fileName)
 
 
 def intravenous_fluid_tags_PDF(request):
-    template_path = "kardex_app/generate-reports/intravenous-fluid-tags.html"
+    template_path = "kardex_app/generate-reports/PDFs/intravenous-fluid-tags.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
     fileName = "intravenous-fluid-tags"
 
-    # PDF Generator
-    #Note: Separating to a function is ideal but currently not working
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
-    template = get_template(template_path)
-    html = template.render(context)
-    pdf = pisa.CreatePDF(html, dest=response)
-
-    if not pdf.err:
-        return response
+    return render_to_PDF(template_path, context, fileName)
 
 
 def medication_cards_PDF(request):
-    template_path = "kardex_app/generate-reports/medication-cards.html"
+    template_path = "kardex_app/generate-reports/PDFs/medication-cards.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
     fileName = "medication-cards"
 
-    # PDF Generator
-    #Note: Separating to a function is ideal but currently not working
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
-    template = get_template(template_path)
-    html = template.render(context)
-    pdf = pisa.CreatePDF(html, dest=response)
-
-    if not pdf.err:
-        return response
+    return render_to_PDF(template_path, context, fileName)
 
 
 def medication_endorsement_sheet_PDF(request):
-    template_path = "kardex_app/generate-reports/medication-endorsement-sheet.html"
+    template_path = "kardex_app/generate-reports/PDFs/medication-endorsement-sheet.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
     fileName = "medication-endorsement-sheet"
 
-    # PDF Generator
-    #Note: Separating to a function is ideal but currently not working
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
-    template = get_template(template_path)
-    html = template.render(context)
-    pdf = pisa.CreatePDF(html, dest=response)
-
-    if not pdf.err:
-        return response
+    return render_to_PDF(template_path, context, fileName)
 
 def nursing_endorsement_sheet_PDF(request):
-    template_path = "kardex_app/generate-reports/nursing-endorsement-sheet.html"
+    template_path = "kardex_app/generate-reports/PDFs/nursing-endorsement-sheet.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
     fileName = "nursing-endorsement-sheet"
 
-    # PDF Generator
-    #Note: Separating to a function is ideal but currently not working
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
-    template = get_template(template_path)
-    html = template.render(context)
-    pdf = pisa.CreatePDF(html, dest=response)
-
-    if not pdf.err:
-        return response
+    return render_to_PDF(template_path, context, fileName)
 
 def special_notes_PDF(request):
-    template_path = "kardex_app/generate-reports/special-notes.html"
+    template_path = "kardex_app/generate-reports/PDFs/special-notes.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
     fileName = "special-notes"
 
-    # PDF Generator
-    #Note: Separating to a function is ideal but currently not working
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
-    template = get_template(template_path)
-    html = template.render(context)
-    pdf = pisa.CreatePDF(html, dest=response)
-
-    if not pdf.err:
-        return response
+    return render_to_PDF(template_path, context, fileName)
 
 
 def ward_census_PDF(request):
-    template_path = "kardex_app/generate-reports/ward-census.html"
+    template_path = "kardex_app/generate-reports/PDFs/ward-census.html"
     kardexs = Kardex.objects.all()
     context = {"user": request.user, "kardexs": kardexs}
     fileName = "ward-census"
 
-    # PDF Generator
-    #Note: Separating to a function is ideal but currently not working
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="'+str(fileName)+'.pdf"'
-    template = get_template(template_path)
-    html = template.render(context)
-    pdf = pisa.CreatePDF(html, dest=response)
+    return render_to_PDF(template_path, context, fileName)
 
-    if not pdf.err:
-        return response
 
 #Utility Function
 

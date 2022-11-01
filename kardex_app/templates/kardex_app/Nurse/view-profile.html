@@ -1,0 +1,87 @@
+{% extends 'kardex_app/main.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+{% load static %}
+
+<div class="text-center">
+    <h1>View Profile</h1>
+    <strong>Cardex Owner: </strong> {{nurse.patientName}}
+    <br>
+</div>
+<!-- wrapper -->
+<div class="container-fluid">
+  <!-- Inner -->
+  <div class="carousel-inner py-4">
+    <div class="carousel-item active">
+      <div class="container">
+        <div class="row">
+            <!-- Single item -->
+            <div class="col-lg-4">
+                <div class="card">
+                    {% if nurse.picture %}
+                      <img src={{nurse.picture.url}} class="card-img-top" alt="">
+                    {% else %}
+                      <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
+                    {% endif %}
+
+                  <div class="card-body">
+                    <h5 class="card-title">{{nurse.username}}</h5>
+                    <div class="text-left">
+                      <strong>First Name: </strong> {{nurse.first_name}} <br>
+                      <strong>PIC URL: </strong> {{nurse.picture}} <br>
+                      <strong>Last Name: </strong> {{nurse.last_name}} <br>
+                      <strong>Sex: </strong> {{nurse.sex}} <br>
+                      <strong>Birth date: </strong> {{nurse.birthday}} <br>
+
+                        <a href="{% url 'update-nurse' nurse.id %}" class="btn btn-warning">
+                          <span class="material-icons">edit</span>
+                          Update
+                        </a>
+                        
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Inner -->
+</div>
+<!-- Carousel wrapper -->
+
+
+<!-- UPDATE NURSE -->
+<div>
+
+    <div class="container">
+        <h1>Update Nurse Page</h1>
+        <br>
+        <div class="card">
+          <div class="card-header">
+            Update Nurse Form
+          </div>
+          <div class="card-body">
+            <form action="" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              {{form|crispy}}
+              <!-- Insert Input Fields -->
+              <!-- Update Button -->
+              <button class="btn btn-outline-success" type="submit">
+                <span class="material-icons">edit</span>
+                Update Nurse
+              </button>
+              <!-- Cancel Button -->
+              <a href="{% url 'view-profile' %}" class="btn btn-outline-danger">
+                <span class="material-icons">block</span>
+                Cancel
+              </a>
+            </form>
+          </div>
+        </div>
+      </div>
+
+</div>
+
+{% endblock content %}
