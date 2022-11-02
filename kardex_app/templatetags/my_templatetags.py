@@ -40,3 +40,7 @@ def list_iter(lists):
     list_a, list_b, list_c = lists
     for x, y, z in zip(list_a, list_b, list_c):
         yield (x, y, z)
+
+@register.filter(name='strip')
+def trim(value):
+    return value.strip()
