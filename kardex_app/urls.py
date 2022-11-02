@@ -26,6 +26,9 @@ urlpatterns = [
     path('view-kardex/<str:pk>', views.viewKardex, name="view-kardex"),
     path('delete-kardex/<str:pk>', views.deleteKardex, name="delete-kardex"),
 
+    #Kardex API
+    path('api/v1/kardex/', views.KardexList.as_view()),
+
     #End of Kardex
     #Nurse
     path('view-profile/', views.viewProfile, name="view-profile"),
