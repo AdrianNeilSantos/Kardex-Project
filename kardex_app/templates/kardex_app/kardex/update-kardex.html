@@ -246,8 +246,7 @@
       </div>
     </section>
     <section class="extra-fields container-fluid container-lg">
-      {% if kardex.extra_fields|length > 0 and kardex.extra_fields|get_by_idx:0 != '' and kardex.extra_fields|get_by_idx:0.strip != 'None' %}
-      {{ kardex.extra_fields|get_by_idx:0 }}
+      {% if kardex.extra_fields|length > 0 and kardex.extra_fields|get_by_idx:0 != '' and kardex.extra_fields|get_by_idx:0|strip != 'None' %}
       {% for name, value in kardex.extra_fields|zip:kardex.extra_field_values %}
       <div class="extra-field d-flex align-items-center mb-3 pe-0 pe-md-4">
         <input

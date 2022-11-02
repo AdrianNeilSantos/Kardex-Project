@@ -11,7 +11,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_protect
 # for email
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
@@ -27,6 +27,14 @@ from django.utils import timezone
 
 import pandas as pd
 import xlwt
+
+# for REST API
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework.pagination import LimitOffsetPagination
+
+from .serializers import KardexSerializer
 
 login_URL = "/sign-in/"
 
@@ -464,7 +472,30 @@ def generate_census_XLSX(request):
 #End of generate-reports
 
 
+# for REST API
+class KardexList(APIView):
+    def get(self, request, format=None):
+        all_kardex = Kardex.objects.all()
+        serializers = KardexSerializer(all_kardex, many=True)
+        return Response(serializers.data)
 
+class PaginatedKardexList(APIView, LimitOffsetPagination):
+    def get(self, request, format=None):
+        all_kardex = Kardex.objects.all()
+        results = self.paginate_queryset(all_kardex, request, view=self)
+        serializers = KardexSerializer(results, many=True)
+        return self.get_paginated_response(serializers.data)
+
+@api_view(['POST'])
+def kardex_search(request):
+    query = request.data.get('query', '')
+
+    if query:
+        results = Kardex.objects.filter(Q(name__icontains=query))
+        serializer = KardexSerializer(results, many=True)
+        return Response(serializer.data)
+    else:
+        return Response({'Kardexs': []})
 
 # code adapted from and thanks to
 # https://stackoverflow.com/a/17867797
