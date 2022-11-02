@@ -26,9 +26,10 @@ urlpatterns = [
     path('view-kardex/<str:pk>', views.viewKardex, name="view-kardex"),
     path('delete-kardex/<str:pk>', views.deleteKardex, name="delete-kardex"),
 
-    #Kardex API
+    #Kardex REST API
     path('api/v1/kardex/', views.KardexList.as_view()),
     path('api/v1/kardex/paginated/', views.PaginatedKardexList.as_view()),
+    path('api/v1/kardex/search/', views.kardex_search),
 
     #End of Kardex
     #Nurse

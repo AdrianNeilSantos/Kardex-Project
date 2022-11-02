@@ -395,6 +395,17 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
         serializers = KardexSerializer(results, many=True)
         return self.get_paginated_response(serializers.data)
 
+@api_view(['POST'])
+def kardex_search(request):
+    query = request.data.get('query', '')
+
+    if query:
+        results = Kardex.objects.filter(Q(name__icontains=query))
+        serializer = KardexSerializer(results, many=True)
+        return Response(serializer.data)
+    else:
+        return Response({'Kardexs': []})
+
 # code adapted from and thanks to
 # https://stackoverflow.com/a/17867797
 def flattenNestedLists(A):
