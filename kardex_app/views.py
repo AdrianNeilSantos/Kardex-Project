@@ -240,7 +240,7 @@ def viewProfile(request):
 def nurseDashboard(request):
     nurses = Nurse.objects.all()
     context = {"nurses": nurses}
-    return render(request, 'kardex_app/Nurse/dashboard.html', context)
+    return render(request, 'kardex_app/Nurse/nurse-dashboard.html', context)
 
 def createNurse(request):
     form = NurseCreationForm()
