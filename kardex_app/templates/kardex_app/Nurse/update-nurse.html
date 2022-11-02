@@ -1,21 +1,16 @@
 {% extends 'kardex_app/main.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-
-{% load static %}
-
-
-<div class="container">
+  {% load static %}
+  <div class="container">
     <h1>Update Nurse Page</h1>
     <br>
     <div class="card">
-      <div class="card-header">
-        Update Nurse Form
-      </div>
+      <div class="card-header">Update Nurse Form</div>
       <div class="card-body">
         <form action="" method="post" enctype="multipart/form-data">
           {% csrf_token %}
-          {{form|crispy}}
+          {{ form|crispy }}
           <!-- Insert Input Fields -->
           <!-- Update Button -->
           <button class="btn btn-outline-success" type="submit">
