@@ -257,12 +257,13 @@ def updateNurse(request, pk):
     form = NurseUpdateForm(instance=nurse)
 
     if(request.method == "POST"):
+        print("THIS IS POST")
         form = NurseUpdateForm(request.POST, request.FILES, instance=nurse)
         if(form.is_valid()):
             form.save()
             return redirect("/nurse-dashboard")
 
-    context = {"form": form}
+    context = {"form": form, "nurse": nurse}
     return render(request, 'kardex_app/Nurse/update-nurse.html', context)
 
 def viewNurse(request, pk):
