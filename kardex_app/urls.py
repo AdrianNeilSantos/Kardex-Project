@@ -28,6 +28,7 @@ urlpatterns = [
 
     #Kardex API
     path('api/v1/kardex/', views.KardexList.as_view()),
+    path('api/v1/kardex/paginated/', views.PaginatedKardexList.as_view()),
 
     #End of Kardex
     #Nurse

@@ -30,6 +30,7 @@ import pandas as pd
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.pagination import LimitOffsetPagination
 
 from .serializers import KardexSerializer
 
@@ -386,6 +387,13 @@ class KardexList(APIView):
         all_kardex = Kardex.objects.all()
         serializers = KardexSerializer(all_kardex, many=True)
         return Response(serializers.data)
+
+class PaginatedKardexList(APIView, LimitOffsetPagination):
+    def get(self, request, format=None):
+        all_kardex = Kardex.objects.all()
+        results = self.paginate_queryset(all_kardex, request, view=self)
+        serializers = KardexSerializer(results, many=True)
+        return self.get_paginated_response(serializers.data)
 
 # code adapted from and thanks to
 # https://stackoverflow.com/a/17867797
