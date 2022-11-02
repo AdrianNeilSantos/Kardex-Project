@@ -1,5 +1,3 @@
-/* global tns axios d3 bootstrap */
-
 window.onload = async () => {
   await fetchDataset();
 
@@ -10,7 +8,7 @@ window.onresize = () => {
   generateCharts();
 };
 
-const vizSlider = tns({ // eslint-disable-line
+const vizSlider = tns({
   container: '.viz-slider',
   items: 4,
   slideBy: 'page',
@@ -40,7 +38,7 @@ const removeChildren = (targetId) => {
     target.removeChild(child);
     child = target.firstElementChild;
   }
-};
+}
 
 const generateCharts = () => {
   const vizHolders = document.querySelectorAll('.viz-holder');
@@ -52,16 +50,16 @@ const generateCharts = () => {
 
 const formatQtr = (str) => {
   const splt = str.split('-');
-  if (splt[1] === '01') {
-    return `${splt[0]} Q1`;
-  } else if (splt[1] === '04') {
-    return `${splt[0]} Q2`;
-  } else if (splt[1] === '07') {
-    return `${splt[0]} Q3`;
-  } else if (splt[1] === '10') {
-    return `${splt[0]} Q4`;
-  }
-};
+   if (splt[1] === '01') {
+     return `${splt[0]} Q1`;
+   } else if (splt[1] === '04') {
+     return `${splt[0]} Q2`;
+   } else if (splt[1] === '07') {
+     return `${splt[0]} Q3`;
+   } else if (splt[1] === '10') {
+     return `${splt[0]} Q4`;
+   }
+}
 
 const generateChart = (targetId, chartData) => {
   let w, h;
@@ -146,7 +144,7 @@ const generateChart = (targetId, chartData) => {
         .html(`${formatQtr(d[0])}<br>$${d[1]} Billion`)
         .attr('data-date', d[0])
         .style('left', () => {
-          console.log(targetId, targetId.toLowerCase().includes('modal'));
+          console.log(targetId, targetId.toLowerCase().includes('modal'))
           return targetId.toLowerCase().includes('modal')
             ? `${e.pageX - modal.left + 48}px`
             : `${e.pageX + 48}px`;
@@ -157,7 +155,7 @@ const generateChart = (targetId, chartData) => {
             : `${e.pageY - 80}px`;
         });
     })
-    .on('mouseout', () => {
+    .on('mouseout', (d) => {
       overlay
         .transition()
         .duration(500)
