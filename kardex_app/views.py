@@ -1,3 +1,4 @@
+from io import StringIO
 from urllib import response
 from django.shortcuts import render, redirect
 from .models import *
@@ -18,13 +19,14 @@ from django.core.mail import send_mail, BadHeaderError
 from django.contrib.auth.forms import PasswordResetForm
 from django.template.loader import render_to_string
 
-import os
+from io import BytesIO
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
 from django.utils import timezone
 
 import pandas as pd
+import xlwt
 
 login_URL = "/sign-in/"
 
@@ -287,6 +289,7 @@ def generateReports(request):
     return render(request, 'kardex_app/generate-reports/generate-reports.html')
 
 
+  #Generating PDFS
 def bed_tags_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/bed-tags.html"
     kardexs = Kardex.objects.all()
@@ -369,6 +372,94 @@ def render_to_PDF(template_src, context_dict, fileName):
 
     if not pdf.err:
         return response
+
+
+  #Generating XLSX
+def generate_census_XLSX(request):
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment;filename=students.xls'
+
+    work_book = xlwt.Workbook(encoding = 'utf-8')
+    work_sheet = work_book.add_sheet(u'Students Info')
+
+    style_head_row = xlwt.easyxf("""    
+        align:
+        wrap off,
+        vert center,
+        horiz center;
+        borders:
+        left THIN,
+        right THIN,
+        top THIN,
+        bottom THIN;
+        font:
+        name Arial,
+        colour_index white,
+        bold on,
+        height 0xA0;
+        pattern:
+        pattern solid,
+        fore-colour 0x19;
+        """
+    )
+
+    style_data_row = xlwt.easyxf("""
+        align:
+        wrap on,
+        vert center,
+        horiz left;
+        font:
+        name Arial,
+        bold off,
+        height 0XA0;
+        borders:
+        left THIN,
+        right THIN,
+        top THIN,
+        bottom THIN;
+        """
+    )
+
+
+    # Set data row date string format.
+    style_data_row.num_format_str = 'M/D/YY'
+
+    # Define a green color style.
+    style_green = xlwt.easyxf(" pattern: fore-colour 0x11, pattern solid;")
+
+    # Define a red color style.
+    style_red = xlwt.easyxf(" pattern: fore-colour 0x0A, pattern solid;")
+
+
+    # Generate worksheet head row data.
+    work_sheet.write(0,0, 'ID', style_head_row) 
+    work_sheet.write(0,1, 'Name', style_head_row) 
+    work_sheet.write(0,2, 'Age', style_head_row) 
+    work_sheet.write(0,3, 'Sex', style_head_row)
+    
+    # Generate worksheet data row data.
+    row = 1 
+    for kardex in Kardex.objects.all():
+        work_sheet.write(row,0, kardex.id, style_data_row)
+        work_sheet.write(row,1, kardex.name, style_data_row)
+        work_sheet.write(row,2, kardex.age, style_data_row)
+        work_sheet.write(row,3, kardex.sex, style_data_row)
+
+        row=row + 1 
+    
+    # Create a StringIO object.
+    output = BytesIO()
+
+    # Save the workbook data to the above StringIO object.
+    work_book.save(output)
+
+    # Reposition to the beginning of the StringIO object.
+    output.seek(0)
+
+    # Write the StringIO object's value to HTTP response to send the excel file to the web server client.
+    response.write(output.getvalue()) 
+
+    return response
 
 #End of generate-reports
 
