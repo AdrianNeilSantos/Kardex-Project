@@ -382,17 +382,71 @@ def render_to_PDF(template_src, context_dict, fileName):
         return response
 
 
-  #Generating XLSX
+
+def generate_front_1(work_book, style_head_row, style_data_row):
+    ws_front1 = work_book.add_sheet(u'FRONT1')
+       
+
+    #Setting cell dimensions
+    header_row = ws_front1.row(0)
+
+    tall_style = xlwt.easyxf('font:height 720;') # 36pt: divide by 20
+    header_row.set_style(tall_style)
+
+    header_col = ws_front1.col(0)
+    header_col.width = 256 * 20   #20 char
+
+    # Generate worksheet head row data.
+    ws_front1.write(0,0, 'ID', style_head_row) 
+    ws_front1.write(0,1, 'NAME', style_head_row) 
+    ws_front1.write(0,2, 'AGE', style_head_row) 
+    ws_front1.write(0,3, 'SEX', style_head_row)
+
+
+    
+    # Generate worksheet data row data.
+    row = 1 
+    for kardex in Kardex.objects.all():
+        ws_front1.write(row,0, kardex.id, style_data_row)
+        ws_front1.write(row,1, kardex.name, style_data_row)
+        ws_front1.write(row,2, kardex.age, style_data_row)
+        ws_front1.write(row,3, kardex.sex, style_data_row)
+
+        row=row + 1 
+
+
+def generate_front_2(work_book, style_head_row, style_data_row):
+    ws_front2 = work_book.add_sheet(u'FRONT2')
+
+
+
+def generate_front_3(work_book, style_head_row, style_data_row):
+    ws_front2 = work_book.add_sheet(u'FRONT3')
+
+
+def generate_back_1(work_book, style_head_row, style_data_row):
+    ws_front2 = work_book.add_sheet(u'BACK1')
+
+
+def generate_back_2(work_book, style_head_row, style_data_row):
+    ws_front2 = work_book.add_sheet(u'BACK2')
+
+
+def generate_back_3(work_book, style_head_row, style_data_row):
+    ws_front2 = work_book.add_sheet(u'BACK3')
+
+
+
+
+  #Generating ALL XLSX
 def generate_census_XLSX(request):
     response = HttpResponse(content_type='application/vnd.ms-excel')
-    response['Content-Disposition'] = 'attachment;filename=students.xls'
-
-    work_book = xlwt.Workbook(encoding = 'utf-8')
-    work_sheet = work_book.add_sheet(u'Students Info')
+    fileName = "census"
+    response['Content-Disposition'] = 'attachment;filename="'+str(fileName)+'.xls"'
 
     style_head_row = xlwt.easyxf("""    
         align:
-        wrap off,
+        wrap on,
         vert center,
         horiz center;
         borders:
@@ -401,13 +455,10 @@ def generate_census_XLSX(request):
         top THIN,
         bottom THIN;
         font:
-        name Arial,
-        colour_index white,
+        name Calibri,
+        colour_index Black,
         bold on,
-        height 0xA0;
-        pattern:
-        pattern solid,
-        fore-colour 0x19;
+        height 240;
         """
     )
 
@@ -428,46 +479,29 @@ def generate_census_XLSX(request):
         """
     )
 
-
     # Set data row date string format.
     style_data_row.num_format_str = 'M/D/YY'
 
-    # Define a green color style.
-    style_green = xlwt.easyxf(" pattern: fore-colour 0x11, pattern solid;")
+    work_book = xlwt.Workbook(encoding = 'utf-8')
 
-    # Define a red color style.
-    style_red = xlwt.easyxf(" pattern: fore-colour 0x0A, pattern solid;")
-
-
-    # Generate worksheet head row data.
-    work_sheet.write(0,0, 'ID', style_head_row) 
-    work_sheet.write(0,1, 'Name', style_head_row) 
-    work_sheet.write(0,2, 'Age', style_head_row) 
-    work_sheet.write(0,3, 'Sex', style_head_row)
+    generate_front_1(work_book, style_head_row, style_data_row)
+    generate_back_1(work_book, style_head_row, style_data_row)
+    generate_front_2(work_book, style_head_row, style_data_row)
+    generate_back_2(work_book, style_head_row, style_data_row)
+    generate_front_3(work_book, style_head_row, style_data_row)
+    generate_back_3(work_book, style_head_row, style_data_row)
     
-    # Generate worksheet data row data.
-    row = 1 
-    for kardex in Kardex.objects.all():
-        work_sheet.write(row,0, kardex.id, style_data_row)
-        work_sheet.write(row,1, kardex.name, style_data_row)
-        work_sheet.write(row,2, kardex.age, style_data_row)
-        work_sheet.write(row,3, kardex.sex, style_data_row)
-
-        row=row + 1 
-    
-    # Create a StringIO object.
-    output = BytesIO()
-
-    # Save the workbook data to the above StringIO object.
-    work_book.save(output)
-
-    # Reposition to the beginning of the StringIO object.
-    output.seek(0)
-
-    # Write the StringIO object's value to HTTP response to send the excel file to the web server client.
-    response.write(output.getvalue()) 
+    write_excel_report(work_book, response)
 
     return response
+
+
+def write_excel_report(work_book, response):
+    output = BytesIO()
+    work_book.save(output)
+    output.seek(0)
+    response.write(output.getvalue()) 
+
 
 #End of generate-reports
 
