@@ -57,5 +57,6 @@ urlpatterns = [
     path('nursing_endorsement_sheet_PDF/', views.nursing_endorsement_sheet_PDF, name="nursing_endorsement_sheet_PDF"),
     path('special_notes_PDF/', views.special_notes_PDF, name="special_notes_PDF"),
     path('ward_census_PDF/', views.ward_census_PDF, name="ward_census_PDF"),
+    path('generate-census-XLSX/', views.generate_census_XLSX, name="generate-census-XLSX"),
     #End of Generate Reports
 ]

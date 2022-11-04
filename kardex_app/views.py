@@ -1,3 +1,4 @@
+from io import StringIO
 from urllib import response
 from django.shortcuts import render, redirect
 from .models import *
@@ -18,13 +19,14 @@ from django.core.mail import send_mail, BadHeaderError
 from django.contrib.auth.forms import PasswordResetForm
 from django.template.loader import render_to_string
 
-import os
+from io import BytesIO
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
 from django.utils import timezone
 
 import pandas as pd
+import xlwt
 
 # for REST API
 from rest_framework.views import APIView
@@ -295,6 +297,7 @@ def generateReports(request):
     return render(request, 'kardex_app/generate-reports/generate-reports.html')
 
 
+  #Generating PDFS
 def bed_tags_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/bed-tags.html"
     kardexs = Kardex.objects.all()
@@ -377,6 +380,281 @@ def render_to_PDF(template_src, context_dict, fileName):
 
     if not pdf.err:
         return response
+
+
+
+def generate_front_1(work_book, style_head_row, style_data_row):
+    ws_front1 = work_book.add_sheet(u'FRONT1')
+    
+    START_COL = 0
+    END_COL = 13
+    ws_front1.write_merge(6,6,START_COL,END_COL, "HOSPITAL CENSUS REPORT")
+
+    ws_front1.write(7,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF')
+    ws_front1.write_merge(7,7,4,6, "07-SEP-22")
+    ws_front1.write(7,9, 'FLOOR/SECTION:')
+    ws_front1.write_merge(7,7,11,END_COL, "COVID")
+
+
+    ws_front1.write_merge(9,9,START_COL,END_COL, "ADMISSION")
+
+    HEADER_ROW = 13 - 1
+
+
+    #Setting cell dimensions
+    header_row = ws_front1.row(HEADER_ROW)
+
+    tall_style = xlwt.easyxf('font:height 720;') # 36pt: divide by 20
+    header_row.set_style(tall_style)
+
+    header_col = ws_front1.col(0)
+    header_col.width = 256 * 20   #20 char
+
+
+
+    # Generate worksheet head row data.
+    ws_front1.write(HEADER_ROW,0, 'WARD AND BED NO.', style_head_row) 
+    ws_front1.write(HEADER_ROW,1, 'TIME', style_head_row) 
+    ws_front1.write(HEADER_ROW,2, 'CASE NO.', style_head_row) 
+    ws_front1.write_merge(HEADER_ROW,HEADER_ROW, 3, 8, 'NAME', style_head_row)
+    ws_front1.write_merge(HEADER_ROW,HEADER_ROW, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
+
+
+    
+    # Generate worksheet data row data.
+    row = HEADER_ROW + 1
+    for kardex in Kardex.objects.all():
+        ws_front1.write(row,0, kardex.id, style_data_row)
+        ws_front1.write(row,1, kardex.name, style_data_row)
+        ws_front1.write(row,2, kardex.age, style_data_row)
+        ws_front1.write_merge(row,row,3, 8, kardex.sex, style_data_row)
+        ws_front1.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
+
+        row += 1 
+
+    row += 1
+
+    ws_front1.write_merge(row,row,START_COL,END_COL, "DISCHARGES")
+    row += 2
+
+    ws_front1.write(row,0, 'WARD AND BED NO.', style_head_row) 
+    ws_front1.write(row,1, 'TIME', style_head_row) 
+    ws_front1.write(row,2, 'CASE NO.', style_head_row) 
+    ws_front1.write_merge(row,row, 3, 8, 'NAME', style_head_row)
+    ws_front1.write_merge(row,row, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
+
+
+    row += 1
+    for kardex in Kardex.objects.all():
+        ws_front1.write(row,0, kardex.id, style_data_row)
+        ws_front1.write(row,1, kardex.name, style_data_row)
+        ws_front1.write(row,2, kardex.age, style_data_row)
+        ws_front1.write_merge(row,row,3, 8, kardex.sex, style_data_row)
+        ws_front1.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
+
+        row += 1 
+    
+    row += 1
+
+    ws_front1.write_merge(row,row,START_COL,END_COL, "DEATH")
+    row += 2
+
+    ws_front1.write(row,0, 'WARD AND BED NO.', style_head_row) 
+    ws_front1.write(row,1, 'TIME', style_head_row) 
+    ws_front1.write(row,2, 'CASE NO.', style_head_row) 
+    ws_front1.write_merge(row,row, 3, 8, 'NAME', style_head_row)
+    ws_front1.write_merge(row,row, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
+
+        
+    row += 1
+    for kardex in Kardex.objects.all():
+        ws_front1.write(row,0, kardex.id, style_data_row)
+        ws_front1.write(row,1, kardex.name, style_data_row)
+        ws_front1.write(row,2, kardex.age, style_data_row)
+        ws_front1.write_merge(row,row,3, 8, kardex.sex, style_data_row)
+        ws_front1.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
+
+        row += 1 
+
+
+def generate_front_2(work_book, style_head_row, style_data_row):
+    ws_front2 = work_book.add_sheet(u'FRONT2')
+
+
+
+def generate_front_3(work_book, style_head_row, style_data_row):
+    ws_front2 = work_book.add_sheet(u'FRONT3')
+
+
+def generate_back_1(work_book, style_head_row, style_data_row):
+    ws_front2 = work_book.add_sheet(u'BACK1')
+
+    
+    START_COL = 0
+    END_COL = 13
+    ws_front2.write_merge(6,6,START_COL,END_COL, "HOSPITAL CENSUS REPORT")
+
+    ws_front2.write(7,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF')
+    ws_front2.write_merge(7,7,4,6, "07-SEP-22")
+    ws_front2.write(7,9, 'FLOOR/SECTION:')
+    ws_front2.write_merge(7,7,11,END_COL, "COVID")
+
+
+    ws_front2.write_merge(9,9,START_COL,END_COL, "TRANS-IN")
+
+    HEADER_ROW = 13 - 1
+
+
+    #Setting cell dimensions
+    header_row = ws_front2.row(HEADER_ROW)
+
+    tall_style = xlwt.easyxf('font:height 720;') # 36pt: divide by 20
+    header_row.set_style(tall_style)
+
+    header_col = ws_front2.col(0)
+    header_col.width = 256 * 20   #20 char
+
+
+
+    # Generate worksheet head row data.
+    ws_front2.write(HEADER_ROW,0, 'WARD AND BED NO.', style_head_row) 
+    ws_front2.write(HEADER_ROW,1, 'TIME', style_head_row) 
+    ws_front2.write(HEADER_ROW,2, 'CASE NO.', style_head_row) 
+    ws_front2.write_merge(HEADER_ROW,HEADER_ROW, 3, 8, 'NAME', style_head_row)
+    ws_front2.write_merge(HEADER_ROW,HEADER_ROW, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
+
+
+    
+    # Generate worksheet data row data.
+    row = HEADER_ROW + 1
+    for kardex in Kardex.objects.all():
+        ws_front2.write(row,0, kardex.id, style_data_row)
+        ws_front2.write(row,1, kardex.name, style_data_row)
+        ws_front2.write(row,2, kardex.age, style_data_row)
+        ws_front2.write_merge(row,row,3, 8, kardex.sex, style_data_row)
+        ws_front2.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
+
+        row += 1 
+
+    row += 1
+
+    ws_front2.write_merge(row,row,START_COL,END_COL, "TRANS-OUT")
+    row += 2
+
+    ws_front2.write(row,0, 'WARD AND BED NO.', style_head_row) 
+    ws_front2.write(row,1, 'TIME', style_head_row) 
+    ws_front2.write(row,2, 'CASE NO.', style_head_row) 
+    ws_front2.write_merge(row,row, 3, 8, 'NAME', style_head_row)
+    ws_front2.write_merge(row,row, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
+
+
+    row += 1
+    for kardex in Kardex.objects.all():
+        ws_front2.write(row,0, kardex.id, style_data_row)
+        ws_front2.write(row,1, kardex.name, style_data_row)
+        ws_front2.write(row,2, kardex.age, style_data_row)
+        ws_front2.write_merge(row,row,3, 8, kardex.sex, style_data_row)
+        ws_front2.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
+
+        row += 1 
+    
+    row += 1
+
+    ws_front2.write_merge(row,row,START_COL,END_COL, "TRANSFER TO OTHER HOSPITAL")
+    row += 2
+
+    ws_front2.write(row,0, 'WARD AND BED NO.', style_head_row) 
+    ws_front2.write(row,1, 'TIME', style_head_row) 
+    ws_front2.write(row,2, 'CASE NO.', style_head_row) 
+    ws_front2.write_merge(row,row, 3, 8, 'NAME', style_head_row)
+    ws_front2.write_merge(row,row, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
+
+        
+    row += 1
+    for kardex in Kardex.objects.all():
+        ws_front2.write(row,0, kardex.id, style_data_row)
+        ws_front2.write(row,1, kardex.name, style_data_row)
+        ws_front2.write(row,2, kardex.age, style_data_row)
+        ws_front2.write_merge(row,row,3, 8, kardex.sex, style_data_row)
+        ws_front2.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
+
+        row += 1 
+
+
+def generate_back_2(work_book, style_head_row, style_data_row):
+    ws_front2 = work_book.add_sheet(u'BACK2')
+
+
+def generate_back_3(work_book, style_head_row, style_data_row):
+    ws_front2 = work_book.add_sheet(u'BACK3')
+
+
+
+
+  #Generating ALL XLSX
+def generate_census_XLSX(request):
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    fileName = "census"
+    response['Content-Disposition'] = 'attachment;filename="'+str(fileName)+'.xls"'
+
+    style_head_row = xlwt.easyxf("""    
+        align:
+        wrap on,
+        vert center,
+        horiz center;
+        borders:
+        left THIN,
+        right THIN,
+        top THIN,
+        bottom THIN;
+        font:
+        name Calibri,
+        colour_index Black,
+        bold on,
+        height 240;
+        """
+    )
+
+    style_data_row = xlwt.easyxf("""
+        align:
+        wrap on,
+        vert center,
+        horiz left;
+        font:
+        name Arial,
+        bold off,
+        height 0XA0;
+        borders:
+        left THIN,
+        right THIN,
+        top THIN,
+        bottom THIN;
+        """
+    )
+
+    # Set data row date string format.
+    style_data_row.num_format_str = 'M/D/YY'
+
+    work_book = xlwt.Workbook(encoding = 'utf-8')
+
+    generate_front_1(work_book, style_head_row, style_data_row)
+    generate_back_1(work_book, style_head_row, style_data_row)
+    generate_front_2(work_book, style_head_row, style_data_row)
+    generate_back_2(work_book, style_head_row, style_data_row)
+    generate_front_3(work_book, style_head_row, style_data_row)
+    generate_back_3(work_book, style_head_row, style_data_row)
+    
+    write_excel_report(work_book, response)
+
+    return response
+
+
+def write_excel_report(work_book, response):
+    output = BytesIO()
+    work_book.save(output)
+    output.seek(0)
+    response.write(output.getvalue()) 
+
 
 #End of generate-reports
 
