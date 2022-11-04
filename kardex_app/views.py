@@ -32,7 +32,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.pagination import LimitOffsetPagination
 
-from .serializers import KardexSerializer
+from .serializers import KardexSerializer, NurseSerializer
 
 login_URL = "/sign-in/"
 
@@ -135,7 +135,7 @@ def password_reset_request(request):
 @login_required(login_url=login_URL)
 def dashboard(request):    
     print(timezone.now())
-    kardexs = list(Kardex.objects.all())
+    kardexs = list(Kardex.objects.all()[:100])
     for kardex in kardexs:
         if kardex.name is None:
             kardex.formatted_name = ''
@@ -395,6 +395,12 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
         serializers = KardexSerializer(results, many=True)
         return self.get_paginated_response(serializers.data)
 
+class NurseList(APIView):
+    def get(self, request, format=None):
+        all_nurse = Nurse.objects.all()
+        serializers = NurseSerializer(all_nurse, many=True)
+        return Response(serializers.data)
+
 @api_view(['POST'])
 def kardex_search(request):
     query = request.data.get('query', '')
@@ -405,6 +411,24 @@ def kardex_search(request):
         return Response(serializer.data)
     else:
         return Response({'Kardexs': []})
+
+class PaginatedNurseList(APIView, LimitOffsetPagination):
+    def get(self, request, format=None):
+        all_nurse = Nurse.objects.all()
+        results = self.paginate_queryset(all_nurse, request, view=self)
+        serializers = NurseSerializer(results, many=True)
+        return self.get_paginated_response(serializers.data)
+
+@api_view(['POST'])
+def nurse_search(request):
+    query = request.data.get('query', '')
+
+    if query:
+        results = Nurse.objects.filter(Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query))
+        serializer = NurseSerializer(results, many=True)
+        return Response(serializer.data)
+    else:
+        return Response({'Nurses': []})
 
 # code adapted from and thanks to
 # https://stackoverflow.com/a/17867797

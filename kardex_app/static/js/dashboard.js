@@ -186,3 +186,139 @@ const generateChart = (targetId, chartData) => {
     .attr('id', 'y-axis')
     .call(yAxis);
 };
+
+const pageInputs = document.querySelectorAll('.page-input');
+const prevBtns = Array.from(document.querySelectorAll('.prev-btn'));
+const nextBtns = Array.from(document.querySelectorAll('.next-btn'));
+const refreshBtns = Array.from(document.querySelectorAll('.refresh-btn'));
+
+let currKardexs = [];
+let kardexTotal = 0;
+const kardexContainerTemplate = document.querySelector('.kardex-container');
+const kardexGroupContainer = document.querySelector('.kardex-group-container');
+const generateSmallKardexs = () => {
+  console.log(currKardexs);
+
+  const kardexContainers = currKardexs.map((kardex) => {
+    const kardexContainer = kardexContainerTemplate.cloneNode(true);
+    kardexContainer.classList.remove('d-none');
+
+    const smallKardex = kardexContainer.querySelector('.small-kardex');
+    smallKardex.classList.remove('d-none');
+
+    const smallKardexStripes = smallKardex.querySelector('.small-kardex-stripes');
+
+    const smallKardexText = smallKardex.querySelector('.small-kardex-text');
+    if (kardex.name) {
+      const nameLine = document.createElement('b');
+      nameLine.textContent = kardex.name;
+      smallKardexText.append(nameLine, document.createElement('br'));
+    }
+
+    if (kardex.sex && kardex.age) {
+      const sexAgeLine = document.createElement('span');
+      sexAgeLine.textContent = `${kardex.sex}, ${kardex.age} years old`;
+      smallKardexText.append(sexAgeLine, document.createElement('br'));
+    }
+
+    const dateLine = document.createElement('span');
+    if (kardex.date_time) { 
+      dateLine.textContent = kardex.date_time;
+    } else {
+      dateLine.textContent = kardex.date_added;
+    }
+    smallKardexText.append(dateLine, document.createElement('br'));
+
+    if (kardex.hospital_num) {
+      const hospitalNumLine = document.createElement('span');
+      hospitalNumLine.textContent = `Hospital Number: ${kardex.hospital_num}`;
+      smallKardexText.append(hospitalNumLine, document.createElement('br'));
+    }
+
+    smallKardexText.append(document.createElement('br'));
+    if (kardex.extra_fields.includes('Transfer in, Transfer out, or Transfer to another Hospital')) {
+      const transferLine = document.createElement('span');
+      transferLine.textContent = `For ${kardex.extra_field_values[kardex.extra_fields.indexOf('Transfer in, Transfer out, or Transfer to another Hospital')]}`;
+      smallKardexText.append(transferLine, document.createElement('br'));
+    }
+
+    if (kardex.laboratory_work_ups) {
+      const labWorkUpsLine = document.createElement('span');
+      labWorkUpsLine.textContent = `Scheduled For: ${kardex.laboratory_work_ups}`;
+      smallKardexText.append(labWorkUpsLine, document.createElement('br'));
+    }
+    
+    const editedByTitle = document.createElement('span');
+    editedByTitle.textContent = 'Edited By:';
+
+    const editHistoryLines = kardex.edited_by.map((edited_by) => {
+      const editHistoryLine = document.createElement('span');
+
+      const editedByLine = document.createElement('span');
+      editedByLine.textContent = `  ${edited_by}`;
+      editedByLine.classList.add('cut-text');
+
+      const editedAtLine = document.createElement('span');
+      editedAtLine.textContent = `  ${kardex.edited_at[kardex.edited_by.indexOf(edited_by)]}`;
+
+      editHistoryLine.append(editedByLine, editedAtLine, document.createElement('br'));
+      return editHistoryLine;
+    });
+    smallKardexText.append(editedByTitle, document.createElement('br'), ...editHistoryLines);
+
+    const viewLink = smallKardex.querySelector('.view-link');
+    viewLink.href = `/view-kardex/${kardex.id}`;
+
+    const updateLink = smallKardex.querySelector('.update-link');
+    updateLink.href = `/update-kardex/${kardex.id}`;
+
+    return kardexContainer;
+  });
+
+  kardexGroupContainer.append(...kardexContainers);
+};
+
+const getKardexPage = async (page) => {
+  await axios
+    .get(`/api/v1/kardex/paginated/?limit=100&offset=${(page - 1) * 100}`)
+    .then((res) => {
+      currKardexs = res.data.results;
+      kardexTotal = res.data.count;
+
+      generateSmallKardexs();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+// initialize dashboard with first 100 Kardexs
+getKardexPage(1);
+
+const handlePageInputChange = (e) => {
+  const currVal = e.target.value;
+  const page = currVal <= 0
+    ? 1
+    : currVal;
+  pageInputs.forEach((el) => el.value = page);
+  getKardexPage(page);
+};
+pageInputs.forEach((el) => el.addEventListener('change', handlePageInputChange));
+
+const handlePrevBtnClick = () => {
+  const currPage = pageInputs[0].value <= 0
+    ? 1
+    : pageInputs[0].value;
+  const page = currPage - 1;
+  pageInputs.forEach((el) => el.value = page);
+  getKardexPage(page);
+};
+
+let maxPage = ~~(kardexTotal / 100);
+const handleNextBtnClick = () => {
+  const currPage = pageInputs[0].value > maxPage
+    ? maxPage
+    : pageInputs[0].value;
+  const page = currPage + 1;
+  pageInputs.forEach((el) => el.value = page);
+  getKardexPage(page);
+};
