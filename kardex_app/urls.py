@@ -26,6 +26,11 @@ urlpatterns = [
     path('view-kardex/<str:pk>', views.viewKardex, name="view-kardex"),
     path('delete-kardex/<str:pk>', views.deleteKardex, name="delete-kardex"),
 
+    #Kardex REST API
+    path('api/v1/kardex/', views.KardexList.as_view()),
+    path('api/v1/kardex/paginated/', views.PaginatedKardexList.as_view()),
+    path('api/v1/kardex/search/', views.kardex_search),
+
     #End of Kardex
     #Nurse
     path('view-profile/', views.viewProfile, name="view-profile"),
@@ -35,6 +40,10 @@ urlpatterns = [
     path('view-nurse/<str:pk>', views.viewNurse, name="view-nurse"),
     path('delete-nurse/<str:pk>', views.deleteNurse, name="delete-nurse"),
 
+    #Kardex REST API
+    path('api/v1/nurse/', views.NurseList.as_view()),
+    path('api/v1/nurse/paginated/', views.PaginatedNurseList.as_view()),
+    path('api/v1/nurse/search/', views.nurse_search),
 
     #End of Nurse
 
@@ -48,5 +57,6 @@ urlpatterns = [
     path('nursing_endorsement_sheet_PDF/', views.nursing_endorsement_sheet_PDF, name="nursing_endorsement_sheet_PDF"),
     path('special_notes_PDF/', views.special_notes_PDF, name="special_notes_PDF"),
     path('ward_census_PDF/', views.ward_census_PDF, name="ward_census_PDF"),
+    path('generate-census-XLSX/', views.generate_census_XLSX, name="generate-census-XLSX"),
     #End of Generate Reports
 ]

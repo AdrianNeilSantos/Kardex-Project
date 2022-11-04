@@ -65,6 +65,9 @@ class Kardex(models.Model):
     history = HistoricalRecords()
     date_added = models.DateTimeField(auto_now_add=timezone.now, null=True, blank=True)
 
+    class Meta:
+        ordering = ['-date_time', '-date_added']
+
     def __str__(self):
         return self.name or ''
 

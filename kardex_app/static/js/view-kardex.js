@@ -58,10 +58,6 @@ const compareWCurr = (idx) => {
     .querySelector('[id^="modalContainer"]').cloneNode(true);
   currVersionModalContainer.id = 'modalContainerCurr';
 
-  // const existingCurrVersionModalContainer = document.querySelector('#modalContainerCurr');
-  // existingCurrVersionModalContainer
-  //   && existingCurrVersionModalContainer.replaceWith(currVersionModalContainer);
-
   const currVersionTitle = currVersionModalContainer.querySelector('[id^="modalCardTitle"]');
   currVersionTitle.id = 'modalCardTitleCurr';
   currVersionTitle.getElementsByTagName('span')[0].textContent = nameInput.value.trim();
