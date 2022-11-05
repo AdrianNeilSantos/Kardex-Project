@@ -72,22 +72,14 @@
           <input id="searchDashboardInput" class="form-control w-156 me-2" type="search" placeholder="Search" aria-label="Search">
           <button id="searchDashboardBtn" type="button" class="btn btn-outline-dark me-3">Search</button>
         </div>
-        <div class="dropdown">
-          <button
-            class="btn btn-outline-dark dropdown-toggle fw-bold px-4"
-            type="button"
-            id="sortingDropdown"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
-            Edited - Latest
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="sortingDropdown">
-            <li><a class="dropdown-item" href="#">Edited - Latest</a></li>
-            <li><a class="dropdown-item" href="#">Edited - Oldest</a></li>
-            <li><a class="dropdown-item" href="#">Name - Descending</a></li>
-            <li><a class="dropdown-item" href="#">Name - Ascending</a></li>
-          </ul>
-        </div>
+        <select id="sortKardexSelect" class="form-select btn-outline-dark fw-bold px-4" aria-label="select for sorting kardexs">
+          <option value="0" selected>Name - A-Z&nbsp;&nbsp;</option>
+          <option value="1">Name - Z-A&nbsp;&nbsp;</option>
+          <option value="2">Date Added - Latest&nbsp;&nbsp;</option>
+          <option value="3">Date Added - Oldest&nbsp;&nbsp;</option>
+          <option value="4">Edited - Latest&nbsp;&nbsp;</option>
+          <option value="5">Edited - Oldest&nbsp;&nbsp;</option>
+        </select>
       </div>
     </div>
     <div class="d-flex flex-column align-items-center flex-xl-row">

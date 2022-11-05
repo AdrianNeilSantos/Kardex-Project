@@ -1,4 +1,4 @@
-/* global axios, bootstrap, d3, moment, tns */
+/* global _, axios, bootstrap, d3, moment, tns */
 
 window.onload = async () => {
   await fetchDataset();
@@ -298,7 +298,11 @@ const getKardexPage = async (page) => {
   await axios
     .get(`/api/v1/kardex/paginated/?limit=100&offset=${(page - 1) * 100}`)
     .then((res) => {
-      currKardexs = res.data.results;
+      currKardexs = res.data.results
+        .map((kardex) => {
+          kardex.edited_at = kardex.edited_at.reverse();
+          return kardex;
+        });
       kardexTotal = res.data.count;
 
       generateSmallKardexs();
@@ -416,3 +420,34 @@ searchDashboardInput.addEventListener('keydown', filterKardexs);
 searchDashboardBtn.addEventListener('click', filterKardexs);
 dateRangeMinInput.addEventListener('keydown', filterKardexs);
 dateRangeMaxInput.addEventListener('keydown', filterKardexs);
+
+const sortKardexSelect = document.querySelector('#sortKardexSelect');
+const sortKardexs = (e) => {
+  const sortVal = e.target.value;
+  switch (sortVal) {
+  case '0':
+    currKardexs = _.orderBy(currKardexs, ['name'], ['asc']);
+    break;
+  case '1':
+    currKardexs = _.orderBy(currKardexs, ['name'], ['desc']);
+    break;
+  case '2':
+    currKardexs = _.orderBy(currKardexs, ['date_time', 'date_added'], ['desc', 'desc']);
+    break;
+  case '3':
+    currKardexs = _.orderBy(currKardexs, ['date_time', 'date_added'], ['asc', 'asc']);
+    break;
+  case '4':
+    currKardexs = _.orderBy(currKardexs, ['edited_at'], ['desc']);
+    break;
+  case '5':
+    currKardexs = _.orderBy(currKardexs, ['edited_at'], ['asc']);
+    break;
+  }
+  kardexGroupContainer.querySelectorAll('.kardex-container').forEach((el) => {
+    el.style.order = currKardexs
+      .map((kardex) => kardex.id)
+      .indexOf(parseInt(el.querySelector('.kardex-id-span').textContent));
+  });
+};
+sortKardexSelect.addEventListener('change', sortKardexs);
