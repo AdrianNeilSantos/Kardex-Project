@@ -33,8 +33,12 @@ const fetchDataset = async () => {
     .catch((err) => console.log(err));
 };
 
-const removeChildren = (targetId) => {
-  const target = document.querySelector(`#${targetId}`);
+const removeChildren = (targetAttr) => {
+  const target = document.querySelector(`#${targetAttr}`)
+    || document.querySelector(`.${targetAttr}`);
+  if (!target || !target.firstElementChild)
+    return;
+  
   let child = target.firstElementChild;
   while (child) {
     target.removeChild(child);
@@ -189,11 +193,6 @@ const generateChart = (targetId, chartData) => {
     .call(yAxis);
 };
 
-const pageInputs = document.querySelectorAll('.page-input');
-const prevBtns = Array.from(document.querySelectorAll('.prev-btn'));
-const nextBtns = Array.from(document.querySelectorAll('.next-btn'));
-const refreshBtns = Array.from(document.querySelectorAll('.refresh-btn'));
-
 let currKardexs = [];
 let currNurses = [];
 let kardexTotal = 0;
@@ -305,38 +304,57 @@ const getKardexPage = async (page) => {
     });
 };
 
+const kardexCounterSpans = document.querySelectorAll('.kardex-counter-span');
 const getRelevantData = async (page) => {
+  removeChildren('kardex-group-container');
   await getNursePage(page);
-  getKardexPage(page);
+  await getKardexPage(page);
+
+  const offset = (page - 1) * 100;
+  const pages = ~~(kardexTotal / 100) + 1;
+  kardexCounterSpans.forEach((el) => {
+    el.textContent = `Showing ${offset + 1}-${offset + currKardexs.length} out of ${kardexTotal} Kardex accessible to you across ${ pages } ${ pages === 1 ? 'page' : 'pages' }`;
+  });
 };
 // initialize dashboard with kardex and nurse info for 1st 100 kardexs
 getRelevantData(1);
 
+let maxPage = ~~(kardexTotal / 100) + 1;
+const pageInputs = document.querySelectorAll('.page-input');
 const handlePageInputChange = (e) => {
   const currVal = e.target.value;
   const page = currVal <= 0
     ? 1
-    : currVal;
+    : currVal > maxPage
+      ? maxPage
+      : currVal;
   pageInputs.forEach((el) => el.value = page);
   getKardexPage(page);
 };
 pageInputs.forEach((el) => el.addEventListener('change', handlePageInputChange));
 
+const prevBtns = Array.from(document.querySelectorAll('.prev-btn'));
 const handlePrevBtnClick = () => {
-  const currPage = pageInputs[0].value <= 0
+  const page = pageInputs[0].value - 1 <= 0
     ? 1
-    : pageInputs[0].value;
-  const page = currPage - 1;
+    : pageInputs[0].value - 1;
   pageInputs.forEach((el) => el.value = page);
-  getKardexPage(page);
+  getRelevantData(page);
 };
+prevBtns.forEach((el) => el.addEventListener('click', handlePrevBtnClick));
 
-let maxPage = ~~(kardexTotal / 100);
+const nextBtns = Array.from(document.querySelectorAll('.next-btn'));
 const handleNextBtnClick = () => {
-  const currPage = pageInputs[0].value > maxPage
+  const page = pageInputs[0].value + 1 > maxPage
     ? maxPage
-    : pageInputs[0].value;
-  const page = currPage + 1;
+    : pageInputs[0].value + 1;
   pageInputs.forEach((el) => el.value = page);
-  getKardexPage(page);
+  getRelevantData(page);
 };
+nextBtns.forEach((el) => el.addEventListener('click', handleNextBtnClick));
+
+const refreshBtns = Array.from(document.querySelectorAll('.refresh-btn'));
+const handleRefreshBtnClick = () => {
+  getRelevantData(pageInputs[0].value);
+};
+refreshBtns.forEach((el) => el.addEventListener('click', handleRefreshBtnClick));

@@ -1,27 +1,15 @@
+/* global bootstrap */
+
 const createKardexForm = document.querySelector('#createKardexForm');
-const nameOfWardInput = document.querySelector('#nameOfWardInput');
-const ivfInput = document.querySelector('#ivfInput');
-const medicationsInput = document.querySelector('#medicationsInput');
-const sideDripInput = document.querySelector('#sideDripInput');
-const specialNotationsInput = document.querySelector('#specialNotationsInput');
-const referralsInput = document.querySelector('#referralsInput');
 
 const nameInput = document.querySelector('#nameInput');
 nameInput.addEventListener('keyup', (e) => e.target.value = e.target.value.replace(/\s{2}/g, ' '));
 
 const ageSexInput = document.querySelector('#ageSexInput');
 const dateTimeInput = document.querySelector('#dateTimeInput');
-const hospitalNumInput = document.querySelector('#hospitalNumInput');
-const dxInput = document.querySelector('#dxInput');
-const drsInput = document.querySelector('#drsInput');
-const dietInput = document.querySelector('#dietInput');
 
 const ageInput = document.querySelector('#ageInput');
 const sexInput = document.querySelector('#sexInput');
-const extraFieldsInput = document.querySelector('#extraFieldsInput');
-const extraFieldValuesInput = document.querySelector('#extraFieldValuesInput');
-const labelMarkersInput = document.querySelector('#labelMarkersInput');
-const labelValuesInput = document.querySelector('#labelValuesInput');
 
 const createKardexBtn = document.querySelector('#createKardexBtn');
 
