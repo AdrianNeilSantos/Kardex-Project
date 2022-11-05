@@ -312,11 +312,20 @@ const getKardexPage = async (page) => {
     });
 };
 
+const prevBtns = Array.from(document.querySelectorAll('.prev-btn'));
+const nextBtns = Array.from(document.querySelectorAll('.next-btn'));
+const refreshBtns = Array.from(document.querySelectorAll('.refresh-btn'));
 const kardexCounterSpans = document.querySelectorAll('.kardex-counter-span');
+let freezePageControllers = false;
 const getRelevantData = async (page) => {
+  freezePageControllers = true;
+  kardexGroupContainer.style.minHeight = '564px';
   removeChildren('kardex-group-container');
+
   await getNursePage(page);
   await getKardexPage(page);
+  kardexGroupContainer.style.minHeight = '';
+  freezePageControllers = false;
 
   const offset = (page - 1) * 100;
   const pages = ~~(kardexTotal / 100) + 1;
@@ -330,6 +339,9 @@ getRelevantData(1);
 let maxPage = ~~(kardexTotal / 100) + 1;
 const pageInputs = document.querySelectorAll('.page-input');
 const handlePageInputChange = (e) => {
+  if (freezePageControllers)
+    return;
+  
   const currVal = e.target.value;
   const page = currVal <= 0
     ? 1
@@ -337,12 +349,14 @@ const handlePageInputChange = (e) => {
       ? maxPage
       : currVal;
   pageInputs.forEach((el) => el.value = page);
-  getKardexPage(page);
+  getRelevantData(page);
 };
 pageInputs.forEach((el) => el.addEventListener('change', handlePageInputChange));
 
-const prevBtns = Array.from(document.querySelectorAll('.prev-btn'));
 const handlePrevBtnClick = () => {
+  if (freezePageControllers)
+    return;
+
   const page = pageInputs[0].value - 1 <= 0
     ? 1
     : pageInputs[0].value - 1;
@@ -351,8 +365,10 @@ const handlePrevBtnClick = () => {
 };
 prevBtns.forEach((el) => el.addEventListener('click', handlePrevBtnClick));
 
-const nextBtns = Array.from(document.querySelectorAll('.next-btn'));
 const handleNextBtnClick = () => {
+  if (freezePageControllers)
+    return;
+
   const page = pageInputs[0].value + 1 > maxPage
     ? maxPage
     : pageInputs[0].value + 1;
@@ -361,8 +377,10 @@ const handleNextBtnClick = () => {
 };
 nextBtns.forEach((el) => el.addEventListener('click', handleNextBtnClick));
 
-const refreshBtns = Array.from(document.querySelectorAll('.refresh-btn'));
 const handleRefreshBtnClick = () => {
+  if (freezePageControllers)
+    return;
+
   getRelevantData(pageInputs[0].value);
 };
 refreshBtns.forEach((el) => el.addEventListener('click', handleRefreshBtnClick));
@@ -443,6 +461,8 @@ const sortKardexs = (e) => {
   case '5':
     currKardexs = _.orderBy(currKardexs, ['edited_at'], ['asc']);
     break;
+  default:
+    // do nothing
   }
   kardexGroupContainer.querySelectorAll('.kardex-container').forEach((el) => {
     el.style.order = currKardexs
