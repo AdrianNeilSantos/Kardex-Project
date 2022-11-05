@@ -1,3 +1,5 @@
+/* global axios, bootstrap, d3, moment, tns */
+
 window.onload = async () => {
   await fetchDataset();
 
@@ -8,7 +10,7 @@ window.onresize = () => {
   generateCharts();
 };
 
-const vizSlider = tns({
+const vizSlider = tns({ // eslint-disable-line
   container: '.viz-slider',
   items: 4,
   slideBy: 'page',
@@ -38,7 +40,7 @@ const removeChildren = (targetId) => {
     target.removeChild(child);
     child = target.firstElementChild;
   }
-}
+};
 
 const generateCharts = () => {
   const vizHolders = document.querySelectorAll('.viz-holder');
@@ -50,16 +52,16 @@ const generateCharts = () => {
 
 const formatQtr = (str) => {
   const splt = str.split('-');
-   if (splt[1] === '01') {
-     return `${splt[0]} Q1`;
-   } else if (splt[1] === '04') {
-     return `${splt[0]} Q2`;
-   } else if (splt[1] === '07') {
-     return `${splt[0]} Q3`;
-   } else if (splt[1] === '10') {
-     return `${splt[0]} Q4`;
-   }
-}
+  if (splt[1] === '01') {
+    return `${splt[0]} Q1`;
+  } else if (splt[1] === '04') {
+    return `${splt[0]} Q2`;
+  } else if (splt[1] === '07') {
+    return `${splt[0]} Q3`;
+  } else if (splt[1] === '10') {
+    return `${splt[0]} Q4`;
+  }
+};
 
 const generateChart = (targetId, chartData) => {
   let w, h;
@@ -144,7 +146,7 @@ const generateChart = (targetId, chartData) => {
         .html(`${formatQtr(d[0])}<br>$${d[1]} Billion`)
         .attr('data-date', d[0])
         .style('left', () => {
-          console.log(targetId, targetId.toLowerCase().includes('modal'))
+          console.log(targetId, targetId.toLowerCase().includes('modal'));
           return targetId.toLowerCase().includes('modal')
             ? `${e.pageX - modal.left + 48}px`
             : `${e.pageX + 48}px`;
@@ -155,7 +157,7 @@ const generateChart = (targetId, chartData) => {
             : `${e.pageY - 80}px`;
         });
     })
-    .on('mouseout', (d) => {
+    .on('mouseout', () => {
       overlay
         .transition()
         .duration(500)
@@ -193,6 +195,7 @@ const nextBtns = Array.from(document.querySelectorAll('.next-btn'));
 const refreshBtns = Array.from(document.querySelectorAll('.refresh-btn'));
 
 let currKardexs = [];
+let currNurses = [];
 let kardexTotal = 0;
 const kardexContainerTemplate = document.querySelector('.kardex-container');
 const kardexGroupContainer = document.querySelector('.kardex-group-container');
@@ -205,8 +208,6 @@ const generateSmallKardexs = () => {
 
     const smallKardex = kardexContainer.querySelector('.small-kardex');
     smallKardex.classList.remove('d-none');
-
-    const smallKardexStripes = smallKardex.querySelector('.small-kardex-stripes');
 
     const smallKardexText = smallKardex.querySelector('.small-kardex-text');
     if (kardex.name) {
@@ -223,9 +224,9 @@ const generateSmallKardexs = () => {
 
     const dateLine = document.createElement('span');
     if (kardex.date_time) { 
-      dateLine.textContent = kardex.date_time;
+      dateLine.textContent = moment(kardex.date_time).format('MMMM Do YYYY, h:mm A');
     } else {
-      dateLine.textContent = kardex.date_added;
+      dateLine.textContent = moment(kardex.date_added).format('MMMM Do YYYY, h:mm A');
     }
     smallKardexText.append(dateLine, document.createElement('br'));
 
@@ -251,15 +252,16 @@ const generateSmallKardexs = () => {
     const editedByTitle = document.createElement('span');
     editedByTitle.textContent = 'Edited By:';
 
-    const editHistoryLines = kardex.edited_by.map((edited_by) => {
+    const editHistoryLines = kardex.edited_by.map((edited_by, i) => {
       const editHistoryLine = document.createElement('span');
 
       const editedByLine = document.createElement('span');
-      editedByLine.textContent = `  ${edited_by}`;
-      editedByLine.classList.add('cut-text');
+      const currNurse = currNurses.find(nurse => nurse.id === Number(edited_by));
+      editedByLine.textContent = `  ${currNurse.last_name}, ${currNurse.first_name}`;
+      editedByLine.classList.add('cut-text', 'ms-3', 'me-1');
 
       const editedAtLine = document.createElement('span');
-      editedAtLine.textContent = `  ${kardex.edited_at[kardex.edited_by.indexOf(edited_by)]}`;
+      editedAtLine.textContent = `(${moment(kardex.edited_at[i]).format('MMMM Do YYYY, h:mm A')})`;
 
       editHistoryLine.append(editedByLine, editedAtLine, document.createElement('br'));
       return editHistoryLine;
@@ -278,6 +280,17 @@ const generateSmallKardexs = () => {
   kardexGroupContainer.append(...kardexContainers);
 };
 
+const getNursePage = async (page) => {
+  await axios
+    .get(`/api/v1/nurse/paginated/?limit=100&offset=${(page - 1) * 100}`)
+    .then((res) => {
+      currNurses = res.data.results;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 const getKardexPage = async (page) => {
   await axios
     .get(`/api/v1/kardex/paginated/?limit=100&offset=${(page - 1) * 100}`)
@@ -291,8 +304,13 @@ const getKardexPage = async (page) => {
       console.log(err);
     });
 };
-// initialize dashboard with first 100 Kardexs
-getKardexPage(1);
+
+const getRelevantData = async (page) => {
+  await getNursePage(page);
+  getKardexPage(page);
+};
+// initialize dashboard with kardex and nurse info for 1st 100 kardexs
+getRelevantData(1);
 
 const handlePageInputChange = (e) => {
   const currVal = e.target.value;
