@@ -409,11 +409,12 @@ const filterKardexByDate = () => {
     const kardexDate = moment(kardex.date_time || kardex.date_added, dateFormat);
     return kardexDate.isBetween(minDate, maxDate);
   });
+
   return filteredKardexs;
 };
 
 const filterKardexs = (e) => {
-  if (e.target.id !== 'searchDashboardBtn' && e.key !== 'Enter')
+  if (e !== 'clearSignal' && e.target.id !== 'searchDashboardBtn' && e.key !== 'Enter')
     return;
 
   const filteredKardexsByName = handleDashboardSearch() || currKardexs;
@@ -471,3 +472,12 @@ const sortKardexs = (e) => {
   });
 };
 sortKardexSelect.addEventListener('change', sortKardexs);
+
+const clearFiltersBtn = document.querySelector('.clear-filters-btn');
+const clearFilters = () => {
+  dateRangeMinInput.value = '';
+  dateRangeMaxInput.value = '';
+  searchDashboardInput.value = '';
+  filterKardexs('clearSignal');
+};
+clearFiltersBtn.addEventListener('click', clearFilters);
