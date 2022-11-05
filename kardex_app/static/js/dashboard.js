@@ -358,3 +358,20 @@ const handleRefreshBtnClick = () => {
   getRelevantData(pageInputs[0].value);
 };
 refreshBtns.forEach((el) => el.addEventListener('click', handleRefreshBtnClick));
+
+const searchDashboardInput = document.querySelector('#searchDashboardInput');
+const searchDashboardBtn = document.querySelector('#searchDashboardBtn');
+const handleDashboardSearch = (e) => {
+  if (e.target.id !== 'searchDashboardBtn' && e.key !== 'Enter')
+    return;
+  
+  const searchVal = searchDashboardInput.value;
+  kardexGroupContainer.querySelectorAll('.kardex-container').forEach((el, i) => {
+    if (currKardexs[i].name.toLowerCase().includes(searchVal.toLowerCase()))
+      el.classList.remove('d-none');
+    else
+      el.classList.add('d-none');
+  });
+};
+searchDashboardInput.addEventListener('keydown', handleDashboardSearch);
+searchDashboardBtn.addEventListener('click', handleDashboardSearch);
