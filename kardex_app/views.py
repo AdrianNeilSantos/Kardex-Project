@@ -289,7 +289,7 @@ def updateNurse(request, pk):
         form = NurseUpdateForm(request.POST, request.FILES, instance=nurse)
         if(form.is_valid()):
             form.save()
-            return redirect("/nurse-dashboard")
+            return redirect(f"/view-profile")
 
     context = {"form": form, "nurse": nurse}
     return render(request, 'kardex_app/Nurse/update-nurse.html', context)
