@@ -668,16 +668,12 @@ class KardexList(APIView):
 
 class PaginatedKardexList(APIView, LimitOffsetPagination):
     def get(self, request, format=None):
-        all_kardex = Kardex.objects.all()
-        results = self.paginate_queryset(all_kardex, request, view=self)
+        print(request.GET.get('nurse'))
+        relevant_kardex = Kardex.objects.filter(Q(edited_by__contains=[request.GET.get('nurse')])) \
+            if 'nurse' in request.GET else Kardex.objects.all()
+        results = self.paginate_queryset(relevant_kardex, request, view=self)
         serializers = KardexSerializer(results, many=True)
         return self.get_paginated_response(serializers.data)
-
-class NurseList(APIView):
-    def get(self, request, format=None):
-        all_nurse = Nurse.objects.all()
-        serializers = NurseSerializer(all_nurse, many=True)
-        return Response(serializers.data)
 
 @api_view(['POST'])
 def kardex_search(request):
@@ -689,6 +685,12 @@ def kardex_search(request):
         return Response(serializer.data)
     else:
         return Response({'Kardexs': []})
+
+class NurseList(APIView):
+    def get(self, request, format=None):
+        all_nurse = Nurse.objects.all()
+        serializers = NurseSerializer(all_nurse, many=True)
+        return Response(serializers.data)
 
 class PaginatedNurseList(APIView, LimitOffsetPagination):
     def get(self, request, format=None):

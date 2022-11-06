@@ -1,9 +1,12 @@
 {% extends 'kardex_app/main.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-
 {% load static %}
 <link rel="stylesheet" href= {% static "css/nurse-dashboard.css" %}>
+<script defer>
+  const nurseId = {{ nurse.id }};
+</script>
+<script defer src={% static "js/view-profile.js" %}></script>
 <div class="container px-5">
     <div class="card border-0">
       <!-- Nurse Information -->
@@ -102,80 +105,100 @@
 <section class="kardex-section position-relative container-fluid container-xxl d-flex flex-column my-4 px-md-64">
   <div class="w-100 d-flex flex-column flex-xl-row justify-content-xl-between align-items-center">
     <div class="d-flex flex-column align-items-center flex-md-row mb-3">
-      <button type="button" class="btn btn-outline-dark fw-bold mb-3 me-md-3 mb-md-0">
-        0 Filters Selected
+      <button type="button" class="clear-filters-btn btn btn-outline-dark fw-bold mb-3 me-md-3 mb-md-0">
+        Clear Selected Filters
       </button>
       <div class="d-flex flex-column align-items-center flex-sm-row">
         <span class="fw-bold me-2">Date Range</span>
         <div class="d-flex align-items-center">
           <input
             type="text"
+            id="dateRangeMinInput"
             class="form-control w-156 text-center me-2"
             placeholder="YYYY-MM-DD"
           >
           <span class="fw-bold me-2">to</span>
           <input
             type="text"
+            id="dateRangeMaxInput"
             class="form-control w-156 text-center"
-            value="YYYY-MM-DD"
+            placeholder="YYYY-MM-DD"
           >
         </div>
       </div>
     </div>
     <div class="d-flex flex-column align-items-center flex-sm-row mb-3">
       <div class="d-flex mb-3 mb-sm-0">
-        <input class="form-control w-156 me-2" type="search" placeholder="Search" aria-label="Search">
-        <button type="button" class="btn btn-outline-dark me-3">Search</button>
+        <input id="searchDashboardInput" class="form-control w-156 me-2" type="search" placeholder="Search" aria-label="Search">
+        <button id="searchDashboardBtn" type="button" class="btn btn-outline-dark me-3">Search</button>
       </div>
-      <div class="dropdown">
-        <button
-          class="btn btn-outline-dark dropdown-toggle fw-bold px-4"
-          type="button"
-          id="sortingDropdown"
-          data-bs-toggle="dropdown"
-          aria-expanded="false">
-          Edited - Latest
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="sortingDropdown">
-          <li><a class="dropdown-item" href="#">Edited - Latest</a></li>
-          <li><a class="dropdown-item" href="#">Edited - Oldest</a></li>
-          <li><a class="dropdown-item" href="#">Name - Descending</a></li>
-          <li><a class="dropdown-item" href="#">Name - Ascending</a></li>
-        </ul>
-      </div>
+      <select
+        id="sortKardexSelect"
+        class="form-select btn-outline-dark fw-bold px-4"
+        aria-label="select for sorting kardexs"
+      >
+        <option value="0">Name - A-Z&nbsp;&nbsp;</option>
+        <option value="1">Name - Z-A&nbsp;&nbsp;</option>
+        <option value="2" selected>Date Added - Latest&nbsp;&nbsp;</option>
+        <option value="3">Date Added - Oldest&nbsp;&nbsp;</option>
+        <option value="4">Edited - Latest&nbsp;&nbsp;</option>
+        <option value="5">Edited - Oldest&nbsp;&nbsp;</option>
+      </select>
     </div>
   </div>
   <div class="d-flex flex-column align-items-center flex-xl-row">
     <div class="col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 mb-xl-0 ms-xl-4 ps-xl-2">
       <div class="d-flex mb-3 mb-sm-0">
-        <button type="button" class="btn btn-outline-dark fw-bold me-2">Prev</button>
+        <button type="button" class="prev-btn btn btn-outline-dark fw-bold me-2">Prev</button>
         <div class="input-group w-128 me-2">
           <span class="input-group-text" id="pageLabel">Page</span>
           <input
             type="number"
-            class="form-control"
+            class="page-input form-control"
             value="1"
             aria-label="Page"
             aria-describedby="pageLabel"
           >
         </div>
-        <button type="button" class="btn btn-outline-dark fw-bold me-3">Next</button>
+        <button type="button" class="next-btn btn btn-outline-dark fw-bold me-3">Next</button>
       </div>
-      <button type="button" class="btn btn-outline-dark fw-bold">Refresh</button>
+      <button type="button" class="refresh-btn btn btn-outline-dark fw-bold">Refresh</button>
     </div>
     <div class="col-xl-6 d-flex align-items-center">
-      <span class="fs-5 text-center text-xl-start">
-        Showing 1-15 out of 100 Kardex Edited by <strong>{{nurse.last_name}}, {{nurse.first_name}}</strong>
+      <span class="kardex-counter-span fs-5 text-center text-xl-start">
+        <!-- insert kardex counter here -->
       </span>
     </div>
   </div>
-  <!-- Change Specific Nurse -->
+  <div class="kardex-container d-none col-12 col-lg-6 col-xl-4 my-2 px-2">
+    {% include 'kardex_app/partials/small-kardex.html' %}
+  </div>
   <div class="kardex-group-container d-flex flex-wrap px-2 px-sm-5">
-    {% for kardex in kardexs %}
-    <div class="col-12 col-lg-6 col-xl-4 my-2 px-2">
-      {% include 'kardex_app/partials/small-kardex.html' with kardex=kardex %}
+    <!-- small-kardexs will be generated here -->
+  </div>
+  <div class="d-flex flex-column align-items-center flex-xl-row">
+    <div class="order-2 order-xl-1 col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 ms-xl-4 ps-xl-2">
+      <div class="d-flex mb-3 mb-sm-0">
+        <button type="button" class="prev-btn btn btn-outline-dark fw-bold me-2">Prev</button>
+        <div class="input-group w-128 me-2">
+          <span class="input-group-text" id="pageLabel">Page</span>
+          <input
+            type="number"
+            class="page-input form-control"
+            value="1"
+            aria-label="Page"
+            aria-describedby="pageLabel"
+          >
+        </div>
+        <button type="button" class="next-btn btn btn-outline-dark fw-bold me-3">Next</button>
+      </div>
+      <button type="button" class="refresh-btn btn btn-outline-dark fw-bold">Refresh</button>
     </div>
-    {% endfor %}
+    <div class="order-1 order-xl-2 col-xl-6 d-flex align-items-center mb-3">
+      <span class="kardex-counter-span fs-5 text-center text-xl-start">
+        <!-- insert kardex counter here -->
+      </span>
+    </div>
   </div>
 </section>
 {% endblock content %}

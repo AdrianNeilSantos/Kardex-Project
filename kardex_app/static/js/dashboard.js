@@ -199,8 +199,6 @@ let kardexTotal = 0;
 const kardexContainerTemplate = document.querySelector('.kardex-container');
 const kardexGroupContainer = document.querySelector('.kardex-group-container');
 const generateSmallKardexs = () => {
-  console.log(currKardexs);
-
   const kardexContainers = currKardexs.map((kardex) => {
     const kardexContainer = kardexContainerTemplate.cloneNode(true);
     kardexContainer.classList.remove('d-none');
@@ -294,6 +292,7 @@ const getNursePage = async (page) => {
     });
 };
 
+let firstAPICall = true;
 const getKardexPage = async (page) => {
   await axios
     .get(`/api/v1/kardex/paginated/?limit=100&offset=${(page - 1) * 100}`)
@@ -306,6 +305,12 @@ const getKardexPage = async (page) => {
       kardexTotal = res.data.count;
 
       generateSmallKardexs();
+
+      if (!firstAPICall) {
+        filterKardexs('forceFilterKardexs');
+        sortKardexs();
+      }
+      firstAPICall = false;
     })
     .catch((err) => {
       console.log(err);
@@ -319,18 +324,18 @@ const kardexCounterSpans = document.querySelectorAll('.kardex-counter-span');
 let freezePageControllers = false;
 const getRelevantData = async (page) => {
   freezePageControllers = true;
-  kardexGroupContainer.style.minHeight = '564px';
+  kardexGroupContainer.style.minHeight = '282px';
   removeChildren('kardex-group-container');
 
   await getNursePage(page);
   await getKardexPage(page);
-  kardexGroupContainer.style.minHeight = '';
+  kardexGroupContainer.style.minHeight = currKardexs.length ? '' : '282px';
   freezePageControllers = false;
 
   const offset = (page - 1) * 100;
   const pages = ~~(kardexTotal / 100) + 1;
   kardexCounterSpans.forEach((el) => {
-    el.textContent = `Showing ${offset + 1}-${offset + currKardexs.length} out of ${kardexTotal} Kardex accessible to you across ${ pages } ${ pages === 1 ? 'page' : 'pages' }`;
+    el.textContent = `Showing ${kardexTotal ? offset + 1 : 0}-${offset + currKardexs.length} out of ${kardexTotal} Kardex accessible to you across ${ pages } ${ pages === 1 ? 'page' : 'pages' }`;
   });
 };
 // initialize dashboard with kardex and nurse info for 1st 100 kardexs
@@ -414,7 +419,7 @@ const filterKardexByDate = () => {
 };
 
 const filterKardexs = (e) => {
-  if (e !== 'clearSignal' && e.target.id !== 'searchDashboardBtn' && e.key !== 'Enter')
+  if (e !== 'forceFilterKardexs' && e.target.id !== 'searchDashboardBtn' && e.key !== 'Enter')
     return;
 
   const filteredKardexsByName = handleDashboardSearch() || currKardexs;
@@ -441,8 +446,8 @@ dateRangeMinInput.addEventListener('keydown', filterKardexs);
 dateRangeMaxInput.addEventListener('keydown', filterKardexs);
 
 const sortKardexSelect = document.querySelector('#sortKardexSelect');
-const sortKardexs = (e) => {
-  const sortVal = e.target.value;
+const sortKardexs = () => {
+  const sortVal = sortKardexSelect.value;
   switch (sortVal) {
   case '0':
     currKardexs = _.orderBy(currKardexs, ['name'], ['asc']);
@@ -471,6 +476,7 @@ const sortKardexs = (e) => {
       .indexOf(parseInt(el.querySelector('.kardex-id-span').textContent));
   });
 };
+sortKardexs();
 sortKardexSelect.addEventListener('change', sortKardexs);
 
 const clearFiltersBtn = document.querySelector('.clear-filters-btn');
@@ -478,6 +484,6 @@ const clearFilters = () => {
   dateRangeMinInput.value = '';
   dateRangeMaxInput.value = '';
   searchDashboardInput.value = '';
-  filterKardexs('clearSignal');
+  filterKardexs('forceFilterKardexs');
 };
 clearFiltersBtn.addEventListener('click', clearFilters);
