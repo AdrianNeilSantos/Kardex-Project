@@ -24,41 +24,57 @@
             <i class="fa-solid fa-gear fs-4"></i>
           </button>
         </div>
-        <div class="card-block col">
-          <ul class="list-group list-group-flush">
-            <li class="nurse-name list-group-item fw-bold h1">
-              {{ nurse.last_name }}, {{ nurse.first_name }}
-            </li>
-            <li class="nurse-id list-group-item h1">
-              <b>ID # {{ nurse.id }} -</b>
-              {{ nurse.nurse_level|default:'(Missing Nurse Level)' }}
-            </li>
-            <li class="nurse-demographic list-group-item h1 d-flex">
-              <b>{{ nurse.sex }},</b>
-              &nbsp;{{ nurse_age }} years old
-            </li>
-            <li class="nurse-duty list-group-item d-flex h1 flex-row">
-              <b>On Duty:</b>
-              <span class="on-duty-span">
-                &nbsp;{{ formatted_nurse_on_duty }}
-              </span>
-            </li>
-            <li class="nurse-ward-dept list-group-item d-flex h1 flex-row">
-              {{ nurse.ward|default:'N/A' }}&nbsp;<b>Ward</b>,
-              &nbsp;{{ nurse.department|default:'N/A' }}&nbsp;<b>Department</b>
-            </li>
-            <li class="change-password list-group-item">
-              <a href="{% url 'update-nurse' nurse.id %}" class="btn btn-warning me-2">
-                <i class="fa-solid fa-pen"></i>
-                Update Profile
-              </a>
-              <a class="link change-password-link text-danger" href="{% url 'password-reset' %}">
-                <u>Change Password?</u>
-              </a>
-            </li>
-          </ul>
-         </div>
+        <ul class="list-group list-group-flush col-8">
+          <li class="nurse-name list-group-item fw-bold h1 text-nowrap">
+            {{ nurse.last_name }}, {{ nurse.first_name }}
+          </li>
+          <li class="nurse-id list-group-item h1 text-nowrap">
+            <b>ID # {{ nurse.id }} -</b>
+            {{ nurse.nurse_level|default:'(Missing Nurse Level)' }}
+          </li>
+          <li class="nurse-demographic list-group-item h1 text-nowrap">
+            <b>{{ nurse.sex }},</b>
+            {{ nurse_age }} years old
+          </li>
+          <li class="nurse-duty list-group-item h1 text-nowrap">
+            <b>On Duty:</b>
+            <span class="on-duty-span">
+              {{ formatted_nurse_on_duty }}
+            </span>
+          </li>
+          <li class="nurse-ward-dept list-group-item h1 text-nowrap">
+            {{ nurse.ward|default:'N/A' }}&nbsp;<b>Ward</b>,
+            {{ nurse.department|default:'N/A' }}&nbsp;<b>Department</b>
+          </li>
+        </ul>
       </div>
+    </div>
+    <div class="w-100 d-flex flex-wrap justify-content-center">
+      <button
+        type="button"
+        class="btn btn-outline-dark fw-bold mb-2 me-3"
+      >
+        <i class="fa-solid fa-pen"></i>
+        Update Profile
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-dark fw-bold mb-2 me-3"
+      >
+        <i class="fa-solid fa-arrow-up"></i>
+        Request for Kardex access permission extension
+      </button>
+      <a
+        href="{% url 'password-reset' %}"
+      >
+        <button
+          type="button"
+          class="btn btn-outline-dark fw-bold me-3"
+        >
+          <i class="fa-solid fa-key"></i>
+          Change Password
+        </button>
+      </a>
     </div>
   </div>
 </div>
