@@ -403,96 +403,29 @@ def render_to_PDF(template_src, context_dict, fileName):
 
 def generate_front_1(work_book, style_head_row, style_data_row):
     ws_front1 = work_book.add_sheet(u'FRONT1')
+    context_header = get_context_hospital_census_report()
     
+    #Adjusts colum widths
+    edit_col_width(ws_front1, 1, 15)
+    edit_col_width(ws_front1, 2, 12)
+    edit_col_width(ws_front1, 3, 12)
+
     START_COL = 0
     END_COL = 13
-    ws_front1.write_merge(6,6,START_COL,END_COL, "HOSPITAL CENSUS REPORT")
-
-    ws_front1.write(7,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF')
-    ws_front1.write_merge(7,7,4,6, "07-SEP-22")
-    ws_front1.write(7,9, 'FLOOR/SECTION:')
-    ws_front1.write_merge(7,7,11,END_COL, "COVID")
-
-
-    ws_front1.write_merge(9,9,START_COL,END_COL, "ADMISSION")
-
-    HEADER_ROW = 13 - 1
-
-
-    #Setting cell dimensions
-    header_row = ws_front1.row(HEADER_ROW)
-
-    tall_style = xlwt.easyxf('font:height 720;') # 36pt: divide by 20
-    header_row.set_style(tall_style)
-
-    header_col = ws_front1.col(0)
-    header_col.width = 256 * 20   #20 char
-
-
-
-    # Generate worksheet head row data.
-    ws_front1.write(HEADER_ROW,0, 'WARD AND BED NO.', style_head_row) 
-    ws_front1.write(HEADER_ROW,1, 'TIME', style_head_row) 
-    ws_front1.write(HEADER_ROW,2, 'CASE NO.', style_head_row) 
-    ws_front1.write_merge(HEADER_ROW,HEADER_ROW, 3, 8, 'NAME', style_head_row)
-    ws_front1.write_merge(HEADER_ROW,HEADER_ROW, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
-
+    START_ROW = 6
+    current_row = START_ROW
 
     
-    # Generate worksheet data row data.
-    row = HEADER_ROW + 1
-    for kardex in Kardex.objects.all():
-        ws_front1.write(row,0, kardex.id, style_data_row)
-        ws_front1.write(row,1, kardex.name, style_data_row)
-        ws_front1.write(row,2, kardex.age, style_data_row)
-        ws_front1.write_merge(row,row,3, 8, kardex.sex, style_data_row)
-        ws_front1.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
-
-        row += 1 
-
-    row += 1
-
-    ws_front1.write_merge(row,row,START_COL,END_COL, "DISCHARGES")
-    row += 2
-
-    ws_front1.write(row,0, 'WARD AND BED NO.', style_head_row) 
-    ws_front1.write(row,1, 'TIME', style_head_row) 
-    ws_front1.write(row,2, 'CASE NO.', style_head_row) 
-    ws_front1.write_merge(row,row, 3, 8, 'NAME', style_head_row)
-    ws_front1.write_merge(row,row, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
-
-
-    row += 1
-    for kardex in Kardex.objects.all():
-        ws_front1.write(row,0, kardex.id, style_data_row)
-        ws_front1.write(row,1, kardex.name, style_data_row)
-        ws_front1.write(row,2, kardex.age, style_data_row)
-        ws_front1.write_merge(row,row,3, 8, kardex.sex, style_data_row)
-        ws_front1.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
-
-        row += 1 
     
-    row += 1
+    current_row = add_front_header(ws_front1,current_row,START_COL,END_COL)
 
-    ws_front1.write_merge(row,row,START_COL,END_COL, "DEATH")
-    row += 2
 
-    ws_front1.write(row,0, 'WARD AND BED NO.', style_head_row) 
-    ws_front1.write(row,1, 'TIME', style_head_row) 
-    ws_front1.write(row,2, 'CASE NO.', style_head_row) 
-    ws_front1.write_merge(row,row, 3, 8, 'NAME', style_head_row)
-    ws_front1.write_merge(row,row, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
+    for context in context_header:
+        current_row = add_section(ws_front1, current_row, START_COL, END_COL, context, style_head_row)
+        current_row = add_data(ws_front1, context_header[context], current_row, END_COL, style_data_row)
 
-        
-    row += 1
-    for kardex in Kardex.objects.all():
-        ws_front1.write(row,0, kardex.id, style_data_row)
-        ws_front1.write(row,1, kardex.name, style_data_row)
-        ws_front1.write(row,2, kardex.age, style_data_row)
-        ws_front1.write_merge(row,row,3, 8, kardex.sex, style_data_row)
-        ws_front1.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
 
-        row += 1 
+
 
 
 def generate_front_2(work_book, style_head_row, style_data_row):
@@ -607,6 +540,68 @@ def generate_back_3(work_book, style_head_row, style_data_row):
     ws_front2 = work_book.add_sheet(u'BACK3')
 
 
+#Excel Utilities
+
+def add_front_header(ws,current_row,START_COL,END_COL):
+    ws.write_merge(current_row,current_row,START_COL,END_COL, "HOSPITAL CENSUS REPORT")
+    current_row += 1
+
+    ws.write(current_row,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF')
+    ws.write_merge(current_row,current_row,4,6, "07-SEP-22")
+    ws.write(current_row,9, 'FLOOR/SECTION:')
+    ws.write_merge(current_row,current_row,11,END_COL, "COVID")
+    current_row += 2
+
+    return current_row
+
+
+def add_section(ws, current_row, START_COL, END_COL, header_name, style_head_row):
+    ws.write_merge(current_row,current_row,START_COL,END_COL, header_name)
+    current_row += 2
+
+    # Generate worksheet head row data.
+    ws.write(current_row,0, 'WARD AND BED NO.', style_head_row) 
+    ws.write(current_row,1, 'TIME', style_head_row) 
+    ws.write(current_row,2, 'CASE NO.', style_head_row) 
+    ws.write_merge(current_row,current_row, 3, 8, 'NAME', style_head_row)
+    ws.write_merge(current_row,current_row, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
+    current_row += 1
+
+    return current_row
+
+
+def add_data(ws, kardexs, current_row, END_COL, style_data_row):
+    for kardex in kardexs:
+        ws.write(current_row,0, kardex.id, style_data_row)
+        ws.write(current_row,1, kardex.name, style_data_row)
+        ws.write(current_row,2, kardex.age, style_data_row)
+        ws.write_merge(current_row,current_row,3, 8, kardex.sex, style_data_row)
+        ws.write_merge(current_row,current_row,9,END_COL, kardex.sex, style_data_row)
+        current_row += 1 
+
+    current_row += 1
+    return current_row
+
+
+
+def get_context_hospital_census_report():
+    admission = Kardex.objects.all()
+    discharges = Kardex.objects.all()
+    death = Kardex.objects.all()
+
+    context = {"ADMISSION": admission, "DISCHARGES": discharges, "DEATH":death}
+
+    return context
+
+
+def edit_row_height(ws, target_row, height):
+    header_row = ws.row(target_row-1)
+    tall_style = xlwt.easyxf(f'font:height {height * 20};') # 36pt: divide by 20
+    header_row.set_style(tall_style)
+
+def edit_col_width(ws, target_col, width):
+    header_col = ws.col(target_col-1)
+    header_col.width = 256 * width   #20 char
 
 
   #Generating ALL XLSX
@@ -617,36 +612,37 @@ def generate_census_XLSX(request):
 
     style_head_row = xlwt.easyxf("""    
         align:
-        wrap on,
-        vert center,
-        horiz center;
+            wrap on,
+            vert center,
+            horiz center;
         borders:
-        left THIN,
-        right THIN,
-        top THIN,
-        bottom THIN;
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
         font:
-        name Calibri,
-        colour_index Black,
-        bold on,
-        height 240;
+            name Calibri,
+            colour_index Black,
+            bold on,
+            height 240;
         """
     )
 
     style_data_row = xlwt.easyxf("""
         align:
-        wrap on,
-        vert center,
-        horiz left;
+            wrap on,
+            vert center,
+            horiz center;
         font:
-        name Arial,
-        bold off,
-        height 0XA0;
+            name Calibri,
+            bold off,
+            height 240;
         borders:
-        left THIN,
-        right THIN,
-        top THIN,
-        bottom THIN;
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
+
         """
     )
 
