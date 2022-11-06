@@ -80,6 +80,8 @@ class Nurse(AbstractUser):
     sex = models.CharField(max_length=10, default='Male', null=True, blank=True)
     ward = models.CharField(max_length=255, null=True, blank=True)
     department = models.CharField(max_length=255, null=True, blank=True)
+    nurse_level = models.CharField(max_length=255, null=True, blank=True)
+    on_duty = models.CharField(max_length=69, null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
     
     def __str__(self):

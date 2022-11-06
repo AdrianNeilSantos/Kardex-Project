@@ -28,6 +28,8 @@ from django.utils import timezone
 import pandas as pd
 import xlwt
 
+from datetime import date
+
 # for REST API
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -242,7 +244,23 @@ def viewProfile(request):
             form.save()
             return redirect("/view-profile")
 
-    context = {"nurse": nurse, "form": form}
+    nurse_on_duty = nurse.on_duty.split(',')[datetime.datetime.now().weekday()] \
+        if nurse.on_duty and nurse.on_duty.split(',').length > 1 else '(Missing On Duty Schedule)'
+    formatted_nurse_on_duty = '(Missing On Duty Schedule)'
+    if 'Missing' not in nurse_on_duty:
+        formatted_nurse_on_duty = map(lambda time: \
+            f'{ time[:2] }:{ time[:-2] }AM' \
+            if int(time) < 1300 \
+            else f'{ int(time[:2]) - 12 }:{ time[:-2] }PM', \
+            nurse_on_duty.split('-'))
+        formatted_nurse_on_duty = f'{ formatted_nurse_on_duty[0] } - { formatted_nurse_on_duty[1] }'
+    context = {
+        'nurse': nurse,
+        'form': form,
+        'nurse_age': calculate_age(nurse.birthday),
+        'nurse_on_duty': nurse_on_duty,
+        'formatted_nurse_on_duty': formatted_nurse_on_duty
+    }
     return render(request, 'kardex_app/Nurse/view-profile.html', context)
 
 
@@ -739,6 +757,13 @@ def flattenNestedLists(A):
         if isinstance(i, list): rt.extend(flattenNestedLists(i))
         else: rt.append(i)
     return rt
+
+def calculate_age(born):
+    today = date.today()
+    if born:
+        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+    else:
+        return 0
 
 def splitToLists(query_dict):
     list_keys = [

@@ -72,3 +72,10 @@ input, button, .input-group-text {
   padding-left: 64px;
   padding-right: 64px;
 }
+
+.i-btn {
+  display: flex;
+  flex: column;
+  justify-content: center;
+  align-items: center;
+}
