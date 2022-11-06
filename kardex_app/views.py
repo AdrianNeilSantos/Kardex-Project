@@ -672,7 +672,7 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
 
         target_nurse = request.GET.get('nurse', '')
         if target_nurse:
-            relevant_kardex = relevant_kardex.filter(Q(edited_by_contains=[target_nurse]))
+            relevant_kardex = relevant_kardex.filter(Q(edited_by__contains=[target_nurse]))
 
         target_name = request.GET.get('name', '')
         if target_name:
