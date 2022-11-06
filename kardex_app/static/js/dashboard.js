@@ -293,9 +293,12 @@ const getNursePage = async (page) => {
 };
 
 let firstAPICall = true;
+let kardexNameFilter = '';
+let kardexMinDateFilter = '';
+let kardexMaxDateFilter = '';
 const getKardexPage = async (page) => {
   await axios
-    .get(`/api/v1/kardex/paginated/?limit=100&offset=${(page - 1) * 100}`)
+    .get(`/api/v1/kardex/paginated/?name=${ kardexNameFilter }&min-date=${ kardexMinDateFilter }&max-date=${ kardexMaxDateFilter }&limit=100&offset=${(page - 1) * 100}`)
     .then((res) => {
       currKardexs = res.data.results
         .map((kardex) => {
@@ -307,7 +310,7 @@ const getKardexPage = async (page) => {
       generateSmallKardexs();
 
       if (!firstAPICall) {
-        filterKardexs('forceFilterKardexs');
+        // filterKardexs('forceFilterKardexs');
         sortKardexs();
       }
       firstAPICall = false;
@@ -392,54 +395,63 @@ refreshBtns.forEach((el) => el.addEventListener('click', handleRefreshBtnClick))
 
 const searchDashboardInput = document.querySelector('#searchDashboardInput');
 const searchDashboardBtn = document.querySelector('#searchDashboardBtn');
-const handleDashboardSearch = () => {
-  const searchVal = searchDashboardInput.value;
-  const filteredKardexs = currKardexs.filter((kardex) => {
-    return kardex.name.toLowerCase().includes(searchVal.toLowerCase());
-  });
-  return filteredKardexs;
-};
+// const handleDashboardSearch = () => {
+//   const searchVal = searchDashboardInput.value;
+//   const filteredKardexs = currKardexs.filter((kardex) => {
+//     return kardex.name.toLowerCase().includes(searchVal.toLowerCase());
+//   });
+//   return filteredKardexs;
+// };
 
 const dateRangeMinInput = document.querySelector('#dateRangeMinInput');
 const dateRangeMaxInput = document.querySelector('#dateRangeMaxInput');
-const filterKardexByDate = () => {
-  const dateFormat = 'YYYY-MM-DD';
-  const minDate = dateRangeMinInput.value
-    ? moment(dateRangeMinInput.value, dateFormat)
-    : moment('0001-01-01', dateFormat);
-  const maxDate = dateRangeMaxInput.value
-    ? moment(new Date(dateRangeMaxInput.value), dateFormat)
-    : moment(new Date(), dateFormat);
-  const filteredKardexs = currKardexs.filter((kardex) => {
-    const kardexDate = moment(kardex.date_time || kardex.date_added, dateFormat);
-    return kardexDate.isBetween(minDate, maxDate);
-  });
+// const filterKardexByDate = () => {
+//   const dateFormat = 'YYYY-MM-DD';
+//   const minDate = dateRangeMinInput.value
+//     ? moment(dateRangeMinInput.value, dateFormat)
+//     : moment('0001-01-01', dateFormat);
+//   const maxDate = dateRangeMaxInput.value
+//     ? moment(new Date(dateRangeMaxInput.value), dateFormat)
+//     : moment(new Date(), dateFormat);
+//   const filteredKardexs = currKardexs.filter((kardex) => {
+//     const kardexDate = moment(kardex.date_time || kardex.date_added, dateFormat);
+//     return kardexDate.isBetween(minDate, maxDate);
+//   });
 
-  return filteredKardexs;
-};
+//   return filteredKardexs;
+// };
+
+// const filterKardexs = (e) => {
+//   if (e !== 'forceFilterKardexs' && e.target.id !== 'searchDashboardBtn' && e.key !== 'Enter')
+//     return;
+
+//   const filteredKardexsByName = handleDashboardSearch() || currKardexs;
+//   const filteredKardexsByDate = filterKardexByDate() || currKardexs;
+  
+//   const filteredKardexs = currKardexs.filter((kardex) => {
+//     return filteredKardexsByName.includes(kardex) && filteredKardexsByDate.includes(kardex);
+//   });
+
+//   kardexGroupContainer.querySelectorAll('.kardex-container').forEach((el) => {
+//     const kardexId = el.querySelector('.kardex-id-span').textContent;
+//     if (filteredKardexs.map((kardex) => kardex.id.toString()).includes(kardexId))
+//       el.classList.remove('d-none');
+//     else
+//       el.classList.add('d-none');
+//   });
+// };
 
 const filterKardexs = (e) => {
   if (e !== 'forceFilterKardexs' && e.target.id !== 'searchDashboardBtn' && e.key !== 'Enter')
     return;
 
-  const filteredKardexsByName = handleDashboardSearch() || currKardexs;
-  const filteredKardexsByDate = filterKardexByDate() || currKardexs;
-  console.log(filteredKardexsByName);
-  console.log(filteredKardexsByDate);
-  
-  const filteredKardexs = currKardexs.filter((kardex) => {
-    return filteredKardexsByName.includes(kardex) && filteredKardexsByDate.includes(kardex);
-  });
-  console.log(filteredKardexs);
-  kardexGroupContainer.querySelectorAll('.kardex-container').forEach((el) => {
-    const kardexId = el.querySelector('.kardex-id-span').textContent;
-    console.log(kardexId);
-    if (filteredKardexs.map((kardex) => kardex.id.toString()).includes(kardexId))
-      el.classList.remove('d-none');
-    else
-      el.classList.add('d-none');
-  });
+  kardexNameFilter = searchDashboardInput.value;
+  kardexMinDateFilter = dateRangeMinInput.value;
+  kardexMaxDateFilter = dateRangeMaxInput.value;
+
+  getRelevantData(pageInputs[0].value);
 };
+
 searchDashboardInput.addEventListener('keydown', filterKardexs);
 searchDashboardBtn.addEventListener('click', filterKardexs);
 dateRangeMinInput.addEventListener('keydown', filterKardexs);

@@ -668,9 +668,30 @@ class KardexList(APIView):
 
 class PaginatedKardexList(APIView, LimitOffsetPagination):
     def get(self, request, format=None):
-        print(request.GET.get('nurse'))
-        relevant_kardex = Kardex.objects.filter(Q(edited_by__contains=[request.GET.get('nurse')])) \
-            if 'nurse' in request.GET else Kardex.objects.all()
+        relevant_kardex = Kardex.objects.all()
+
+        target_nurse = request.GET.get('nurse', '')
+        if target_nurse:
+            relevant_kardex = relevant_kardex.filter(Q(edited_by_contains=[target_nurse]))
+
+        target_name = request.GET.get('name', '')
+        if target_name:
+            relevant_kardex = relevant_kardex.filter(Q(name__icontains=target_name))
+
+        target_min_date = request.GET.get('min-date', '')
+        if target_min_date:
+            split_min_date = target_min_date.split('-')
+            date_format = ['%Y', '%m', '%d']
+            target_min_date = timezone.make_aware(datetime.strptime('-'.join(split_min_date), '-'.join(date_format[:len(split_min_date)])))
+            relevant_kardex = relevant_kardex.filter(Q(date_time__gte=target_min_date) | Q(date_added__gte=target_min_date))
+
+        target_max_date = request.GET.get('max-date', '')
+        if target_max_date:
+            split_max_date = target_max_date.split('-')
+            date_format = ['%Y', '%m', '%d']
+            target_max_date = timezone.make_aware(datetime.strptime('-'.join(split_max_date), '-'.join(date_format[:len(split_max_date)])))
+            relevant_kardex = relevant_kardex.filter(Q(date_time__lte=target_max_date) | Q(date_added__lte=target_max_date))
+
         results = self.paginate_queryset(relevant_kardex, request, view=self)
         serializers = KardexSerializer(results, many=True)
         return self.get_paginated_response(serializers.data)
