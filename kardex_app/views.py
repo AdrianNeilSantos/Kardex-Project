@@ -336,6 +336,7 @@ def diet_list_PDF(request):
 def intravenous_fluid_tags_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/intravenous-fluid-tags.html"
     kardexs = Kardex.objects.all()
+    
     context = {"user": request.user, "kardexs": kardexs}
     fileName = "intravenous-fluid-tags"
 
