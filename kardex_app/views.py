@@ -336,6 +336,7 @@ def diet_list_PDF(request):
 def intravenous_fluid_tags_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/intravenous-fluid-tags.html"
     kardexs = Kardex.objects.all()
+    
     context = {"user": request.user, "kardexs": kardexs}
     fileName = "intravenous-fluid-tags"
 
@@ -403,7 +404,7 @@ def render_to_PDF(template_src, context_dict, fileName):
 
 def generate_front_1(work_book, style_head_row, style_data_row):
     ws_front1 = work_book.add_sheet(u'FRONT1')
-    context_header = get_context_hospital_census_report()
+    context_header = get_context_front()
     
     #Adjusts colum widths
     edit_col_width(ws_front1, 1, 15)
@@ -415,7 +416,6 @@ def generate_front_1(work_book, style_head_row, style_data_row):
     START_ROW = 6
     current_row = START_ROW
 
-    
     
     current_row = add_front_header(ws_front1,current_row,START_COL,END_COL)
 
@@ -440,96 +440,27 @@ def generate_front_3(work_book, style_head_row, style_data_row):
 def generate_back_1(work_book, style_head_row, style_data_row):
     ws_front2 = work_book.add_sheet(u'BACK1')
 
+    context_header = get_context_back()
     
+    #Adjusts colum widths
+    edit_col_width(ws_front2, 1, 15)
+    edit_col_width(ws_front2, 2, 12)
+    edit_col_width(ws_front2, 3, 12)
+
     START_COL = 0
     END_COL = 13
-    ws_front2.write_merge(6,6,START_COL,END_COL, "HOSPITAL CENSUS REPORT")
-
-    ws_front2.write(7,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF')
-    ws_front2.write_merge(7,7,4,6, "07-SEP-22")
-    ws_front2.write(7,9, 'FLOOR/SECTION:')
-    ws_front2.write_merge(7,7,11,END_COL, "COVID")
-
-
-    ws_front2.write_merge(9,9,START_COL,END_COL, "TRANS-IN")
-
-    HEADER_ROW = 13 - 1
-
-
-    #Setting cell dimensions
-    header_row = ws_front2.row(HEADER_ROW)
-
-    tall_style = xlwt.easyxf('font:height 720;') # 36pt: divide by 20
-    header_row.set_style(tall_style)
-
-    header_col = ws_front2.col(0)
-    header_col.width = 256 * 20   #20 char
-
-
-
-    # Generate worksheet head row data.
-    ws_front2.write(HEADER_ROW,0, 'WARD AND BED NO.', style_head_row) 
-    ws_front2.write(HEADER_ROW,1, 'TIME', style_head_row) 
-    ws_front2.write(HEADER_ROW,2, 'CASE NO.', style_head_row) 
-    ws_front2.write_merge(HEADER_ROW,HEADER_ROW, 3, 8, 'NAME', style_head_row)
-    ws_front2.write_merge(HEADER_ROW,HEADER_ROW, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
-
+    START_ROW = 0
+    current_row = START_ROW
 
     
-    # Generate worksheet data row data.
-    row = HEADER_ROW + 1
-    for kardex in Kardex.objects.all():
-        ws_front2.write(row,0, kardex.id, style_data_row)
-        ws_front2.write(row,1, kardex.name, style_data_row)
-        ws_front2.write(row,2, kardex.age, style_data_row)
-        ws_front2.write_merge(row,row,3, 8, kardex.sex, style_data_row)
-        ws_front2.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
-
-        row += 1 
-
-    row += 1
-
-    ws_front2.write_merge(row,row,START_COL,END_COL, "TRANS-OUT")
-    row += 2
-
-    ws_front2.write(row,0, 'WARD AND BED NO.', style_head_row) 
-    ws_front2.write(row,1, 'TIME', style_head_row) 
-    ws_front2.write(row,2, 'CASE NO.', style_head_row) 
-    ws_front2.write_merge(row,row, 3, 8, 'NAME', style_head_row)
-    ws_front2.write_merge(row,row, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
+    current_row = add_front_header(ws_front2,current_row,START_COL,END_COL)
 
 
-    row += 1
-    for kardex in Kardex.objects.all():
-        ws_front2.write(row,0, kardex.id, style_data_row)
-        ws_front2.write(row,1, kardex.name, style_data_row)
-        ws_front2.write(row,2, kardex.age, style_data_row)
-        ws_front2.write_merge(row,row,3, 8, kardex.sex, style_data_row)
-        ws_front2.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
+    for context in context_header:
+        current_row = add_section(ws_front2, current_row, START_COL, END_COL, context, style_head_row)
+        current_row = add_data(ws_front2, context_header[context], current_row, END_COL, style_data_row)
 
-        row += 1 
-    
-    row += 1
 
-    ws_front2.write_merge(row,row,START_COL,END_COL, "TRANSFER TO OTHER HOSPITAL")
-    row += 2
-
-    ws_front2.write(row,0, 'WARD AND BED NO.', style_head_row) 
-    ws_front2.write(row,1, 'TIME', style_head_row) 
-    ws_front2.write(row,2, 'CASE NO.', style_head_row) 
-    ws_front2.write_merge(row,row, 3, 8, 'NAME', style_head_row)
-    ws_front2.write_merge(row,row, 9, END_COL, 'DIAGNOSIS AND CONDITION', style_head_row)
-
-        
-    row += 1
-    for kardex in Kardex.objects.all():
-        ws_front2.write(row,0, kardex.id, style_data_row)
-        ws_front2.write(row,1, kardex.name, style_data_row)
-        ws_front2.write(row,2, kardex.age, style_data_row)
-        ws_front2.write_merge(row,row,3, 8, kardex.sex, style_data_row)
-        ws_front2.write_merge(row,row,9,END_COL, kardex.sex, style_data_row)
-
-        row += 1 
 
 
 def generate_back_2(work_book, style_head_row, style_data_row):
@@ -543,8 +474,9 @@ def generate_back_3(work_book, style_head_row, style_data_row):
 #Excel Utilities
 
 def add_front_header(ws,current_row,START_COL,END_COL):
-    ws.write_merge(current_row,current_row,START_COL,END_COL, "HOSPITAL CENSUS REPORT")
-    current_row += 1
+    if "FRONT" in ws.name:    
+        ws.write_merge(current_row,current_row,START_COL,END_COL, "HOSPITAL CENSUS REPORT")
+        current_row += 1
 
     ws.write(current_row,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF')
     ws.write_merge(current_row,current_row,4,6, "07-SEP-22")
@@ -584,12 +516,22 @@ def add_data(ws, kardexs, current_row, END_COL, style_data_row):
 
 
 
-def get_context_hospital_census_report():
+def get_context_front():
     admission = Kardex.objects.all()
     discharges = Kardex.objects.all()
     death = Kardex.objects.all()
 
     context = {"ADMISSION": admission, "DISCHARGES": discharges, "DEATH":death}
+
+    return context
+
+
+def get_context_back():
+    trans_in = Kardex.objects.all()
+    trans_out = Kardex.objects.all()
+    trans_other = Kardex.objects.all()
+
+    context = {"TRANS-IN": trans_in, "TRANS-OUT": trans_out, "TRANSFER TO OTHER HOSPITAL":trans_other}
 
     return context
 
