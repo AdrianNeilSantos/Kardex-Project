@@ -8,75 +8,300 @@
 </script>
 <script defer src={% static "js/view-profile.js" %}></script>
 <div class="container px-5">
-    <div class="card border-0">
-      <!-- Nurse Information -->
-      <div class="card-body d-flex border-0 justify-content-center align-items-center">
-        <div class="nurse-image position-relative col-4 px-5 img-fluid">
-          {% if nurse.picture %}
-          <img src={{ nurse.picture.url }} class="card-img-top" alt="">
-          {% else %}
-          <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
-          {% endif %}
-          <button
-            type="button"
-            class="img-gear-btn i-btn btn btn-outline-dark p-2"
-          >
-            <i class="fa-solid fa-gear fs-4"></i>
-          </button>
-        </div>
-        <ul class="list-group list-group-flush col-8">
-          <li class="nurse-name list-group-item fw-bold h1 text-nowrap">
-            {{ nurse.last_name }}, {{ nurse.first_name }}
-          </li>
-          <li class="nurse-id list-group-item h1 text-nowrap">
-            <b>ID # {{ nurse.id }} -</b>
-            {{ nurse.nurse_level|default:'(Missing Nurse Level)' }}
-          </li>
-          <li class="nurse-demographic list-group-item h1 text-nowrap">
-            <b>{{ nurse.sex }},</b>
-            {{ nurse_age }} years old
-          </li>
-          <li class="nurse-duty list-group-item h1 text-nowrap">
-            <b>On Duty:</b>
-            <span class="on-duty-span">
-              {{ formatted_nurse_on_duty }}
-            </span>
-          </li>
-          <li class="nurse-ward-dept list-group-item h1 text-nowrap">
-            {{ nurse.ward|default:'N/A' }}&nbsp;<b>Ward</b>,
-            {{ nurse.department|default:'N/A' }}&nbsp;<b>Department</b>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="w-100 d-flex flex-wrap justify-content-center">
-      <button
-        type="button"
-        class="btn btn-outline-dark fw-bold mb-2 me-3"
-      >
-        <i class="fa-solid fa-pen"></i>
-        Update Profile
-      </button>
-      <button
-        type="button"
-        class="btn btn-outline-dark fw-bold mb-2 me-3"
-      >
-        <i class="fa-solid fa-arrow-up"></i>
-        Request for Kardex access permission extension
-      </button>
-      <a
-        href="{% url 'password-reset' %}"
-      >
+  <div class="card border-0">
+    <!-- Nurse Information -->
+    <div class="card-body d-flex border-0 justify-content-center align-items-center">
+      <div class="nurse-image position-relative col-4 px-5 img-fluid">
+        {% if nurse.picture %}
+        <img src={{ nurse.picture.url }} class="card-img-top" alt="">
+        {% else %}
+        <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
+        {% endif %}
         <button
           type="button"
-          class="btn btn-outline-dark fw-bold me-3"
+          class="img-gear-btn i-btn btn btn-outline-dark p-2"
         >
-          <i class="fa-solid fa-key"></i>
-          Change Password
+          <i class="fa-solid fa-gear fs-4"></i>
         </button>
-      </a>
+      </div>
+      <ul class="list-group list-group-flush col-8">
+        <li class="nurse-name list-group-item fw-bold h1 text-nowrap">
+          {{ nurse.last_name }}, {{ nurse.first_name }}
+        </li>
+        <li class="nurse-id list-group-item h1 text-nowrap">
+          <b>ID # {{ nurse.id }} -</b>
+          {{ nurse.nurse_level|default:'(Missing Nurse Level)' }}
+        </li>
+        <li class="nurse-demographic list-group-item h1 text-nowrap">
+          <b>{{ nurse.sex }},</b>
+          {{ nurse_age }} years old
+        </li>
+        <li class="nurse-duty list-group-item h1 text-nowrap">
+          <b>On Duty:</b>
+          <span class="on-duty-span">
+            {{ formatted_nurse_on_duty }}
+          </span>
+        </li>
+        <li class="nurse-ward-dept list-group-item h1 text-nowrap">
+          {{ nurse.ward|default:'N/A' }}&nbsp;<b>Ward</b>,
+          {{ nurse.department|default:'N/A' }}&nbsp;<b>Department</b>
+        </li>
+      </ul>
     </div>
   </div>
+  <div class="w-100 d-flex flex-wrap justify-content-center mb-3">
+    <button
+      type="button"
+      id="showUpdateProfileBtn"
+      class="btn btn-outline-dark fw-bold mb-2 me-3"
+    >
+      <i class="fa-solid fa-eye"></i>
+      <span>Show Update Profile</span>
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark fw-bold mb-2 me-3"
+    >
+      <i class="fa-solid fa-arrow-up"></i>
+      Request for Kardex access permission extension
+    </button>
+    <a
+      href="{% url 'password-reset' %}"
+    >
+      <button
+        type="button"
+        class="btn btn-outline-dark fw-bold me-3"
+      >
+        <i class="fa-solid fa-key"></i>
+        Change Password
+      </button>
+    </a>
+  </div>
+  <form id="updateProfileForm" class="update-form d-none container d-flex flex-column" action="" method="POST">
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="usernameLabel">Username</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="New Username"
+        value="{{ nurse.username|default:'' }}"
+        aria-label="New Username"
+        aria-describedby="usernameLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="emailLabel">Email</span>
+      <input
+        type="email"
+        class="form-control"
+        placeholder="New Email"
+        value="{{ nurse.email|default:'' }}"
+        aria-label="New Email"
+        aria-describedby="emailLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="firstAndLastNameLabel">First and Last Name</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="New First Name"
+        value="{{ nurse.first_name|default:'' }}"
+        aria-label="New First Name"
+        aria-describedby="firstAndLastNameLabel"
+      >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="New Last Name"
+        value="{{ nurse.last_name|default:'' }}"
+        aria-label="New Last Name"
+        aria-describedby="firstAndLastNameLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="sexLabel">Sex</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="New Sex"
+        value="{{ nurse.sex|default:'' }}"
+        aria-label="New Sex"
+        aria-describedby="sexLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="wardLabel">Ward</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="New Ward"
+        value="{{ nurse.ward|default:'' }}"
+        aria-label="New Ward"
+        aria-describedby="wardLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="departmentLabel">Department</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="New Department"
+        value="{{ nurse.ward|default:'' }}"
+        aria-label="New Department"
+        aria-describedby="departmentLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="nurseLevelLabel">Nurse Level</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="New Nurse Level"
+        value="{{ nurse.nurse_level|default:'' }}"
+        aria-label="New Nurse Level"
+        aria-describedby="nurseLevelLabel"
+      >
+    </div>
+    <h4 class="ms-2">
+      <b>On Duty Schedule:</b>
+      Fill in the fields below with the starting and ending times (military time) to
+      update {{ nurse.last_name }}'s on duty schedule.
+    </h4>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="onDutyMondayLabel">Monday</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 0800)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:0|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
+        aria-label="New On Duty Start on Monday"
+        aria-describedby="onDutyMondayLabel"
+      >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 1600)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:0|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
+        aria-label="New On Duty End on Monday"
+        aria-describedby="onDutyMondayLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="onDutyTuesdayLabel">Tuesday</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 0800)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:1|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
+        aria-label="New On Duty Start on Tuesday"
+        aria-describedby="onDutyMondayLabel"
+      >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 1600)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:1|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
+        aria-label="New On Duty End on Tuesday"
+        aria-describedby="onDutyTuesdayLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="onDutyWednesdayLabel">Wednesday</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 0800)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:2|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
+        aria-label="New On Duty Start on Wednesday"
+        aria-describedby="onDutyMondayLabel"
+      >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 1600)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:2|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
+        aria-label="New On Duty End on Wednesday"
+        aria-describedby="onDutyWednesdayLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="onDutyThursdayLabel">Thursday</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 0800)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:3|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
+        aria-label="New On Duty Start on Thursday"
+        aria-describedby="onDutyThursdayLabel"
+      >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 1600)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:3|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
+        aria-label="New On Duty End on Thursday"
+        aria-describedby="onDutyThursdayLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="onDutyFridayLabel">Friday</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 0800)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:4|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
+        aria-label="New On Duty Start on Friday"
+        aria-describedby="onDutyFridayLabel"
+      >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 1600)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:4|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
+        aria-label="New On Duty End on Friday"
+        aria-describedby="onDutyFridayLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="onDutySaturdayLabel">Saturday</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 0800)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:5|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
+        aria-label="New On Duty Start on Saturday"
+        aria-describedby="onDutySaturdayLabel"
+      >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 1600)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:5|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
+        aria-label="New On Duty End on Saturday"
+        aria-describedby="onDutySaturdayLabel"
+      >
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="onDutySundayLabel">Sunday</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 0800)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:6|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
+        aria-label="New On Duty Start on Sunday"
+        aria-describedby="onDutySundayLabel"
+      >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="HHSS (e.g., 1600)"
+        value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:6|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
+        aria-label="New On Duty End on Sunday"
+        aria-describedby="onDutySundayLabel"
+      >
+    </div>
+  </form>
 </div>
 
 <!-- Kardex Section -->

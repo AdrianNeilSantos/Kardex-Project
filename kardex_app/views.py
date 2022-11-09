@@ -261,14 +261,45 @@ def viewProfile(request):
         'nurse_on_duty': nurse_on_duty,
         'formatted_nurse_on_duty': formatted_nurse_on_duty
     }
-    return render(request, 'kardex_app/Nurse/view-profile.html', context)
+    return render(request, 'kardex_app/nurse/view-profile.html', context)
+
+def profile(request, pk):
+    visiting_nurse = Nurse.objects.get(id=request.user.id)
+    target_nurse = Nurse.objects.get(id=pk)
+
+    form = NurseUpdateForm(instance=visiting_nurse)
+
+    if(request.method == "POST"):
+        form = NurseUpdateForm(request.POST, request.FILES, instance=visiting_nurse)
+        if(form.is_valid()):
+            form.save()
+            return redirect(f'/profile/{pk}')
+
+    nurse_on_duty = target_nurse.on_duty.split(',')[datetime.datetime.now().weekday()] \
+        if target_nurse.on_duty and target_nurse.on_duty.split(',').length > 1 else '(Missing On Duty Schedule)'
+    formatted_nurse_on_duty = '(Missing On Duty Schedule)'
+    if 'Missing' not in nurse_on_duty:
+        formatted_nurse_on_duty = map(lambda time: \
+            f'{ time[:2] }:{ time[:-2] }AM' \
+            if int(time) < 1300 \
+            else f'{ int(time[:2]) - 12 }:{ time[:-2] }PM', \
+            nurse_on_duty.split('-'))
+        formatted_nurse_on_duty = f'{ formatted_nurse_on_duty[0] } - { formatted_nurse_on_duty[1] }'
+    context = {
+        'nurse': target_nurse,
+        'form': form,
+        'nurse_age': calculate_age(target_nurse.birthday),
+        'nurse_on_duty': nurse_on_duty,
+        'formatted_nurse_on_duty': formatted_nurse_on_duty
+    }
+    return render(request, 'kardex_app/nurse/profile.html', context)
 
 
 
 def nurseDashboard(request):
     nurses = Nurse.objects.all()
     context = {"nurses": nurses}
-    return render(request, 'kardex_app/Nurse/nurse-dashboard.html', context)
+    return render(request, 'kardex_app/nurse/nurse-dashboard.html', context)
 
 def createNurse(request):
     form = NurseCreationForm()
@@ -278,7 +309,7 @@ def createNurse(request):
             form.save()
             return redirect("/nurse-dashboard")
     context = {"form": form}
-    return render(request, 'kardex_app/Nurse/create-nurse.html', context)
+    return render(request, 'kardex_app/nurse/create-nurse.html', context)
 
 def updateNurse(request, pk):
     nurse = Nurse.objects.get(id=pk)
@@ -292,12 +323,12 @@ def updateNurse(request, pk):
             return redirect(f"/view-profile")
 
     context = {"form": form, "nurse": nurse}
-    return render(request, 'kardex_app/Nurse/update-nurse.html', context)
+    return render(request, 'kardex_app/nurse/update-nurse.html', context)
 
 def viewNurse(request, pk):
     nurse = Nurse.objects.get(id=pk)
     context = {"nurse": nurse}
-    return render(request, 'kardex_app/Nurse/view-nurse.html', context)
+    return render(request, 'kardex_app/nurse/view-nurse.html', context)
 
 
 def deleteNurse(request, pk):
