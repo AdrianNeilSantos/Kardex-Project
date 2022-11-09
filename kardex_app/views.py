@@ -512,9 +512,23 @@ def generate_back_3(work_book, style_head_row, style_data_row):
 #Excel Utilities
 
 def add_front_header(ws,current_row,START_COL,END_COL):
-    if "FRONT" in ws.name:    
-        ws.write_merge(current_row,current_row,START_COL,END_COL, "HOSPITAL CENSUS REPORT")
-        current_row += 1
+    if "FRONT" in ws.name:
+        style_sheet_header = xlwt.easyxf("""    
+            align:
+                wrap on,
+                vert center,
+                horiz center;
+            borders:
+                bottom THIN;
+            font:
+                name Calibri,
+                colour_index Black,
+                bold on,
+                height 280;
+            """
+        )
+        ws.write_merge(current_row,current_row,START_COL,END_COL, "HOSPITAL CENSUS REPORT", style_sheet_header)
+        current_row += 2
 
     ws.write(current_row,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF')
     ws.write_merge(current_row,current_row,4,6, "07-SEP-22")
@@ -526,7 +540,21 @@ def add_front_header(ws,current_row,START_COL,END_COL):
 
 
 def add_section(ws, current_row, START_COL, END_COL, header_name, style_head_row):
-    ws.write_merge(current_row,current_row,START_COL,END_COL, header_name)
+    
+    style_section_header = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz center;
+        font:
+            name Calibri,
+            colour_index Black,
+            bold on,
+            underline 1,
+            height 240;
+        """
+    )
+    ws.write_merge(current_row,current_row,START_COL,END_COL, header_name, style_section_header)
     current_row += 2
 
     # Generate worksheet head row data.
