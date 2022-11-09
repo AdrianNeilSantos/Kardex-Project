@@ -40,7 +40,7 @@ class NurseCreationForm(UserCreationForm):
 class NurseUpdateForm(ModelForm):
     class Meta:
         model = Nurse
-        fields = ['first_name', 'last_name', 'username', 'email', 'birthday', 'sex', 'picture']
+        fields = ['username', 'email', 'first_name', 'last_name', 'email', 'sex', 'birthday', 'ward', 'department', 'on_duty', 'nurse_level', 'picture']
         widgets = {
             'username': TextInput( attrs={ 'class': 'form-control', 'id':'floatingInput', 'placeholder':'Enter Username', 'required': True, } ),
             'first_name': TextInput( attrs={ 'class': 'form-control', 'id':'floatingInput', 'placeholder':'Enter name', 'required': False, } ),

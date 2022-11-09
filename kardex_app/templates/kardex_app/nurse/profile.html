@@ -79,6 +79,7 @@
       </a>
     </div>
     <form id="updateProfileForm" class="update-form d-none container d-flex flex-column" action="" method="POST">
+      {% csrf_token %}
       <div class="input-group mb-3">
         <span class="input-group-text" id="usernameLabel">Username</span>
         <input
@@ -129,6 +130,18 @@
         >
       </div>
       <div class="input-group mb-3">
+        <span class="input-group-text" id="birthdayLabel">Birthday</span>
+        <input
+          type="date"
+          name="birthday"
+          id="birthdayInput"
+          class="form-control"
+          value="{{ nurse.birthday|date:'Y-m-d'|default:'' }}"
+          aria-label="New Birthday"
+          aria-describedby="birthdayLabel"
+        >
+      </div>
+      <div class="input-group mb-3">
         <span class="input-group-text" id="sexLabel">Sex</span>
         <input
           type="text"
@@ -148,12 +161,25 @@
           name="ward"
           id="wardInput"
           class="form-control"
-          placeholder="New Ward"
+          placeholder="New Ward/s (e.g., MED,OB,GYNE,PED)"
           value="{{ nurse.ward|default:'' }}"
           aria-label="New Ward"
           aria-describedby="wardLabel"
           list="wardOptions"
         >
+        <datalist id="wardOptions">
+          <option value="MED">
+          <option value="OB">
+          <option value="GYNE">
+          <option value="PED">
+          <option value="SURG-A">
+          <option value="SURG-P">
+          <option value="OPHTHA">
+          <option value="ENT">
+          <option value="ORTHO">
+          <option value="SICK BB">
+          <option value="WELL BB">
+        </datalist>
       </div>
       <div class="input-group mb-3">
         <span class="input-group-text" id="departmentLabel">Department</span>
@@ -162,11 +188,25 @@
           name="department"
           id="departmentInput"
           class="form-control"
-          placeholder="New Department"
+          placeholder="New Department/s (e.g., MED,OB,GYNE,PED)"
           value="{{ nurse.ward|default:'' }}"
           aria-label="New Department"
           aria-describedby="departmentLabel"
+          list="departmentOptions"
         >
+        <datalist id="departmentOptions">
+          <option value="MED">
+          <option value="OB">
+          <option value="GYNE">
+          <option value="PED">
+          <option value="SURG-A">
+          <option value="SURG-P">
+          <option value="OPHTHA">
+          <option value="ENT">
+          <option value="ORTHO">
+          <option value="SICK BB">
+          <option value="WELL BB">
+        </datalist>
       </div>
       <div class="input-group mb-3">
         <span class="input-group-text" id="nurseLevelLabel">Nurse Level</span>

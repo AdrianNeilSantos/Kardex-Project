@@ -244,8 +244,8 @@ def viewProfile(request):
             form.save()
             return redirect("/view-profile")
 
-    nurse_on_duty = nurse.on_duty.split(',')[datetime.datetime.now().weekday()] \
-        if nurse.on_duty and nurse.on_duty.split(',').length > 1 else '(Missing On Duty Schedule)'
+    nurse_on_duty = nurse.on_duty.split(',')[datetime.now().weekday()] \
+        if nurse.on_duty and len(nurse.on_duty.split(',')) > 1 else '(Missing On Duty Schedule)'
     formatted_nurse_on_duty = '(Missing On Duty Schedule)'
     if 'Missing' not in nurse_on_duty:
         formatted_nurse_on_duty = map(lambda time: \
@@ -267,23 +267,30 @@ def profile(request, pk):
     visiting_nurse = Nurse.objects.get(id=request.user.id)
     target_nurse = Nurse.objects.get(id=pk)
 
-    form = NurseUpdateForm(instance=visiting_nurse)
-
-    if(request.method == "POST"):
-        form = NurseUpdateForm(request.POST, request.FILES, instance=visiting_nurse)
-        if(form.is_valid()):
+    form = NurseUpdateForm(instance=target_nurse)
+    if (request.method == "POST"):
+        print(request.POST)
+        post = request.POST.copy()
+        birthday = datetime.strptime(post.get('birthday'), '%Y-%m-%d').date()
+        post.update({
+            'birthday': birthday
+        })
+        print(post)
+        form = NurseUpdateForm(post, request.FILES, instance=target_nurse)
+        print(form.errors)
+        if (form.is_valid()):
             form.save()
             return redirect(f'/profile/{pk}')
 
-    nurse_on_duty = target_nurse.on_duty.split(',')[datetime.datetime.now().weekday()] \
-        if target_nurse.on_duty and target_nurse.on_duty.split(',').length > 1 else '(Missing On Duty Schedule)'
+    nurse_on_duty = target_nurse.on_duty.split(',')[datetime.now().weekday()] \
+        if target_nurse.on_duty and len(target_nurse.on_duty.split(',')) > 1 else '(Missing On Duty Schedule)'
     formatted_nurse_on_duty = '(Missing On Duty Schedule)'
     if 'Missing' not in nurse_on_duty:
-        formatted_nurse_on_duty = map(lambda time: \
+        formatted_nurse_on_duty = list(map(lambda time: \
             f'{ time[:2] }:{ time[:-2] }AM' \
             if int(time) < 1300 \
             else f'{ int(time[:2]) - 12 }:{ time[:-2] }PM', \
-            nurse_on_duty.split('-'))
+            nurse_on_duty.split('-')))
         formatted_nurse_on_duty = f'{ formatted_nurse_on_duty[0] } - { formatted_nurse_on_duty[1] }'
     context = {
         'nurse': target_nurse,
