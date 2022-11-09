@@ -17,7 +17,8 @@ class Kardex(models.Model):
     side_drip = models.TextField(null=True, blank=True)
     special_notations = models.TextField(null=True, blank=True)
     referrals = models.TextField(null=True, blank=True)
-    name = models.CharField(max_length=255, null=True, blank=True)
+    first_name = models.CharField(max_length=255, null=True, blank=True)
+    last_name = models.CharField(max_length=255, null=True, blank=True)
     age = models.IntegerField(
         null=True,
         blank=True,

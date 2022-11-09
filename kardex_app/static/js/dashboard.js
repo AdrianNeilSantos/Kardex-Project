@@ -207,9 +207,9 @@ const generateSmallKardexs = () => {
     smallKardex.classList.remove('d-none');
 
     const smallKardexText = smallKardex.querySelector('.small-kardex-text');
-    if (kardex.name) {
+    if (kardex.first_name || kardex.last_name) {
       const nameLine = document.createElement('b');
-      nameLine.textContent = kardex.name;
+      nameLine.textContent = `${ kardex.last_name || '' }, ${ kardex.first_name || '' }`;
       smallKardexText.append(nameLine, document.createElement('br'));
     }
 

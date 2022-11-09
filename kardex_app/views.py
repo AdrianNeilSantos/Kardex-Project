@@ -140,11 +140,6 @@ def password_reset_request(request):
 def dashboard(request):    
     print(timezone.now())
     kardexs = list(Kardex.objects.all()[:100])
-    for kardex in kardexs:
-        if kardex.name is None:
-            kardex.formatted_name = ''
-        else:
-            kardex.formatted_name = f"{kardex.name.split().pop()}, {' '.join(kardex.name.split()[:-1])}"
     context = { 'kardexs': kardexs }
 
     return render(request, 'kardex_app/kardex/dashboard.html', context)
@@ -571,7 +566,7 @@ def add_section(ws, current_row, START_COL, END_COL, header_name, style_head_row
 def add_data(ws, kardexs, current_row, END_COL, style_data_row):
     for kardex in kardexs:
         ws.write(current_row,0, kardex.id, style_data_row)
-        ws.write(current_row,1, kardex.name, style_data_row)
+        ws.write(current_row,1, f'{kardex.first_name} {kardex.last_name}', style_data_row)
         ws.write(current_row,2, kardex.age, style_data_row)
         ws.write_merge(current_row,current_row,3, 8, kardex.sex, style_data_row)
         ws.write_merge(current_row,current_row,9,END_COL, kardex.sex, style_data_row)
@@ -801,7 +796,8 @@ def formKardexDict(kardex):
         'Side Drip': kardex.side_drip or '',
         'Special Notations': kardex.special_notations or '',
         'Referrals': kardex.referrals or '',
-        'Name': kardex.name,
+        'First Name': kardex.first_name,
+        'Last Name': kardex.last_name,
         'Age/Sex': f"{ kardex.age }/{ kardex.sex }" if kardex.age and kardex.sex else '',
         'Date/Time': kardex.date_time or '',
         'Hospital #': kardex.hospital_num or '',
@@ -826,7 +822,8 @@ def formKardexComparisons(kardex1, kardex2):
         'Side Drip': 'Revision' if kardex1.side_drip != kardex2.side_drip else '',
         'Special Notations': 'Revision' if kardex1.special_notations != kardex2.special_notations else '',
         'Referrals': 'Revision' if kardex1.referrals != kardex2.referrals else '',
-        'Name': 'Revision' if kardex1.name != kardex2.name else '',
+        'First Name': 'Revision' if kardex1.first_name != kardex2.first_name else '',
+        'Last Name': 'Revision' if kardex1.last_name != kardex2.last_name else '',
         'Age/Sex': 'Revision' if f"{ kardex1.age }/{ kardex1.sex }" != f"{ kardex2.age }/{ kardex2.sex }" else '',
         'Date/Time': 'Revision' if kardex1.date_time != kardex2.date_time else '',
         'Hospital #': 'Revision' if kardex1.hospital_num != kardex2.hospital_num else '',

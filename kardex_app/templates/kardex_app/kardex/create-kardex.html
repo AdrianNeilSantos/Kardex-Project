@@ -15,7 +15,7 @@
           class="underline-field w-156 form-control me-2"
           placeholder="Name of Ward"
         >
-        <h2 class="fw-bold">WARD</h2>
+        <h2 class="required-span fw-bold">WARD</h2>
       </div>
       <div class="grid-wrapper w-100">
         <div class="ivf-cell d-flex flex-column p-3">
@@ -83,13 +83,23 @@
     <section class="lower-fields container-fluid container-lg d-flex flex-column flex-md-row">
       <div class="lower-left-fields d-flex flex-column pe-0 pe-md-4">
         <div class="d-flex align-items-center mb-3">
-          <span class="text-nowrap fs-2 fw-bold me-3">NAME:</span>
+          <span class="required-span text-nowrap fs-2 fw-bold me-3">FIRST NAME:</span>
           <input
-            name="name"
-            id="nameInput"
+            name="first_name"
+            id="firstNameInput"
             type="text"
             class="underline-field form-control"
-            placeholder="Name"
+            placeholder="First Name"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="required-span text-nowrap fs-2 fw-bold me-3">LAST NAME:</span>
+          <input
+            name="last_name"
+            id="lastNameInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Last Name"
           >
         </div>
         <div class="d-flex align-items-center mb-3">

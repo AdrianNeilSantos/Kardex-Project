@@ -2,8 +2,11 @@
 
 const createKardexForm = document.querySelector('#createKardexForm');
 
-const nameInput = document.querySelector('#nameInput');
-nameInput.addEventListener('keyup', (e) => e.target.value = e.target.value.replace(/\s{2}/g, ' '));
+const firstNameInput = document.querySelector('#firstNameInput');
+firstNameInput.addEventListener('keyup', (e) => e.target.value = e.target.value.replace(/\s{2}/g, ' '));
+
+const lastNameInput = document.querySelector('#lastNameInput');
+lastNameInput.addEventListener('keyup', (e) => e.target.value = e.target.value.replace(/\s{2}/g, ' '));
 
 const ageSexInput = document.querySelector('#ageSexInput');
 const dateTimeInput = document.querySelector('#dateTimeInput');
@@ -121,12 +124,19 @@ suggestionBtns.forEach(el => {
 const checkSubmitEligibility = () => {
   const errors = [];
 
-  const name = nameInput.value;
-  !name.length
-    && errors.push('NAME is required. Please enter the patient\'s name.');
+  const firstName = firstNameInput.value;
+  !firstName.length
+    && errors.push('FIRST NAME is required. Please enter the patient\'s name.');
 
-  !/^[a-z ]+$/i.test(name)
-    && errors.push('NAME must only contain letters and spaces.');
+  !/^[a-z ]+$/i.test(firstName)
+    && errors.push('FIRST NAME must only contain letters and spaces.');
+
+  const lastName = lastNameInput.value;
+  !lastName.length
+    && errors.push('LAST NAME is required. Please enter the patient\'s name.');
+  
+  !/^[a-z ]+$/i.test(lastName)
+    && errors.push('LAST NAME must only contain letters and spaces.');
 
   const ageSex = ageSexInput.value;
   ageSex.length && !/^[0-9]+\/[a-zA-Z]+$/.test(ageSex)
