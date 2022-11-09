@@ -7,8 +7,8 @@ const sideDripInput = document.querySelector('#sideDripInput');
 const specialNotationsInput = document.querySelector('#specialNotationsInput');
 const referralsInput = document.querySelector('#referralsInput');
 
-const nameInput = document.querySelector('#nameInput');
-nameInput.addEventListener('keyup', (e) => e.target.value = e.target.value.replace(/\s{2}/g, ' '));
+const firstNameInput = document.querySelector('#firstNameInput');
+const lastNameInput = document.querySelector('#lastNameInput');
 
 const ageSexInput = document.querySelector('#ageSexInput');
 const dateTimeInput = document.querySelector('#dateTimeInput');
@@ -52,7 +52,7 @@ const compareWCurr = (idx) => {
 
   const currVersionTitle = currVersionModalContainer.querySelector('[id^="modalCardTitle"]');
   currVersionTitle.id = 'modalCardTitleCurr';
-  currVersionTitle.getElementsByTagName('span')[0].textContent = nameInput.value.trim();
+  currVersionTitle.getElementsByTagName('span')[0].textContent = firstNameInput.value.trim();
   currVersionTitle.getElementsByTagName('span')[1].textContent = '(Your Current Version)';
 
   const currVersionBody = currVersionModalContainer.querySelector('[id^="modalCardBody"]');
@@ -86,9 +86,13 @@ const compareWCurr = (idx) => {
   currReferrals.id = 'referralsCurr';
   currReferrals.getElementsByTagName('span')[1].textContent = referralsInput.value.trim();
 
-  const currName = currVersionBody.querySelector('[id^="name"]:not([id^="nameOfWard"]');
-  currName.id = 'nameCurr';
-  currName.getElementsByTagName('span')[1].textContent = nameInput.value.trim();
+  const currFirstName = currVersionBody.querySelector('[id^="firstName"]:not([id^="nameOfWard"]');
+  currFirstName.id = 'firstNameCurr';
+  currFirstName.getElementsByTagName('span')[1].textContent = firstNameInput.value.trim();
+
+  const currLastName = currVersionBody.querySelector('[id^="lastName"]:not([id^="nameOfWard"]');
+  currLastName.id = 'lastNameCurr';
+  currLastName.getElementsByTagName('span')[1].textContent = lastNameInput.value.trim();
 
   const currAgeSex = currVersionBody.querySelector('[id^="ageSex"]');
   currAgeSex.id = 'ageSexCurr';
