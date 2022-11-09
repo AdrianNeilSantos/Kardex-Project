@@ -33,6 +33,7 @@ urlpatterns = [
 
     #End of Kardex
     #Nurse
+    path('profile/<str:pk>', views.profile, name="profile"),
     path('view-profile/', views.viewProfile, name="view-profile"),
     path('nurse-dashboard/', views.nurseDashboard, name="nurse-dashboard"),
     path('create-nurse/', views.createNurse, name="create-nurse"),
