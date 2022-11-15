@@ -4,6 +4,21 @@
 <link rel="stylesheet" href= {% static "css/kardex.css" %}>
 <script defer src={% static "js/create-kardex.js" %}></script>
 <div class="create-kardex-body w-100">
+  <datalist id="wardDeptOptions">
+    <option value="MED">
+    <option value="OB">
+    <option value="GYNE">
+    <option value="PED">
+    <option value="SURG-A">
+    <option value="SURG-P">
+    <option value="OPHTHA">
+    <option value="ENT">
+    <option value="ORTHO">
+    <option value="SICK BB">
+    <option value="WELL BB">
+  </datalist>
+  <!-- to avoid placement of down arrows when removing attribute list -->
+  <datalist id="emptyOptions"></datalist>
   <form id="createKardexForm" action="" method="post">
     {% csrf_token %}
     <section class="large-kardex container-fluid container-lg d-flex flex-column align-items-center mt-4 mb-3">
@@ -14,6 +29,7 @@
           type="text"
           class="underline-field w-156 form-control me-2"
           placeholder="Name of Ward"
+          list="wardDeptOptions"
         >
         <h2 class="required-span fw-bold">WARD</h2>
       </div>

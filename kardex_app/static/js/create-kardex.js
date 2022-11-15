@@ -16,6 +16,19 @@ const sexInput = document.querySelector('#sexInput');
 
 const createKardexBtn = document.querySelector('#createKardexBtn');
 
+
+const handleDepartmentInputs = () => {
+  const extraFieldNameInputs = Array.from(document.querySelectorAll('[id^="extraFieldNameInput"]'))
+    .concat(document.querySelector('#newFieldNameInput'));
+  extraFieldNameInputs.forEach((extraFieldNameInput) => {
+    const extraFieldValueInput = extraFieldNameInput.parentNode.querySelectorAll('input')[1];
+    if (extraFieldNameInput.value === 'Department' && extraFieldValueInput.getAttribute('list') !== 'wardDeptOptions')
+      extraFieldValueInput.setAttribute('list', 'wardDeptOptions');
+    else if (extraFieldNameInput.value !== 'Department')
+      extraFieldValueInput.setAttribute('list', 'emptyOptions');
+  });
+};
+
 const suggestionBtns = document.querySelectorAll('.suggestion-btn');
 const handleSuggestionBtns = (extraFieldNames) => {
   const suggestionBtnArr = suggestionBtns;
@@ -52,6 +65,7 @@ const editExtraFields = () => {
   extraFieldValuesInput.value = extraFieldValues.join(';;');
 
   handleSuggestionBtns(extraFieldNames);
+  handleDepartmentInputs();
 };
 newFieldNameInput.addEventListener('keyup', editExtraFields);
 newFieldValueInput.addEventListener('keyup', editExtraFields);
@@ -89,6 +103,9 @@ const addField = (fieldName = '') => {
   extraFieldValueInput.value = '';
   extraFieldValueInput.addEventListener('keyup', editExtraFields);
 
+  if (fieldName === 'Department')
+    extraFieldValueInput.setAttribute('list', 'wardDeptOptions');
+
   const colonSpan = document.createElement('span');
   colonSpan.classList.add('fs-2', 'fw-bold', 'me-3');
   colonSpan.textContent = ':';
@@ -123,8 +140,6 @@ suggestionBtns.forEach(el => {
 
 const checkSubmitEligibility = () => {
   const errors = [];
-
-  
 
   const firstName = firstNameInput.value;
   !firstName.length
