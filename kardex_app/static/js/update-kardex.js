@@ -276,17 +276,17 @@ suggestionBtns.forEach(el => {
 const checkSubmitEligibility = () => {
   const errors = [];
 
-  const firstName = firstNameInput.value;
-  !firstName.length
-    && errors.push('FIRST NAME is required. Please enter the patient\'s name.');
+  const requiredFields = document.querySelectorAll('.required-span');
+  requiredFields.forEach((requiredField) => {
+    if (!requiredField.parentNode.querySelector('input').value.length)
+      errors.push(`${ requiredField.textContent.trim().replace(':', '') } is required. Please enter a value.`);
+  });
 
+  const firstName = firstNameInput.value;
   !/^[a-z ]+$/i.test(firstName)
     && errors.push('FIRST NAME must only contain letters and spaces.');
 
   const lastName = lastNameInput.value;
-  !lastName.length
-    && errors.push('LAST NAME is required. Please enter the patient\'s name.');
-  
   !/^[a-z ]+$/i.test(lastName)
     && errors.push('LAST NAME must only contain letters and spaces.');
 

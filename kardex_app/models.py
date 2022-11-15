@@ -30,6 +30,7 @@ class Kardex(models.Model):
     sex = models.CharField(max_length=255, default='Male', null=True, blank=True)
     date_time = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     hospital_num = models.CharField(max_length=255, null=True, blank=True)
+    department = models.CharField(max_length=255, null=True, blank=True)
     dx = models.TextField(null=True, blank=True)
     drs = models.CharField(max_length=255, null=True, blank=True)
     diet = models.CharField(max_length=255, null=True, blank=True)

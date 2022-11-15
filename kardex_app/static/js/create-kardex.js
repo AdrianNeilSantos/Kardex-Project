@@ -145,7 +145,7 @@ const checkSubmitEligibility = () => {
   requiredFields.forEach((requiredField) => {
     if (!requiredField.parentNode.querySelector('input').value.length)
       errors.push(`${ requiredField.textContent.trim().replace(':', '') } is required. Please enter a value.`);
-  })
+  });
 
   const firstName = firstNameInput.value;
   !/^[a-z ]+$/i.test(firstName)
