@@ -1,6 +1,13 @@
 /* global bootstrap */
 
-const createKardexForm = document.querySelector('#createKardexForm');
+const updateKardexForm = document.querySelector('#updateKardexForm');
+const nameOfWardInput = document.querySelector('#nameOfWardInput');
+const ivfInput = document.querySelector('#ivfInput');
+const laboratoryWorkUps = document.querySelector('#laboratoryWorkUpsInput');
+const medicationsInput = document.querySelector('#medicationsInput');
+const sideDripInput = document.querySelector('#sideDripInput');
+const specialNotationsInput = document.querySelector('#specialNotationsInput');
+const referralsInput = document.querySelector('#referralsInput');
 
 const firstNameInput = document.querySelector('#firstNameInput');
 firstNameInput.addEventListener('keyup', (e) => e.target.value = e.target.value.replace(/\s{2}/g, ' '));
@@ -10,11 +17,15 @@ lastNameInput.addEventListener('keyup', (e) => e.target.value = e.target.value.r
 
 const ageSexInput = document.querySelector('#ageSexInput');
 const dateTimeInput = document.querySelector('#dateTimeInput');
+const hospitalNumInput = document.querySelector('#hospitalNumInput');
+const dxInput = document.querySelector('#dxInput');
+const drsInput = document.querySelector('#drsInput');
+const dietInput = document.querySelector('#dietInput');
 
 const ageInput = document.querySelector('#ageInput');
 const sexInput = document.querySelector('#sexInput');
 
-const createKardexBtn = document.querySelector('#createKardexBtn');
+const updateKardexBtn = document.querySelector('#updateKardexBtn');
 
 const suggestionBtns = document.querySelectorAll('.suggestion-btn');
 const handleSuggestionBtns = (extraFieldNames) => {
@@ -30,6 +41,136 @@ const handleSuggestionBtns = (extraFieldNames) => {
     }
   });
 };
+
+const versionModals = Array.from(document.querySelectorAll('[id^="comparisonModal"]'));
+const closeModal = (e) => {
+  const closedModal = e.target;
+
+  const closedModalBody = closedModal.querySelector('.modal-body');
+  closedModalBody.querySelector('#modalContainerCurr')
+    && closedModalBody.querySelector('#modalContainerCurr').remove();
+  closedModalBody.querySelector('#modalContainerPrev')
+    && closedModalBody.querySelector('#modalContainerPrev').remove();
+  
+  Array.from(closedModal
+    .querySelector('[id^="modalContainer"]')
+    .querySelectorAll('.change-span'))
+    .forEach((el) => el.classList.add('d-none'));
+};
+versionModals
+  .forEach((el) => el.addEventListener('hidden.bs.modal', closeModal));
+
+const compareCurrLinks = document.querySelectorAll('[id^="compareCurr"][id$="Link"]');
+const compareWCurr = (idx) => {
+  const versionModal = versionModals[idx - 1];
+
+  const currVersionModalContainer = versionModal
+    .querySelector('[id^="modalContainer"]').cloneNode(true);
+  currVersionModalContainer.id = 'modalContainerCurr';
+
+  const currVersionTitle = currVersionModalContainer.querySelector('[id^="modalCardTitle"]');
+  currVersionTitle.id = 'modalCardTitleCurr';
+  currVersionTitle.getElementsByTagName('span')[0].textContent = firstNameInput.value.trim();
+  currVersionTitle.getElementsByTagName('span')[1].textContent = '(Your Current Version)';
+
+  const currVersionBody = currVersionModalContainer.querySelector('[id^="modalCardBody"]');
+  currVersionBody.id = 'modalCardBodyCurr';
+
+  const currNameOfWard = currVersionBody.querySelector('[id^="nameOfWard"]');
+  currNameOfWard.id = 'nameOfWardCurr';
+  currNameOfWard.getElementsByTagName('span')[1].textContent = nameOfWardInput.value.trim();
+
+  const currIvf = currVersionBody.querySelector('[id^="ivf"]');
+  currIvf.id = 'ivfCurr';
+  currIvf.getElementsByTagName('span')[1].textContent = ivfInput.value.trim();
+
+  const currLaboratoryWorkUps = currVersionBody.querySelector('[id^="laboratoryWorkUps"]');
+  currLaboratoryWorkUps.id = 'laboratoryWorkUpsCurr';
+  currLaboratoryWorkUps.getElementsByTagName('span')[1].textContent = laboratoryWorkUps.value.trim();
+
+  const currMedications = currVersionBody.querySelector('[id^="medications"]');
+  currMedications.id = 'medicationsCurr';
+  currMedications.getElementsByTagName('span')[1].textContent = medicationsInput.value.trim();
+
+  const currSideDrip = currVersionBody.querySelector('[id^="sideDrip"]');
+  currSideDrip.id = 'sideDripCurr';
+  currSideDrip.getElementsByTagName('span')[1].textContent = sideDripInput.value.trim();
+
+  const currSpecialNotations = currVersionBody.querySelector('[id^="specialNotations"]');
+  currSpecialNotations.id = 'specialNotationsCurr';
+  currSpecialNotations.getElementsByTagName('span')[1].textContent = specialNotationsInput.value.trim();
+
+  const currReferrals = currVersionBody.querySelector('[id^="referrals"]');
+  currReferrals.id = 'referralsCurr';
+  currReferrals.getElementsByTagName('span')[1].textContent = referralsInput.value.trim();
+
+  const currFirstName = currVersionBody.querySelector('[id^="firstName"]:not([id^="nameOfWard"]');
+  currFirstName.id = 'firstNameCurr';
+  currFirstName.getElementsByTagName('span')[1].textContent = firstNameInput.value.trim();
+
+  const currLastName = currVersionBody.querySelector('[id^="lastName"]:not([id^="nameOfWard"]');
+  currLastName.id = 'lastNameCurr';
+  currLastName.getElementsByTagName('span')[1].textContent = lastNameInput.value.trim();
+
+  const currAgeSex = currVersionBody.querySelector('[id^="ageSex"]');
+  currAgeSex.id = 'ageSexCurr';
+  currAgeSex.getElementsByTagName('span')[1].textContent = ageSexInput.value.trim();
+
+  const currDateTime = currVersionBody.querySelector('[id^="dateTime"]');
+  currDateTime.id = 'dateTimeCurr';
+  currDateTime.getElementsByTagName('span')[1].textContent = dateTimeInput.value.trim();
+
+  const currHospitalNum = currVersionBody.querySelector('[id^="hospital#"]');
+  currHospitalNum.id = 'hospitalNumCurr';
+  currHospitalNum.getElementsByTagName('span')[1].textContent = hospitalNumInput.value.trim();
+
+  const currDx = currVersionBody.querySelector('[id^="dx"]');
+  currDx.id = 'dxCurr';
+  currDx.getElementsByTagName('span')[1].textContent = dxInput.value.trim();
+
+  const currDrs = currVersionBody.querySelector('[id^="drs"]');
+  currDrs.id = 'drsCurr';
+  currDrs.getElementsByTagName('span')[1].textContent = drsInput.value.trim();
+
+  const currDiet = currVersionBody.querySelector('[id^="diet"]');
+  currDiet.id = 'dietCurr';
+  currDiet.getElementsByTagName('span')[1].textContent = dietInput.value.trim();
+
+  versionModal
+    .querySelector('.modal-body')
+    .appendChild(currVersionModalContainer);
+  const activatedVersionModal = new bootstrap.Modal(versionModal);
+  activatedVersionModal.show();
+};
+compareCurrLinks.forEach((el) => {
+  el.addEventListener('click', (e) => compareWCurr(e.target.id.replace(/\D/g, '')));
+});
+
+const comparePrevLinks = document.querySelectorAll('[id^="comparePrev"][id$="Link"]');
+const compareWPrev = (idx) => {
+  if (idx == versionModals.length)
+    return;
+
+  const targetModal = versionModals[idx - 1];
+  Array.from(targetModal
+    .querySelector('[id^="modalContainer"]')
+    .querySelectorAll('.change-span'))
+    .forEach((el) => el.classList.remove('d-none'));
+  
+  const prevModal = versionModals[idx];
+  const prevVersionModalContainer = prevModal
+    .querySelector('[id^="modalContainer"]').cloneNode(true);
+  prevVersionModalContainer.id = 'modalContainerPrev';
+
+  targetModal
+    .querySelector('.modal-body')
+    .insertBefore(prevVersionModalContainer, targetModal.querySelector('[id^="modalContainer"]'));
+  const activatedVersionModal = new bootstrap.Modal(targetModal);
+  activatedVersionModal.show();
+};
+comparePrevLinks.forEach((el) => {
+  el.addEventListener('click', (e) => compareWPrev(e.target.id.replace(/\D/g, '')));
+});
 
 const newFieldNameInput = document.querySelector('#newFieldNameInput');
 const newFieldValueInput = document.querySelector('#newFieldValueInput');
@@ -51,10 +192,19 @@ const editExtraFields = () => {
   const extraFieldValuesInput = document.querySelector('#extraFieldValuesInput');
   extraFieldValuesInput.value = extraFieldValues.join(';;');
 
+  console.log(extraFieldsInput.value);
+  console.log(extraFieldValuesInput.value);
+
   handleSuggestionBtns(extraFieldNames);
 };
+editExtraFields();
 newFieldNameInput.addEventListener('keyup', editExtraFields);
 newFieldValueInput.addEventListener('keyup', editExtraFields);
+
+document.querySelectorAll('[id^="extraFieldNameInput"]')
+  .forEach((el) => el.addEventListener('keyup', editExtraFields));
+document.querySelectorAll('[id^="extraFieldValueInput"]')
+  .forEach((el) => el.addEventListener('keyup', editExtraFields));
 
 const extraFieldsDiv = document.querySelector('.extra-fields');
 const removeExtraField = (e) => {
@@ -72,6 +222,8 @@ const removeExtraField = (e) => {
 
   editExtraFields();
 };
+document.querySelectorAll('[id^="removeFieldBtn"]')
+  .forEach((el) => el.addEventListener('click', removeExtraField));
 
 const addFieldBtn = document.querySelector('#addFieldBtn');
 const addField = (fieldName = '') => {
@@ -123,8 +275,6 @@ suggestionBtns.forEach(el => {
 
 const checkSubmitEligibility = () => {
   const errors = [];
-
-  
 
   const firstName = firstNameInput.value;
   !firstName.length
@@ -180,10 +330,10 @@ const checkSubmitEligibility = () => {
   }
 
   !errors.length
-    ? submitCreateKardexForm()
+    ? submitUpdateKardexForm()
     : displayErrors(errors);
 };
-createKardexBtn.addEventListener('click', checkSubmitEligibility);
+updateKardexBtn.addEventListener('click', checkSubmitEligibility);
 
 const displayErrors = (errors) => {
   const toastContainer = document.querySelector('.toast-container');
@@ -205,15 +355,15 @@ const displayErrors = (errors) => {
 const editedByInput = document.querySelector('#editedByInput');
 const editedAtInput = document.querySelector('#editedAtInput');
 const userIdSpan = document.querySelector('#userIdSpan');
-const submitCreateKardexForm = () => {
-  const formInputs = document.querySelectorAll('#createKardexForm .form-control');
+const submitUpdateKardexForm = () => {
+  const formInputs = document.querySelectorAll('#updateKardexForm .form-control');
   formInputs.forEach((el) => {
     el.value = el.value.trim();
   });
 
   // +00:00 is required as ArrayField incorrectly offsets datetime
-  editedByInput.value = userIdSpan.textContent.trim();
-  editedAtInput.value = new Date().toISOString().split(':').slice(0, -1).join(':') + '+00:00';
+  editedByInput.value += userIdSpan.textContent.trim();
+  editedAtInput.value += new Date().toISOString().split(':').slice(0, -1).join(':') + '+00:00';
 
   const age = Number(ageSexInput.value.split('/')[0]);
   ageInput.value = age;
@@ -221,5 +371,5 @@ const submitCreateKardexForm = () => {
   const sex = ageSexInput.value.split('/')[1];
   sexInput.value = sex;
 
-  createKardexForm.submit();
+  updateKardexForm.submit();
 };
