@@ -71,7 +71,7 @@ class Kardex(models.Model):
         ordering = ['-date_time', '-date_added']
 
     def __str__(self):
-        return self.name or ''
+        return f'{self.first_name} {self.last_name}' or ''
 
 
 
