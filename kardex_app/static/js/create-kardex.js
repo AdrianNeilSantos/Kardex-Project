@@ -17,17 +17,17 @@ const sexInput = document.querySelector('#sexInput');
 const createKardexBtn = document.querySelector('#createKardexBtn');
 
 
-const handleDepartmentInputs = () => {
-  const extraFieldNameInputs = Array.from(document.querySelectorAll('[id^="extraFieldNameInput"]'))
-    .concat(document.querySelector('#newFieldNameInput'));
-  extraFieldNameInputs.forEach((extraFieldNameInput) => {
-    const extraFieldValueInput = extraFieldNameInput.parentNode.querySelectorAll('input')[1];
-    if (extraFieldNameInput.value === 'Department' && extraFieldValueInput.getAttribute('list') !== 'wardDeptOptions')
-      extraFieldValueInput.setAttribute('list', 'wardDeptOptions');
-    else if (extraFieldNameInput.value !== 'Department')
-      extraFieldValueInput.setAttribute('list', 'emptyOptions');
-  });
-};
+// const handleDepartmentInputs = () => {
+//   const extraFieldNameInputs = Array.from(document.querySelectorAll('[id^="extraFieldNameInput"]'))
+//     .concat(document.querySelector('#newFieldNameInput'));
+//   extraFieldNameInputs.forEach((extraFieldNameInput) => {
+//     const extraFieldValueInput = extraFieldNameInput.parentNode.querySelectorAll('input')[1];
+//     if (extraFieldNameInput.value === 'Department' && extraFieldValueInput.getAttribute('list') !== 'wardDeptOptions')
+//       extraFieldValueInput.setAttribute('list', 'wardDeptOptions');
+//     else if (extraFieldNameInput.value !== 'Department')
+//       extraFieldValueInput.setAttribute('list', 'emptyOptions');
+//   });
+// };
 
 const suggestionBtns = document.querySelectorAll('.suggestion-btn');
 const handleSuggestionBtns = (extraFieldNames) => {
@@ -65,7 +65,7 @@ const editExtraFields = () => {
   extraFieldValuesInput.value = extraFieldValues.join(';;');
 
   handleSuggestionBtns(extraFieldNames);
-  handleDepartmentInputs();
+  // handleDepartmentInputs();
 };
 newFieldNameInput.addEventListener('keyup', editExtraFields);
 newFieldValueInput.addEventListener('keyup', editExtraFields);
@@ -103,8 +103,8 @@ const addField = (fieldName = '') => {
   extraFieldValueInput.value = '';
   extraFieldValueInput.addEventListener('keyup', editExtraFields);
 
-  if (fieldName === 'Department')
-    extraFieldValueInput.setAttribute('list', 'wardDeptOptions');
+  // if (fieldName === 'Department')
+  //   extraFieldValueInput.setAttribute('list', 'wardDeptOptions');
 
   const colonSpan = document.createElement('span');
   colonSpan.classList.add('fs-2', 'fw-bold', 'me-3');
@@ -141,17 +141,17 @@ suggestionBtns.forEach(el => {
 const checkSubmitEligibility = () => {
   const errors = [];
 
-  const firstName = firstNameInput.value;
-  !firstName.length
-    && errors.push('FIRST NAME is required. Please enter the patient\'s name.');
+  const requiredFields = document.querySelectorAll('.required-span');
+  requiredFields.forEach((requiredField) => {
+    if (!requiredField.parentNode.querySelector('input').value.length)
+      errors.push(`${ requiredField.textContent.trim().replace(':', '') } is required. Please enter a value.`);
+  })
 
+  const firstName = firstNameInput.value;
   !/^[a-z ]+$/i.test(firstName)
     && errors.push('FIRST NAME must only contain letters and spaces.');
 
   const lastName = lastNameInput.value;
-  !lastName.length
-    && errors.push('LAST NAME is required. Please enter the patient\'s name.');
-  
   !/^[a-z ]+$/i.test(lastName)
     && errors.push('LAST NAME must only contain letters and spaces.');
 

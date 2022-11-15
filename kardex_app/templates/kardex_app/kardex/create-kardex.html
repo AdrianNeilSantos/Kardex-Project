@@ -148,6 +148,17 @@
             placeholder="Hospital #"
           >
         </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="required-span text-nowrap fs-2 fw-bold me-3">DEPARTMENT:</span>
+          <input
+            name="hospital_num"
+            id="hospitalNumInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Department"
+            list="wardDeptOptions"
+          >
+        </div>
       </div>
       <div class="lower-right-fields d-flex flex-column">
         <div class="d-flex align-items-center mb-3">
@@ -277,12 +288,12 @@
     >
       Clinical Area
     </button>
-    <button
+    <!-- <button
       type="button"
       class="suggestion-btn btn btn-outline-dark me-3 mb-3"
     >
       Department
-    </button>
+    </button> -->
     <button
       type="button"
       class="suggestion-btn btn btn-outline-dark me-3 mb-3"
