@@ -436,13 +436,13 @@ def render_to_PDF(template_src, context_dict, fileName):
 
 
 def generate_front_1(work_book, style_head_row, style_data_row):
-    ws_front1 = work_book.add_sheet(u'FRONT1')
+    ws = work_book.add_sheet(u'FRONT1')
     context_header = get_context_front()
     
     #Adjusts colum widths
-    edit_col_width(ws_front1, 1, 15)
-    edit_col_width(ws_front1, 2, 12)
-    edit_col_width(ws_front1, 3, 12)
+    edit_col_width(ws, 1, 15)
+    edit_col_width(ws, 2, 12)
+    edit_col_width(ws, 3, 12)
 
     START_COL = 0
     END_COL = 13
@@ -450,31 +450,33 @@ def generate_front_1(work_book, style_head_row, style_data_row):
     current_row = START_ROW
 
     
-    current_row = add_front_header(ws_front1,current_row,START_COL,END_COL)
+    current_row = add_front_header(ws,current_row,START_COL,END_COL)
 
 
     for context in context_header:
-        current_row = add_section(ws_front1, current_row, START_COL, END_COL, context, style_head_row)
+        current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
         if context == "CENSUS OF PATIENTS":
             continue
-        current_row = add_data(ws_front1, context_header[context], current_row, END_COL, style_data_row)
+        current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
 
     #Generating census report headers
-    ws_front1.write_merge(current_row,current_row, 0, 2, 'DEPARTMENT', style_head_row)
-    ws_front1.write(current_row,3, 'MED', style_head_row) 
-    ws_front1.write(current_row,4, 'OB', style_head_row) 
-    ws_front1.write(current_row,5, 'GYNE', style_head_row) 
-    ws_front1.write(current_row,6, 'PED', style_head_row) 
-    ws_front1.write(current_row,7, 'SURG-A', style_head_row) 
-    ws_front1.write(current_row,8, 'SURG-P', style_head_row) 
-    ws_front1.write(current_row,9, 'OPHTHA', style_head_row) 
-    ws_front1.write(current_row,10, 'ENT', style_head_row) 
-    ws_front1.write(current_row,11, 'ORTHO', style_head_row) 
-    ws_front1.write(current_row,12, 'SICK BB', style_head_row) 
-    ws_front1.write(current_row,13, 'WELL BB', style_head_row) 
 
 
-    style_census_department = xlwt.easyxf("""    
+
+
+    departments = ["MED", "OB", "GYNE", "PED", 'SURG-A', 'SURG-P', 'OPHTHA', 'ENT', 'ORTHO', 'SICK BB', 'WELL BB']
+
+    current_col = 0
+    for department in departments:
+        if current_col == 0:
+            ws.write_merge(current_row,current_row, current_col, 2, 'DEPARTMENT', style_head_row)
+            current_col += 3
+        
+        ws.write(current_row,current_col, department, style_head_row)
+        current_col += 1
+
+
+    style_census_categories = xlwt.easyxf("""    
         align:
             wrap on,
             vert center,
@@ -490,74 +492,423 @@ def generate_front_1(work_book, style_head_row, style_data_row):
             height 200;
         """
     )
+
+
+    style_census_data = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz right;
+        borders:
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 200;
+        """
+    )
+
+    categories = ["Remaining from yesterday MN report", "Admission", "Transfer in from other floor", "Total of No. 1,2,3", "Discharges (Alive) this census day",
+                    "Transfer out from other floor", "Deaths", "Total No. of 5,6,7", "Remaining at 12 MN 4 minus 8", "Admission & Discharge on the same day (including death)",
+                    "Total in-pt. service days of care (9+10)"
+                ]
+    
+    
+    #Generating census of patients categories and data
     current_row += 1
-    current_index = current_row - 1
-    #Generating census reports row
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Remaining from yesterday MN report', style_census_department) 
-    current_row += 1
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Admission', style_census_department) 
-    current_row += 1
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Transfer in from other floor', style_census_department) 
-    current_row += 1
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Total of No. 1,2,3', style_census_department) 
-    current_row += 1
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Discharges (Alive) this census day', style_census_department) 
-    current_row += 1
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Transfer out from other floor', style_census_department) 
-    current_row += 1
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Deaths', style_census_department) 
-    current_row += 1
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Total No. of 5,6,7', style_census_department) 
-    current_row += 1
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Remaining at 12 MN 4 minus 8', style_census_department) 
-    current_row += 1
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Admission & Discharge on the same day (including death)', style_census_department) 
-    current_row += 1
-    ws_front1.write_merge(current_row,current_row,0,2, f'{current_row - current_index}. Total in-pt. service days of care (9+10)', style_census_department) 
-    current_row += 1
+    current_col = 3
+    for category in categories:
+        ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
+        for department in departments:
+            ws.write(current_row, current_col, "", style_census_data)
+            current_col += 1
+        current_col = 3
+        current_row += 1
 
     current_row += 1
+
 
     #Generating bottom summary
-    ws_front1.write(current_row,0, 'Total Admission:') 
-    ws_front1.write(current_row,2, 'NEURO:') 
-    ws_front1.write(current_row,5, 'URO:') 
-    ws_front1.write(current_row,8, 'POST OP:')
-    ws_front1.write(current_row,11, 'OTHERS:')
+    ws.write(current_row,0, 'Total Admission:') 
+    ws.write(current_row,2, 'NEURO:') 
+    ws.write(current_row,5, 'URO:') 
+    ws.write(current_row,8, 'POST OP:')
+    ws.write(current_row,11, 'OTHERS:')
 
     current_row += 1
-    ws_front1.write(current_row,0, 'Total Discharges:') 
+    ws.write(current_row,0, 'Total Discharges:') 
 
     current_row += 1
-    ws_front1.write(current_row,0, 'Last:') 
+    ws.write(current_row,0, 'Last:') 
 
     current_row += 1
-    ws_front1.write(current_row,0, 'Today:')
-    ws_front1.write_merge(current_row,current_row,3,4, 'Prepared by:')
-    ws_front1.write_merge(current_row,current_row,5,8, '')
-    ws_front1.write(current_row,10, 'Date:')
-    ws_front1.write_merge(current_row,current_row,11,13, '')
+    ws.write(current_row,0, 'Today:')
+    ws.write_merge(current_row,current_row,3,4, 'Prepared by:')
+
+
+    style_prepared_by = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 220;
+        """
+    )
+
+    ws.write_merge(current_row,current_row,5,8, '', style_prepared_by)
+    
+
+    style_date = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 220;
+        """
+    )
+    
+    ws.write(current_row,10, 'Date:')
+    ws.write_merge(current_row,current_row,11,13, '07-Sep-22', style_date)
+
+
 
 
 
 def generate_front_2(work_book, style_head_row, style_data_row):
-    ws_front2 = work_book.add_sheet(u'FRONT2')
+    
+    ws = work_book.add_sheet(u'FRONT2')
+    context_header = get_context_front()
+    
+    #Adjusts colum widths
+    edit_col_width(ws, 1, 15)
+    edit_col_width(ws, 2, 12)
+    edit_col_width(ws, 3, 12)
+
+    START_COL = 0
+    END_COL = 13
+    START_ROW = 6
+    current_row = START_ROW
+
+    
+    current_row = add_front_header(ws,current_row,START_COL,END_COL)
+
+
+    for context in context_header:
+        current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
+        if context == "CENSUS OF PATIENTS":
+            continue
+        current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
+
+    #Generating census report headers
+
+
+
+
+    departments = ["MED", "OB", "GYNE", "PED", 'SURG-A', 'SURG-P', 'OPHTHA', 'ENT', 'ORTHO', 'SICK BB', 'WELL BB']
+
+    current_col = 0
+    for department in departments:
+        if current_col == 0:
+            ws.write_merge(current_row,current_row, current_col, 2, 'DEPARTMENT', style_head_row)
+            current_col += 3
+        
+        ws.write(current_row,current_col, department, style_head_row)
+        current_col += 1
+
+
+    style_census_categories = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
+        font:
+            name Calibri,
+            colour_index Black,
+            height 200;
+        """
+    )
+
+
+    style_census_data = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz right;
+        borders:
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 200;
+        """
+    )
+
+    categories = ["Remaining from yesterday MN report", "Admission", "Transfer in from other floor", "Total of No. 1,2,3", "Discharges (Alive) this census day",
+                    "Transfer out from other floor", "Deaths", "Total No. of 5,6,7", "Remaining at 12 MN 4 minus 8", "Admission & Discharge on the same day (including death)",
+                    "Total in-pt. service days of care (9+10)"
+                ]
+    
+    
+    #Generating census of patients categories and data
+    current_row += 1
+    current_col = 3
+    for category in categories:
+        ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
+        for department in departments:
+            ws.write(current_row, current_col, "", style_census_data)
+            current_col += 1
+        current_col = 3
+        current_row += 1
+
+    current_row += 1
+
+
+    #Generating bottom summary
+    ws.write(current_row,0, 'Total Admission:') 
+    ws.write(current_row,2, 'NEURO:') 
+    ws.write(current_row,5, 'URO:') 
+    ws.write(current_row,8, 'POST OP:')
+    ws.write(current_row,11, 'OTHERS:')
+
+    current_row += 1
+    ws.write(current_row,0, 'Total Discharges:') 
+
+    current_row += 1
+    ws.write(current_row,0, 'Last:') 
+
+    current_row += 1
+    ws.write(current_row,0, 'Today:')
+    ws.write_merge(current_row,current_row,3,4, 'Prepared by:')
+
+
+    style_prepared_by = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 220;
+        """
+    )
+
+    ws.write_merge(current_row,current_row,5,8, '', style_prepared_by)
+    
+
+    style_date = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 220;
+        """
+    )
+    
+    ws.write(current_row,10, 'Date:')
+    ws.write_merge(current_row,current_row,11,13, '07-Sep-22', style_date)
 
 
 
 def generate_front_3(work_book, style_head_row, style_data_row):
-    ws_front2 = work_book.add_sheet(u'FRONT3')
+
+    ws = work_book.add_sheet(u'FRONT3')
+    context_header = get_context_front()
+    
+    #Adjusts colum widths
+    edit_col_width(ws, 1, 15)
+    edit_col_width(ws, 2, 12)
+    edit_col_width(ws, 3, 12)
+
+    START_COL = 0
+    END_COL = 13
+    START_ROW = 6
+    current_row = START_ROW
+
+    
+    current_row = add_front_header(ws,current_row,START_COL,END_COL)
+
+
+    for context in context_header:
+        current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
+        if context == "CENSUS OF PATIENTS":
+            continue
+        current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
+
+    #Generating census report headers
+
+
+
+
+    departments = ["MED", "OB", "GYNE", "PED", 'SURG-A', 'SURG-P', 'OPHTHA', 'ENT', 'ORTHO', 'SICK BB', 'WELL BB']
+
+    current_col = 0
+    for department in departments:
+        if current_col == 0:
+            ws.write_merge(current_row,current_row, current_col, 2, 'DEPARTMENT', style_head_row)
+            current_col += 3
+        
+        ws.write(current_row,current_col, department, style_head_row)
+        current_col += 1
+
+
+    style_census_categories = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
+        font:
+            name Calibri,
+            colour_index Black,
+            height 200;
+        """
+    )
+
+
+    style_census_data = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz right;
+        borders:
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 200;
+        """
+    )
+
+    categories = ["Remaining from yesterday MN report", "Admission", "Transfer in from other floor", "Total of No. 1,2,3", "Discharges (Alive) this census day",
+                    "Transfer out from other floor", "Deaths", "Total No. of 5,6,7", "Remaining at 12 MN 4 minus 8", "Admission & Discharge on the same day (including death)",
+                    "Total in-pt. service days of care (9+10)"
+                ]
+    
+    
+    #Generating census of patients categories and data
+    current_row += 1
+    current_col = 3
+    for category in categories:
+        ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
+        for department in departments:
+            ws.write(current_row, current_col, "", style_census_data)
+            current_col += 1
+        current_col = 3
+        current_row += 1
+
+    current_row += 1
+
+
+    #Generating bottom summary
+    ws.write(current_row,0, 'Total Admission:') 
+    ws.write(current_row,2, 'NEURO:') 
+    ws.write(current_row,5, 'URO:') 
+    ws.write(current_row,8, 'POST OP:')
+    ws.write(current_row,11, 'OTHERS:')
+
+    current_row += 1
+    ws.write(current_row,0, 'Total Discharges:') 
+
+    current_row += 1
+    ws.write(current_row,0, 'Last:') 
+
+    current_row += 1
+    ws.write(current_row,0, 'Today:')
+    ws.write_merge(current_row,current_row,3,4, 'Prepared by:')
+
+
+    style_prepared_by = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 220;
+        """
+    )
+
+    ws.write_merge(current_row,current_row,5,8, '', style_prepared_by)
+    
+
+    style_date = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 220;
+        """
+    )
+    
+    ws.write(current_row,10, 'Date:')
+    ws.write_merge(current_row,current_row,11,13, '07-Sep-22', style_date)
+
+
+
 
 
 def generate_back_1(work_book, style_head_row, style_data_row):
-    ws_front2 = work_book.add_sheet(u'BACK1')
+    ws = work_book.add_sheet(u'BACK1')
 
     context_header = get_context_back()
     
     #Adjusts colum widths
-    edit_col_width(ws_front2, 1, 15)
-    edit_col_width(ws_front2, 2, 12)
-    edit_col_width(ws_front2, 3, 12)
+    edit_col_width(ws, 1, 15)
+    edit_col_width(ws, 2, 12)
+    edit_col_width(ws, 3, 12)
 
     START_COL = 0
     END_COL = 13
@@ -565,23 +916,69 @@ def generate_back_1(work_book, style_head_row, style_data_row):
     current_row = START_ROW
 
     
-    current_row = add_front_header(ws_front2,current_row,START_COL,END_COL)
+    current_row = add_front_header(ws,current_row,START_COL,END_COL)
 
 
     for context in context_header:
-        current_row = add_section(ws_front2, current_row, START_COL, END_COL, context, style_head_row)
-        current_row = add_data(ws_front2, context_header[context], current_row, END_COL, style_data_row)
+        current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
+        current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
+
+    ws.write(current_row,0, 'TOTAL')
 
 
 
 
 
 def generate_back_2(work_book, style_head_row, style_data_row):
-    ws_front2 = work_book.add_sheet(u'BACK2')
+    ws = work_book.add_sheet(u'BACK2')
+
+    context_header = get_context_back()
+    
+    #Adjusts colum widths
+    edit_col_width(ws, 1, 15)
+    edit_col_width(ws, 2, 12)
+    edit_col_width(ws, 3, 12)
+
+    START_COL = 0
+    END_COL = 13
+    START_ROW = 0
+    current_row = START_ROW
+
+    
+    current_row = add_front_header(ws,current_row,START_COL,END_COL)
+
+
+    for context in context_header:
+        current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
+        current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
+
+    ws.write(current_row,0, 'TOTAL')
 
 
 def generate_back_3(work_book, style_head_row, style_data_row):
-    ws_front2 = work_book.add_sheet(u'BACK3')
+    ws = work_book.add_sheet(u'BACK3')
+
+    context_header = get_context_back()
+    
+    #Adjusts colum widths
+    edit_col_width(ws, 1, 15)
+    edit_col_width(ws, 2, 12)
+    edit_col_width(ws, 3, 12)
+
+    START_COL = 0
+    END_COL = 13
+    START_ROW = 0
+    current_row = START_ROW
+
+    
+    current_row = add_front_header(ws,current_row,START_COL,END_COL)
+
+
+    for context in context_header:
+        current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
+        current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
+
+    ws.write(current_row,0, 'TOTAL')
 
 
 #Excel Utilities
@@ -627,7 +1024,7 @@ def add_front_header(ws,current_row,START_COL,END_COL):
         )
 
     ws.write(current_row,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF:', style_label)
-    ws.write_merge(current_row,current_row,4,6, "07-SEP-22", style_value)
+    ws.write_merge(current_row,current_row,3,6, "07-SEP-22", style_value)
     ws.write(current_row,9, 'FLOOR/SECTION:', style_label)
     ws.write_merge(current_row,current_row,11,END_COL, "COVID", style_value)
     current_row += 2
