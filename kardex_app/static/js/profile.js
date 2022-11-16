@@ -1,4 +1,4 @@
-/* global _, axios, bootstrap, moment, nurseId */
+/* global _, axios, bootstrap, moment, nurseId, origPicture */
 
 const removeChildren = (targetAttr) => {
   const target = document.querySelector(`#${targetAttr}`)
@@ -343,12 +343,46 @@ const checkSubmitEligibility = () => {
     }
   });
 
-  console.log(errors, errors.length);
   !errors.length
     ? submitUpdateProfileForm()
     : displayErrors(errors);
 };
 updateProfileBtn.addEventListener('click', checkSubmitEligibility);
+
+const pictureInput = document.querySelector('#pictureInput');
+const cardPictureDisplay = document.querySelector('.card-img-top');
+const imgGearBtn = document.querySelector('.img-gear-btn'); 
+const readImgFile = () => {
+  if (!pictureInput.files || !pictureInput.files[0])
+    return;
+  
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    cardPictureDisplay.src = e.target.result;
+    imgXBtn.classList.remove('d-none');
+    imgCheckBtn.classList.remove('d-none');
+  }
+  reader.readAsDataURL(pictureInput.files[0]);
+};
+pictureInput.addEventListener('change', readImgFile);
+imgGearBtn.addEventListener('click', () => pictureInput.click());
+
+const imgXBtn = document.querySelector('.img-x-btn');
+const revertImg = () => {
+  pictureInput.value = '';
+  cardPictureDisplay.src = origPicture;
+
+  imgXBtn.classList.add('d-none');
+  imgCheckBtn.classList.add('d-none');
+};
+imgXBtn.addEventListener('click', revertImg);
+
+const imgCheckBtn = document.querySelector('.img-check-btn');
+const updateImg = () => {
+  updateProfileForm.submit();
+};
+imgCheckBtn.addEventListener('click', checkSubmitEligibility);
 
 const displayErrors = (errors) => {
   const toastContainer = document.querySelector('.toast-container');

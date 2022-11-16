@@ -5,8 +5,14 @@
   object-fit: cover;
 }
 
-.img-gear-btn {
+.img-btns {
   position: absolute;
   right: 32px;
   bottom: -12px;
+}
+
+.i-btn {
+  width: 42px;
+  height: 36px;
+  padding: 8px;
 }

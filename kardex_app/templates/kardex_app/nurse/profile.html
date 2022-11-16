@@ -4,7 +4,8 @@
 {% load static my_templatetags %}
 <link rel="stylesheet" href= {% static "css/profile.css" %}>
 <script defer>
-  const nurseId = {{ nurse.id }};
+  const nurseId = '{{ nurse.id }}';
+  const origPicture = '{% if nurse.picture %}{{ nurse.picture.url }}{% else %}{% static "images/DO-3.jpg" %}{% endif %}';
 </script>
 <script defer src={% static "js/profile.js" %}></script>
 <div class="profile-body w-100">
@@ -18,12 +19,26 @@
           {% else %}
           <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
           {% endif %}
-          <button
-            type="button"
-            class="img-gear-btn i-btn btn btn-outline-dark p-2"
-          >
-            <i class="fa-solid fa-gear fs-4"></i>
-          </button>
+          <div class="img-btns d-flex justify-content-end">
+            <button
+              type="button"
+              class="img-x-btn d-none i-btn btn btn-outline-dark bg-danger ms-3 p-2"
+            >
+              <i class="fa-solid fa-xmark fs-4"></i>
+            </button>
+            <button
+              type="button"
+              class="img-check-btn d-none i-btn btn btn-outline-dark bg-success ms-3 p-2"
+            >
+              <i class="fa-solid fa-check fs-4"></i>
+            </button>
+            <button
+              type="button"
+              class="img-gear-btn i-btn btn btn-outline-dark ms-3 p-2"
+            >
+              <i class="fa-solid fa-gear fs-4"></i>
+            </button>
+          </div>
         </div>
         <ul class="list-group list-group-flush col-12 col-lg-10 col-xl-8 text-center text-xl-start">
           <li class="nurse-name list-group-item fw-bold h1 text-nowrap">
@@ -78,7 +93,7 @@
         </button>
       </a>
     </div>
-    <form id="updateProfileForm" class="update-form d-none container d-flex flex-column" action="" method="POST">
+    <form id="updateProfileForm" class="update-form d-none container d-flex flex-column" action="" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="input-group mb-3">
         <span class="input-group-text" id="usernameLabel">Username</span>
@@ -189,7 +204,7 @@
           id="departmentInput"
           class="form-control"
           placeholder="New Department/s (e.g., MED,OB,GYNE,PED)"
-          value="{{ nurse.ward|default:'' }}"
+          value="{{ nurse.department|default:'' }}"
           aria-label="New Department"
           aria-describedby="departmentLabel"
           list="departmentOptions"
@@ -401,6 +416,13 @@
         name="on_duty"
         id="onDutyInput"
         class="d-none"
+      >
+      <input 
+        type="file"
+        name="picture"
+        id="pictureInput" 
+        class="d-none" 
+        accept="image/*"
       >
       <section class="submit-row container-fluid container-lg d-flex flex-column align-items-center flex-xl-row mt-2 mb-4">
         <button type="button" id="updateProfileBtn" class="btn btn-outline-success px-4 me-3 mb-3">
