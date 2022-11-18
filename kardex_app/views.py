@@ -29,6 +29,8 @@ import pandas as pd
 import xlwt
 
 from datetime import date
+import operator
+from functools import reduce
 
 # for REST API
 from rest_framework.views import APIView
@@ -259,7 +261,7 @@ def viewProfile(request):
     return render(request, 'kardex_app/nurse/view-profile.html', context)
 
 def profile(request, pk):
-    visiting_nurse = Nurse.objects.get(id=request.user.id)
+    visiting_nurse = request.user
     target_nurse = Nurse.objects.get(id=pk)
 
     form = NurseUpdateForm(instance=target_nurse)
@@ -786,21 +788,40 @@ def write_excel_report(work_book, response):
 # for REST API
 class KardexList(APIView):
     def get(self, request, format=None):
-        all_kardex = Kardex.objects.all()
-        serializers = KardexSerializer(all_kardex, many=True)
+        requesting_nurse = request.user
+        kardexs = Kardex.objects.all()
+        kardexs = kardexs.filter(reduce(operator.or_,
+            (Q(name_of_ward__icontains=ward) for ward in requesting_nurse.ward.split(',')))
+        )
+        kardexs = kardexs.filter(reduce(operator.or_,
+            (Q(department__icontains=department) for department in requesting_nurse.department.split(',')))
+        )
+        serializers = KardexSerializer(kardexs, many=True)
         return Response(serializers.data)
 
 class PaginatedKardexList(APIView, LimitOffsetPagination):
     def get(self, request, format=None):
+        requesting_nurse = request.user
         relevant_kardex = Kardex.objects.all()
+        relevant_kardex = relevant_kardex.filter(reduce(operator.or_,
+            (Q(name_of_ward__icontains=ward) for ward in requesting_nurse.ward.split(',')))
+        )
+        print('relevant_kardex', relevant_kardex, request.user.ward.split(','))
+        relevant_kardex = relevant_kardex.filter(reduce(operator.or_,
+            (Q(department__icontains=department) for department in requesting_nurse.department.split(',')))
+        )
+        print('relevant_kardex', relevant_kardex, request.user.department.split(','))
 
+        print(getattr(relevant_kardex.first(), 'edited_by'))
         target_nurse = request.GET.get('nurse', '')
         if target_nurse:
-            relevant_kardex = relevant_kardex.filter(Q(edited_by__contains=[target_nurse]))
+            relevant_kardex = relevant_kardex.filter(Q(edited_by__icontains=target_nurse))
+        print('relevant_kardex', relevant_kardex, [target_nurse])
 
         target_name = request.GET.get('name', '')
         if target_name:
             relevant_kardex = relevant_kardex.filter(Q(name__icontains=target_name))
+        print('relevant_kardex', relevant_kardex, [target_name])
 
         target_min_date = request.GET.get('min-date', '')
         if target_min_date:
@@ -822,10 +843,18 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
 
 @api_view(['POST'])
 def kardex_search(request):
+    requesting_nurse = request.user
     query = request.data.get('query', '')
 
     if query:
         results = Kardex.objects.filter(Q(name__icontains=query))
+        results = results.filter(reduce(operator.or_,
+            (Q(name_of_ward__icontains=ward) for ward in requesting_nurse.ward.split(',')))
+        )
+        results = results.filter(reduce(operator.or_,
+            (Q(department__icontains=department) for department in requesting_nurse.department.split(',')))
+        )
+        
         serializer = KardexSerializer(results, many=True)
         return Response(serializer.data)
     else:
@@ -834,13 +863,25 @@ def kardex_search(request):
 class NurseList(APIView):
     def get(self, request, format=None):
         all_nurse = Nurse.objects.all()
-        serializers = NurseSerializer(all_nurse, many=True)
+        nurses = all_nurse.filter(reduce(operator.or_,
+            (Q(ward__icontains=ward) for ward in request.user.ward.split(',')))
+        )
+        nurses = nurses.filter(reduce(operator.or_,
+            (Q(department__icontains=department) for department in request.user.department.split(',')))
+        )
+        serializers = NurseSerializer(nurses, many=True)
         return Response(serializers.data)
 
 class PaginatedNurseList(APIView, LimitOffsetPagination):
     def get(self, request, format=None):
         all_nurse = Nurse.objects.all()
-        results = self.paginate_queryset(all_nurse, request, view=self)
+        nurses = all_nurse.filter(reduce(operator.or_,
+            (Q(ward__icontains=ward) for ward in request.user.ward.split(',')))
+        )
+        nurses = nurses.filter(reduce(operator.or_,
+            (Q(department__icontains=department) for department in request.user.department.split(',')))
+        )
+        results = self.paginate_queryset(nurses, request, view=self)
         serializers = NurseSerializer(results, many=True)
         return self.get_paginated_response(serializers.data)
 
