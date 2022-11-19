@@ -246,9 +246,9 @@ def viewProfile(request):
     formatted_nurse_on_duty = '(Missing On Duty Schedule)'
     if 'Missing' not in nurse_on_duty:
         formatted_nurse_on_duty = map(lambda time: \
-            f'{ time[:2] }:{ time[:-2] }AM' \
+            f'{ time[:2] }:{ time[-2:] }AM' \
             if int(time) < 1300 \
-            else f'{ int(time[:2]) - 12 }:{ time[:-2] }PM', \
+            else f'{ int(time[:2]) - 12 }:{ time[-2:] }PM', \
             nurse_on_duty.split('-'))
         formatted_nurse_on_duty = f'{ formatted_nurse_on_duty[0] } - { formatted_nurse_on_duty[1] }'
     context = {
@@ -282,13 +282,16 @@ def profile(request, pk):
     nurse_on_duty = target_nurse.on_duty.split(',')[datetime.now().weekday()] \
         if target_nurse.on_duty and len(target_nurse.on_duty.split(',')) > 1 else '(Missing On Duty Schedule)'
     formatted_nurse_on_duty = '(Missing On Duty Schedule)'
+    print('nurse_on_duty', nurse_on_duty)
+    print(nurse_on_duty.split('-')[0][:2], nurse_on_duty.split('-')[0][-2:])
     if 'Missing' not in nurse_on_duty:
         formatted_nurse_on_duty = list(map(lambda time: \
-            f'{ time[:2] }:{ time[:-2] }AM' \
+            f'{ time[:2] }:{ time[-2:] }AM' \
             if int(time) < 1300 \
-            else f'{ int(time[:2]) - 12 }:{ time[:-2] }PM', \
+            else f'{ int(time[:2]) - 12 }:{ time[-2:] }PM', \
             nurse_on_duty.split('-')))
         formatted_nurse_on_duty = f'{ formatted_nurse_on_duty[0] } - { formatted_nurse_on_duty[1] }'
+    print(formatted_nurse_on_duty)
     context = {
         'nurse': target_nurse,
         'form': form,
