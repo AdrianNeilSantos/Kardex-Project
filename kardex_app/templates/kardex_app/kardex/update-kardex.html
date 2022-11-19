@@ -211,7 +211,9 @@
             id="ageSexInput"
             class="underline-field form-control"
             placeholder="Age/Sex"
-            value="{{ kardex.age|default:'' }}/{{ kardex.sex|default:'' }}"
+            {% if kardex.age != 0 and kardex.age is not None %}
+              value="{{ kardex.age|default:'' }}/{{ kardex.sex|default:'' }}"
+            {% endif %}
           >
         </div>
         <div class="d-flex align-items-center mb-3">

@@ -27,9 +27,9 @@ const generateSmallKardexs = () => {
     smallKardex.classList.remove('d-none');
 
     const smallKardexText = smallKardex.querySelector('.small-kardex-text');
-    if (kardex.name) {
+    if (kardex.first_name || kardex.last_name) {
       const nameLine = document.createElement('b');
-      nameLine.textContent = kardex.name;
+      nameLine.textContent = `${ kardex.last_name || '' }, ${ kardex.first_name || '' }`;
       smallKardexText.append(nameLine, document.createElement('br'));
     }
 
@@ -130,7 +130,7 @@ const getKardexPage = async (page) => {
       generateSmallKardexs();
 
       if (!firstAPICall) {
-        filterKardexs('forceFilterKardexs');
+        // filterKardexs('forceFilterKardexs');
         sortKardexs();
       }
       firstAPICall = false;
@@ -146,6 +146,14 @@ const refreshBtns = Array.from(document.querySelectorAll('.refresh-btn'));
 const kardexCounterSpans = document.querySelectorAll('.kardex-counter-span');
 let freezePageControllers = false;
 const getRelevantData = async (page) => {
+  // var sCallerName;
+  //   {
+  //       let re = /([^(]+)@|at ([^(]+) \(/g;
+  //       let aRegexResult = re.exec(new Error().stack);
+  //       sCallerName = aRegexResult[1] || aRegexResult[2];
+  //   }
+  //   console.log(sCallerName);
+  console.log(page);
   freezePageControllers = true;
   kardexGroupContainer.style.minHeight = '282px';
   removeChildren('kardex-group-container');
@@ -362,7 +370,7 @@ const readImgFile = () => {
     cardPictureDisplay.src = e.target.result;
     imgXBtn.classList.remove('d-none');
     imgCheckBtn.classList.remove('d-none');
-  }
+  };
   reader.readAsDataURL(pictureInput.files[0]);
 };
 pictureInput.addEventListener('change', readImgFile);
@@ -379,9 +387,9 @@ const revertImg = () => {
 imgXBtn.addEventListener('click', revertImg);
 
 const imgCheckBtn = document.querySelector('.img-check-btn');
-const updateImg = () => {
-  updateProfileForm.submit();
-};
+// const updateImg = () => {
+//   updateProfileForm.submit();
+// };
 imgCheckBtn.addEventListener('click', checkSubmitEligibility);
 
 const displayErrors = (errors) => {

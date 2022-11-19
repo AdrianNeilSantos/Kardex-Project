@@ -192,7 +192,9 @@
             id="ageSexInput"
             type="text"
             class="underline-field bg-white form-control"
-            {% if kardex.age is not None %}value="{{ kardex.age }}/{{ kardex.sex }}"{% endif %}
+            {% if kardex.age != 0 and kardex.age is not None %}
+              value="{{ kardex.age|default:'' }}/{{ kardex.sex|default:'' }}"
+            {% endif %}
             disabled
           >
         </div>
@@ -224,7 +226,7 @@
             name="department"
             id="departmentInput"
             type="text"
-            class="underline-field form-control"
+            class="underline-field bg-white form-control"
             placeholder="Department"
             value="{{ kardex.department|default:'' }}"
             disabled

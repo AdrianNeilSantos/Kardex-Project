@@ -192,8 +192,8 @@ const editExtraFields = () => {
   const extraFieldValuesInput = document.querySelector('#extraFieldValuesInput');
   extraFieldValuesInput.value = extraFieldValues.join(';;');
 
-  console.log(extraFieldsInput.value);
-  console.log(extraFieldValuesInput.value);
+  // console.log(extraFieldsInput.value);
+  // console.log(extraFieldValuesInput.value);
 
   handleSuggestionBtns(extraFieldNames);
 };
