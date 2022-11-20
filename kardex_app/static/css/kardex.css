@@ -67,8 +67,19 @@
   width: calc(100% / 3);
 }
 
-.add-field {
+.add-field, .extra-field {
   width: calc(100% * 2/3);
+}
+
+.required-span::after {
+  content: '*';
+  color: red;
+}
+
+.modal-card {
+  border-radius: 4px;
+  border: 1px solid #C8C9CA;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
 @media only screen and (max-width: 767px) {
@@ -76,7 +87,7 @@
     font-size: 1.25rem;
   }
 
-  .lower-left-fields, .lower-right-fields, .add-field {
+  .lower-left-fields, .lower-right-fields, .add-field, .extra-field {
     width: 100%;
   }
 }

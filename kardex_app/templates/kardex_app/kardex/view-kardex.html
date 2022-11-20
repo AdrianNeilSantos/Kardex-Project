@@ -1,50 +1,405 @@
 {% extends 'kardex_app/main.html' %}
 {% block content %}
-{% load static %}
-<div class="text-center">
-    <h1>View Kardex</h1>
-    <strong>Cardex Owner: </strong> {{kardex.patientName}}
-    <br>
-</div>
-<!-- wrapper -->
-<div class="container-fluid">
-  <!-- Inner -->
-  <div class="carousel-inner py-4">
-    <div class="carousel-item active">
-      <div class="container">
-        <div class="row">
-          <!-- Single item -->
-          <div class="col-lg-4">
-            <div class="card">
-              <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
-              <div class="card-body">
-                <h5 class="card-title">{{kardex.patientName}}</h5>
-                <div class="text-left">
-                    <strong>Sex: </strong> {{kardex.sex}} <br>
-                    <strong>age: </strong> {{kardex.age}} <br>
-                    <strong>dateTime: </strong> {{kardex.dateTime}} <br>
-                    <strong>hospitalNum: </strong> {{kardex.hospitalNum}} <br>
-                    <strong>bedNum: </strong> {{kardex.bedNum}} <br>
-                    <strong>doctorInCharge: </strong> {{kardex.doctorInCharge}} <br>
-                    <strong>hospitalName: </strong> {{kardex.hospitalName}} <br>
-                </div>
-                  <a href="{% url 'update-kardex' kardex.id %}" class="btn btn-warning">
-                    <span class="material-icons">edit</span>
-                    Update
-                  </a>
-                    <a href="{% url 'delete-kardex' kardex.id %}" class="btn btn-danger">
-                      <span class="material-icons">delete</span>
-                      Delete
-                    </a>
-              </div>
+{% load static tz my_templatetags %}
+<link rel="stylesheet" href= {% static "css/kardex.css" %}>
+<script defer src={% static "js/view-kardex.js" %}></script>
+{% timezone "Asia/Manila" %}
+{% for instance in kardex_history %}
+<div class="modal fade" id="comparisonModal{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+    <div class="modal-content bg-transparent">
+      <div class="modal-header border-0 d-flex align-items-center">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-row align-items-center pt-5">
+        <div 
+          id="modalContainer{{ forloop.counter }}"
+          class="modal-container w-50 d-flex flex-column justify-content-center align-items-center my-auto p-4 pt-5"
+        >
+          <div
+            class="modal-card w-100 bg-white d-flex flex-column pt-3 pb-5"
+          >
+            <div
+              id="modalCardTitle{{ forloop.counter }}"
+              class="d-flex flex-column justify-content-center align-items-center"
+            >
+              <span class="fs-5 fw-bold">{{ instance|get_item:'Last Name' }}, {{ instance|get_item:'First Name' }}</span>
+              <span class="fs-5 fw-bold">({{ instance|get_item:'Edited At'|last|date:"h:i A - N d, Y" }})</span>
             </div>
+            <hr>
+            <div
+              id="modalCardBody{{ forloop.counter }}"
+              class="d-flex flex-column px-3"
+            >
+              {% for key, value in instance.items %}
+              {% if key not in 'Extra Fields,Extra Field Values,Label Values,Label Markers,Edited By,Edited At' %}
+              <div
+                id="{{ key|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
+                class="mb-3"
+              >
+                <span class="fw-bold">{{ key }}:</span>
+                {% if forloop.parentloop.counter0 < kardex_comparisons|length %}
+                {% if kardex_comparisons|get_by_idx:forloop.parentloop.counter0|get_item:key == 'Revision' %}
+                <span class="change-span d-none fw-bold text-primary">(Revision)</span>
+                {% elif kardex_comparisons|get_by_idx:forloop.parentloop.counter0|get_item:key == 'Addition' %}
+                <span class="change-span d-none fw-bold text-success">(Addition)</span>
+                {% endif %}
+                {% endif %}
+                <br>
+                <span>{{ value }}</span>
+              </div>
+              {% endif %}
+              {% endfor %}
+              {% with extra_fields=instance|get_item:'Extra Fields' extra_values=instance|get_item:'Extra Field Values' %}
+              {% if extra_fields|length > 0 and extra_values|length > 0 and extra_fields|get_by_idx:0 != '' and extra_fields|get_by_idx:0 != 'NULL' %}
+              {% for field, value in extra_fields|zip:extra_values %}
+              <div
+                id="{{ field|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
+                class="d-flex flex-column mb-3"
+              >
+                <span class="fw-bold">{{ field }}:</span>
+                <span>{{ value }}</span>
+              </div>
+              {% endfor %}
+              {% endif %}
+              {% endwith %}
+              {% if instance|get_item:'Label Markers'|get_by_idx:0|length %}
+              {% with label_values=instance|get_item:'Label Values' %}
+              {% for marker, value in instance|get_item:'Label Markers'|zip:label_values %}
+              <div
+                id="label{{ marker|title|cut:' '|cut:'-'|cut:'/' }}{{ forloop.parentloop.counter }}"
+                class="d-flex flex-column mb-3"
+              >
+                <span class="fw-bold">{{ marker }}:</span>
+                <span>{{ value }}</span>
+              </div>
+              {% endfor %}
+              {% endwith %}
+              {% endif %}
+            </div>
+            <hr>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- Inner -->
 </div>
-<!-- Carousel wrapper -->
-{{kardexs}}
+{% endfor %}
+<div class="create-kardex-body w-100">
+  <form id="createKardexForm" action="" method="post">
+    {% csrf_token %}
+    <section class="large-kardex container-fluid container-lg d-flex flex-column align-items-center mt-4 mb-3">
+      <div class="d-flex align-items-center mb-3 mb-3">
+        <input
+          name="name_of_ward"
+          id="nameOfWardInput"
+          type="text"
+          class="underline-field bg-white w-156 form-control me-2"
+          value="{{ kardex.name_of_ward|default:'' }}"
+          disabled
+        >
+        <h2 class="fw-bold">WARD</h2>
+      </div>
+      <div class="grid-wrapper w-100">
+        <div class="ivf-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">IVF:</span>
+          <textarea
+            name="ivf"
+            id="ivfInput"
+            class="overline-field bg-white form-control"
+            rows="3"
+            disabled
+          >{{ kardex.ivf|default:'' }}</textarea>
+        </div>
+        <div class="laboratory-work-ups-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">LABORATORY WORK-UPS:</span>
+          <textarea
+            name="laboratory_work_ups"
+            id="laboratoryWorkUpsInput"
+            class="overline-field bg-white form-control"
+            rows="3"
+            disabled
+          >{{ kardex.laboratory_work_ups|default:'' }}</textarea>
+        </div>
+        <div class="medications-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">MEDICATIONS:</span>
+          <textarea
+            name="medications"
+            id="medicationsInput"
+            class="overline-field bg-white form-control"
+            rows="3"
+            disabled
+          >{{ kardex.medications|default:'' }}</textarea>
+        </div>
+        <div class="side-drip-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">SIDE DRIP:</span>
+          <textarea
+            name="side_drip"
+            id="sideDripInput"
+            class="overline-field bg-white form-control"
+            rows="3"
+            disabled
+          >{{ kardex.side_drip|default:'' }}</textarea>
+        </div>
+        <div class="special-notations-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">SPECIAL NOTATIONS:</span>
+          <textarea
+            name="special_notations"
+            id="specialNotationsInput"
+            class="overline-field bg-white form-control"
+            rows="3"
+            disabled
+          >{{ kardex.special_notations|default:'' }}</textarea>
+        </div>
+        <div class="referrals-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">REFERRALS:</span>
+          <textarea
+            name="referrals"
+            id="referralsInput"
+            class="overline-field bg-white form-control"
+            rows="3"
+            disabled
+          >{{ kardex.referrals|default:'' }}</textarea>
+        </div>
+      </div>
+    </section>
+    <section class="lower-fields container-fluid container-lg d-flex flex-column flex-md-row">
+      <div class="lower-left-fields d-flex flex-column pe-0 pe-md-4">
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">FIRST NAME:</span>
+          <input
+            type="text"
+            name="first_name"
+            id="firstNameInput"
+            class="underline-field form-control"
+            value="{{ kardex.first_name|default:'' }}"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">LAST NAME:</span>
+          <input
+            type="text"
+            name="last_name"
+            id="lastNameInput"
+            class="underline-field form-control"
+            value="{{ kardex.last_name|default:'' }}"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">AGE/SEX:</span>
+          <input
+            name="age_sex"
+            id="ageSexInput"
+            type="text"
+            class="underline-field bg-white form-control"
+            {% if kardex.age != 0 and kardex.age is not None %}
+              value="{{ kardex.age|default:'' }}/{{ kardex.sex|default:'' }}"
+            {% endif %}
+            disabled
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">DATE/TIME:</span>
+          <input
+            name="date_time"
+            id="dateTimeInput"
+            type="text"
+            class="underline-field bg-white form-control"
+            value="{{ kardex.date_time|default:'' }}"
+            disabled
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">HOSPITAL #:</span>
+          <input
+            name="hospital_num"
+            id="hospitalNumInput"
+            type="text"
+            class="underline-field bg-white form-control"
+            value="{{ kardex.hospital_num|default:'' }}"
+            disabled
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="required-span text-nowrap fs-2 fw-bold me-3">DEPARTMENT:</span>
+          <input
+            name="department"
+            id="departmentInput"
+            type="text"
+            class="underline-field bg-white form-control"
+            placeholder="Department"
+            value="{{ kardex.department|default:'' }}"
+            disabled
+          >
+        </div>
+      </div>
+      <div class="lower-right-fields d-flex flex-column">
+        <div class="d-flex align-items-center mb-3">
+          <span class="align-self-start text-nowrap fs-2 fw-bold me-3">DX:</span>
+          <textarea
+            name="dx"
+            id="dxInput"
+            class="underline-field bg-white form-control"
+            rows="3"
+            disabled
+          >{{ kardex.dx|default:'' }}</textarea>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">DRS:</span>
+          <input
+            name="drs"
+            id="drsInput"
+            type="text"
+            class="underline-field bg-white form-control"
+            value="{{ kardex.drs|default:'' }}"
+            disabled
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">DIET:</span>
+          <input
+            name="diet"
+            id="dietInput"
+            type="text"
+            class="underline-field bg-white form-control"
+            value="{{ kardex.diet|default:'' }}"
+            disabled
+          >
+        </div>
+      </div>
+    </section>
+    <section class="extra-fields container-fluid container-lg">
+      {% for name, value in kardex.extra_fields|zip:kardex.extra_field_values %}
+      <div class="extra-field d-flex align-items-center mb-3 pe-0 pe-md-4">
+        <input
+          type="text"
+          id="extraFieldNameInput{{ forloop.counter }}"
+          class="underline-field bg-white w-156 form-control"
+          value="{{ name|default:'' }}"
+          disabled
+        >
+        <span class="fs-2 fw-bold me-3">:</span>
+        <input
+          type="text"
+          id="extraFieldValueInput{{ forloop.counter }}"
+          class="underline-field bg-white form-control"
+          value="{{ value|default:'' }}"
+          disabled
+        >
+      </div>
+      {% endfor %}
+    </section>
+    <input
+      name="age"
+      id="ageInput"
+      type="number"
+      class="d-none"
+      max="125"
+      min="0"
+    >
+    <input
+      name="sex"
+      id="sexInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="extra_fields"
+      id="extraFieldsInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="extra_field_values"
+      id="extraFieldValuesInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="label_markers"
+      id="labelMarkersInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="label_values"
+      id="labelValuesInput"
+      type="text"
+      class="d-none"
+    >
+  </form>
+  <section class="main-btns-row container-fluid container-lg d-flex flex-column align-items-start flex-md-row align-items-md-center mt-2 mb-4">
+    <a href="{% url 'create-kardex' %}">
+      <button type="button" id="createAnotherKardexBtn" class="btn btn-outline-success px-4 me-3">
+        Create Another Kardex?
+      </button>
+    </a>
+    <a href="{% url 'update-kardex' kardex.id|default:'1' %}">
+      <button type="button" id="updateThisKardexBtn" class="btn btn-outline-primary px-4 me-3">
+        Update this Kardex?
+      </button>
+    </a>
+    <a href="#">
+      <button type="button" id="deleteThisKardexBtn" class="btn btn-outline-danger px-4 me-3">
+        Delete this Kardex?
+      </button>
+    </a>
+  </section>
+  <section class="edit-history container-fluid container-lg d-flex flex-column">
+    <span class="fs-2 fw-bold">Previously Edited By:</span>
+    <ol>
+      {% for name, date in kardex.edited_by_names|zip:kardex.edited_at reversed %}
+      <li class="mb-2">
+        <a
+          id="visit{{ forloop.counter }}Link"
+          href="#"
+          class="visit-link text-decoration-none"
+        >
+          {{ name }}
+        </a>
+        <a
+          href="#"
+          class="changes-link text-decoration-none text-dark"
+        >
+          ({{ date|date:"h:i A - N d, Y" }})
+          {% if kardex_comparison_values|length > forloop.counter0 %}
+          <span>
+          [{% if 'Revision' in kardex_comparison_values|get_by_idx:forloop.counter0 %}Revisions{% endif %}{% if 'Addition' in kardex_comparison_values|get_by_idx:forloop.counter0 %} Additions{% endif %}{% if 'Deletion' in kardex_comparison_values|get_by_idx:forloop.counter0 %} Deletions{% endif %}]
+          </span>
+          {% endif %}
+        </a>
+        {% if forloop.counter != kardex.edited_by_names|length %}
+        <a
+          id="comparePrev{{ forloop.counter }}Link"
+          href="#"
+          class="compare-prev-link text-decoration-none text-primary"
+        >
+          Compare with Previous <i class="fa-solid fa-magnifying-glass"></i>
+        </a>
+        {% endif %}
+        <a
+          id="compareCurr{{ forloop.counter }}Link"
+          href="#"
+          class="compare-curr-link text-decoration-none text-success"
+        >
+          Compare with Current <i class="fa-solid fa-magnifying-glass"></i>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  <div aria-live="assertive" aria-atomic="false">
+    <div class="toast-container position-fixed end-0 bottom-0 p-3">
+      <div class="info-toast toast align-items-center text-white bg-info border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            This page is only for viewing, clicking the inputs will have no effect.
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endtimezone %}
 {% endblock content %}

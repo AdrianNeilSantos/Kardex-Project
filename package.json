@@ -1,0 +1,22 @@
+{
+  "name": "kardex-project",
+  "description": "digitalized nursing kardex and nursing reports generation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "eslint": "^8.26.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdrianNeilSantos/Kardex-Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AdrianNeilSantos/Kardex-Project/issues"
+  },
+  "homepage": "https://github.com/AdrianNeilSantos/Kardex-Project#readme"
+}

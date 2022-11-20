@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
 * {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 *::-webkit-scrollbar {
@@ -10,10 +10,18 @@
 
 *::-webkit-scrollbar-thumb {
   /* border-radius: 7px !important; */
-  background-color: rgb(195,207,217);
+  background-color: rgb(195, 207, 217);
 }
 
-input, button, .input-group-text {
+body {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  overflow-x: hidden;
+}
+
+input,
+button,
+.input-group-text {
   height: 36px;
 }
 
@@ -42,6 +50,10 @@ input, button, .input-group-text {
   width: 156px;
 }
 
+.h-2rem {
+  height: 2.25rem;
+}
+
 .m-32 {
   margin: 32px;
 }
@@ -67,4 +79,20 @@ input, button, .input-group-text {
 .px-64 {
   padding-left: 64px;
   padding-right: 64px;
+}
+
+.i-btn {
+  display: flex;
+  flex: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+.footer-wrap {
+  padding-bottom: 2.5rem;
 }

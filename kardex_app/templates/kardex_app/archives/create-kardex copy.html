@@ -1,0 +1,293 @@
+{% extends 'kardex_app/main.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href= {% static "css/kardex.css" %}>
+<script defer src={% static "js/create-kardex.js" %}></script>
+<div class="create-kardex-body w-100">
+  <form id="createKardexForm" action="" method="post">
+    {% csrf_token %}
+    <section class="large-kardex container-fluid container-lg d-flex flex-column align-items-center mt-4 mb-3">
+      <div class="d-flex align-items-center mb-3 mb-3">
+        <input
+          name="name_of_ward"
+          id="nameOfWardInput"
+          type="text"
+          class="underline-field w-156 form-control me-2"
+          placeholder="Name of Ward"
+        >
+        <h2 class="fw-bold">WARD</h2>
+      </div>
+      <div class="grid-wrapper w-100">
+        <div class="ivf-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">IVF:</span>
+          <textarea
+            name="ivf"
+            id="ivfInput"
+            class="overline-field form-control"
+            rows="3"
+            placeholder="IVF"
+          ></textarea>
+        </div>
+        <div class="laboratory-work-ups-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">LABORATORY WORK-UPS:</span>
+          <textarea
+            name="laboratory_work_ups"
+            id="laboratoryWorkUpsInput"
+            class="overline-field form-control"
+            rows="3"
+            placeholder="Laboratory Work-Ups"
+          ></textarea>
+        </div>
+        <div class="medications-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">MEDICATIONS:</span>
+          <textarea
+            name="medications"
+            id="medicationsInput"
+            class="overline-field form-control"
+            rows="3"
+            placeholder="Medications"
+          ></textarea>
+        </div>
+        <div class="side-drip-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">SIDE DRIP:</span>
+          <textarea
+            name="side_drip"
+            id="sideDripInput"
+            class="overline-field form-control"
+            rows="3"
+            placeholder="Side Drip"
+          ></textarea>
+        </div>
+        <div class="special-notations-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">SPECIAL NOTATIONS:</span>
+          <textarea
+            name="special_notations"
+            id="specialNotationsInput"
+            class="overline-field form-control"
+            rows="3"
+            placeholder="Special Notations"
+          ></textarea>
+        </div>
+        <div class="referrals-cell d-flex flex-column p-3">
+          <span class="cell-header text-break h4 fw-bold">REFERRALS:</span>
+          <textarea
+            name="referrals"
+            id="referralsInput"
+            class="overline-field form-control"
+            rows="3"
+            placeholder="Referrals"
+          ></textarea>
+        </div>
+      </div>
+    </section>
+    <section class="lower-fields container-fluid container-lg d-flex flex-column flex-md-row">
+      <div class="lower-left-fields d-flex flex-column pe-0 pe-md-4">
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">NAME:</span>
+          <input
+            name="name"
+            id="nameInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Name"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">AGE/SEX:</span>
+          <input
+            name="age_sex"
+            id="ageSexInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Age/Sex"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">DATE/TIME:</span>
+          <input
+            name="date_time"
+            id="dateTimeInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Date/Time"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">HOSPITAL #:</span>
+          <input
+            name="hospital_num"
+            id="hospitalNumInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Hospital #"
+          >
+        </div>
+      </div>
+      <div class="lower-right-fields d-flex flex-column">
+        <div class="d-flex align-items-center mb-3">
+          <span class="align-self-start text-nowrap fs-2 fw-bold me-3">DX:</span>
+          <textarea
+            name="dx"
+            id="dxInput"
+            class="underline-field form-control"
+            rows="3"
+            placeholder="DX"
+          ></textarea>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">DRS:</span>
+          <input
+            name="drs"
+            id="drsInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="DRS"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">DIET:</span>
+          <input
+            name="diet"
+            id="dietInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Diet"
+          >
+        </div>
+      </div>
+    </section>
+    <section class="extra-fields container-fluid container-lg">
+      <div class="add-field d-flex align-items-center mb-3 pe-0 pe-md-4">
+        <input
+          name="extra_fields"
+          id="extraFieldsInput"
+          type="text"
+          class="underline-field w-156 form-control"
+          placeholder="New Field Name"
+        >
+        <span class="fs-2 fw-bold me-3">:</span>
+        <input
+          name="extra_field_values"
+          id="extraFieldValuesInput"
+          type="text"
+          class="underline-field form-control"
+          placeholder="New Field Value"
+        >
+      </div>
+    </section>
+    <input
+      name="age"
+      id="ageInput"
+      type="number"
+      class="d-none"
+      max="125"
+      min="0"
+    >
+    <input
+      name="sex"
+      id="sexInput"
+      type="text"
+      class="d-none"
+    >
+  </form>
+  <section class="submit-row container-fluid container-lg d-flex flex-column align-items-start flex-md-row align-items-md-center mt-2 mb-4">
+    <button type="button" id="createKardexBtn" class="btn btn-outline-success px-4 me-3">Finish Creating Kardex</button>
+    <span class="fw-bold">or click a button below to add them as a new field in the Kardex</span>
+  </section>
+  <section class="suggestion-btns container-fluid container-lg d-flex flex-wrap">
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Bed #
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Clinical Area
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Department
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Diagnosic Work-Ups
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Diet Remarks
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Doctor in Charge
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Hospital Name
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Shift Schedule
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark h-auto me-3 mb-3"
+    >
+      Transfer in, Transfer out, or Transfer to another Hospital
+    </button>
+  </section>
+  <div aria-live="assertive" aria-atomic="false">
+    <div class="toast-container position-fixed end-0 bottom-0 p-3">
+      <div class="error-toast toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body"></div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<div class="container">
+  <h1>Create Kardex Page</h1>
+  <br>
+  <div class="card">
+      <div class="card-header">
+        Create Kardex Form
+      </div>
+      <div class="card-body">
+        <form action="" method="post">
+          {% csrf_token %}
+          {{form|crispy}}
+          <!-- Insert Input Fields -->
+          <!-- Create Button -->
+          <button class="btn btn-outline-success" type="submit">
+            <span class="material-icons">add</span>
+            Create Kardex
+          </button>
+          <!-- Cancel Button -->
+          <a href="{% url 'dashboard' %}" class="btn btn-outline-danger">
+            <span class="material-icons">block</span>
+            Cancel
+          </a>
+        </form>
+      </div>
+  </div>
+</div>
+{% endblock content %}

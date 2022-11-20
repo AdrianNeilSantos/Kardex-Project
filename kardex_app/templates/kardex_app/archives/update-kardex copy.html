@@ -1,0 +1,276 @@
+{% extends 'kardex_app/main.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+{% load my_templatetags %}
+<link rel="stylesheet" href= {% static "css/kardex.css" %}>
+<script defer src={% static "js/update-kardex.js" %}></script>
+<div class="update-kardex-body w-100">
+  <section class="large-kardex container-fluid container-lg d-flex flex-column align-items-center mt-4 mb-3">
+    <div class="d-flex align-items-center mb-3 mb-3">
+      <input
+        type="text"
+        class="underline-field w-156 form-control me-2"
+        placeholder="Name of Ward"
+        value="{{ kardex.name_of_ward }}"
+      >
+      <h2 class="fw-bold">WARD</h2>
+    </div>
+    <div class="grid-wrapper w-100">
+      <div class="ivf-cell d-flex flex-column p-3">
+        <span class="cell-header text-break h4 fw-bold">IVF:</span>
+        <textarea
+          class="overline-field form-control"
+          rows="3"
+          placeholder="IVF"
+        >{{ kardex.ivf }}</textarea>
+      </div>
+      <div class="laboratory-work-ups-cell d-flex flex-column p-3">
+        <span class="cell-header text-break h4 fw-bold">LABORATORY WORK-UPS:</span>
+        <textarea
+          class="overline-field form-control"
+          rows="3"
+          placeholder="Laboratory Work-Ups"
+        >{{ kardex.laboratory_work_ups }}</textarea>
+      </div>
+      <div class="medications-cell d-flex flex-column p-3">
+        <span class="cell-header text-break h4 fw-bold">MEDICATIONS:</span>
+        <textarea
+          class="overline-field form-control"
+          rows="3"
+          placeholder="Medications"
+        >{{ kardex.medications }}</textarea>
+      </div>
+      <div class="side-drip-cell d-flex flex-column p-3">
+        <span class="cell-header text-break h4 fw-bold">SIDE DRIP:</span>
+        <textarea
+          class="overline-field form-control"
+          rows="3"
+          placeholder="Side Drip"
+        >{{ kardex.side_drip }}</textarea>
+      </div>
+      <div class="special-notations-cell d-flex flex-column p-3">
+        <span class="cell-header text-break h4 fw-bold">SPECIAL NOTATIONS:</span>
+        <textarea
+          class="overline-field form-control"
+          rows="3"
+          placeholder="Special Notations"
+        >{{ kardex.special_notations }}</textarea>
+      </div>
+      <div class="referrals-cell d-flex flex-column p-3">
+        <span class="cell-header text-break h4 fw-bold">REFERRALS:</span>
+        <textarea
+          class="overline-field form-control"
+          rows="3"
+          placeholder="Referrals"
+        >{{ kardex.referrals }}</textarea>
+      </div>
+    </div>
+  </section>
+  <section class="lower-fields container-fluid container-lg d-flex flex-column flex-md-row">
+    <div class="lower-left-fields d-flex flex-column pe-0 pe-md-4">
+      <div class="d-flex align-items-center mb-3">
+        <span class="text-nowrap fs-2 fw-bold me-3">NAME:</span>
+        <input
+          type="text"
+          class="underline-field form-control"
+          placeholder="Name"
+          value="{{ kardex.name }}"
+        >
+      </div>
+      <div class="d-flex align-items-center mb-3">
+        <span class="text-nowrap fs-2 fw-bold me-3">AGE/SEX:</span>
+        <input
+          type="text"
+          class="underline-field form-control"
+          placeholder="Age/Sex"
+          value="{{ kardex.age }}/{{ kardex.sex }}"
+        >
+      </div>
+      <div class="d-flex align-items-center mb-3">
+        <span class="text-nowrap fs-2 fw-bold me-3">DATE/TIME:</span>
+        <input
+          type="text"
+          class="underline-field form-control"
+          placeholder="Date/Time"
+          value="{{ kardex.date_time }}"
+        >
+      </div>
+      <div class="d-flex align-items-center mb-3">
+        <span class="text-nowrap fs-2 fw-bold me-3">HOSPITAL #:</span>
+        <input
+          type="text"
+          class="underline-field form-control"
+          placeholder="Hospital #"
+          value="{{ kardex.hospital_num }}"
+        >
+      </div>
+    </div>
+    <div class="lower-right-fields d-flex flex-column">
+      <div class="d-flex align-items-center mb-3">
+        <span class="align-self-start text-nowrap fs-2 fw-bold me-3">DX:</span>
+        <textarea
+          class="underline-field form-control"
+          rows="3"
+          placeholder="DX"
+        >{{ kardex.dx }}</textarea>
+      </div>
+      <div class="d-flex align-items-center mb-3">
+        <span class="text-nowrap fs-2 fw-bold me-3">DRS:</span>
+        <input
+          type="text"
+          class="underline-field form-control"
+          placeholder="DRS"
+          value="{{ kardex.drs }}"
+        >
+      </div>
+      <div class="d-flex align-items-center mb-3">
+        <span class="text-nowrap fs-2 fw-bold me-3">DIET:</span>
+        <input
+          type="text"
+          class="underline-field form-control"
+          placeholder="Diet"
+          value="{{ kardex.diet }}"
+        >
+      </div>
+    </div>
+  </section>
+  <section class="extra-fields container-fluid container-lg">
+    {% for name, value in kardex.extra_fields|zip:kardex.extra_field_values %}
+    <div class="extra-field d-flex align-items-center mb-3 pe-0 pe-md-4">
+      <input
+        type="text"
+        id="extraFieldNameInput{{ forloop.counter }}"
+        class="underline-field w-156 form-control"
+        placeholder="New Field Name"
+        value="{{ name }}"
+      >
+      <span class="fs-2 fw-bold me-3">:</span>
+      <input
+        type="text"
+        id="extraFieldValueInput{{ forloop.counter }}"
+        class="underline-field form-control"
+        placeholder="New Field Value"
+        value="{{ value }}"
+      >
+      <button
+        type="button"
+        id="removeFieldBtn{{ forloop.counter }}"
+        class="btn btn-outline-danger ms-3"
+      >
+        <i class="text-danger fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    {% endfor %}
+    <div class="add-field d-flex align-items-center mb-3 pe-0 pe-md-4">
+      <input
+        type="text"
+        class="underline-field w-156 form-control"
+        placeholder="New Field Name"
+      >
+      <span class="fs-2 fw-bold me-3">:</span>
+      <input
+        type="text"
+        class="underline-field form-control"
+        placeholder="New Field Value"
+      >
+      <button
+        type="button"
+        id="addFieldBtn"
+        class="btn btn-outline-success ms-3"
+      >
+        <i class="text-success fa-solid fa-plus"></i>
+      </button>
+    </div>
+  </section>
+  <section class="submit-row container-fluid container-lg d-flex flex-column align-items-start flex-md-row align-items-md-center mt-2 mb-4">
+    <button type="button" class="btn btn-outline-primary px-4 me-3">Finish Updating Kardex</button>
+    <span class="fw-bold">or click a button below to add them as a new field in the Kardex</span>
+  </section>
+  <section class="suggestion-btns container-fluid container-lg d-flex flex-wrap">
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Bed #
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Clinical Area
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Department
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Diagnosic Work-Ups
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Diet Remarks
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Doctor in Charge
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Hospital Name
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark me-3 mb-3"
+    >
+      Shift Schedule
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark h-auto me-3 mb-3"
+    >
+      Transfer in, Transfer out, or Transfer to another Hospital
+    </button>
+  </section>
+</div>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<div class="container">
+  <h1>Update Kardex Page</h1>
+  <br>
+  <div class="card">
+    <div class="card-header">
+      Update Kardex Form
+    </div>
+    <div class="card-body">
+      <form action="" method="post">
+        {% csrf_token %}
+        {{form|crispy}}
+        <!-- Insert Input Fields -->
+        <!-- Update Button -->
+        <button class="btn btn-outline-success" type="submit">
+          <span class="material-icons">edit</span>
+          Update Kardex
+        </button>
+        <!-- Cancel Button -->
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-danger">
+          <span class="material-icons">block</span>
+          Cancel
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

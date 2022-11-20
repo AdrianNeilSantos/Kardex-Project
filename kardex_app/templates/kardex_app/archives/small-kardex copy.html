@@ -1,0 +1,22 @@
+{% load static %}
+<link rel="stylesheet" href= {% static "css/small-kardex.css" %}>
+<div class="small-kardex py-3 w-100">
+  <div class="small-kardex-stripes d-flex flex-column">
+    <span class="small-kardex-text">
+      <b>Arcilla, Natalio Latrell Bashir</b><br>
+      <b>{{ kardex.formatted_name }}</b><br>
+      {{ kardex.sex }}, {{ kardex.age }} years old<br>
+      {{ kardex.formatted_datetime }}<br>
+      {% if kardex.hospital_num is not None %}Hospital #{{ kardex.hospital_num}}<br>{% endif %}
+    </span>
+    <br>
+    <span class="small-kardex-text">
+      <b>For Admission</b><br>
+      Scheduled for: Laboratory Tests, Diagnostic Tests<br>
+      Edited By:<br>
+      &nbsp;&nbsp;<span class="cut-text">Arcilla, Roman Garrison Pandapatan</span>&nbsp;(6:52 PM - 2022/10/15)<br>
+      &nbsp;&nbsp;<span class="cut-text">Suarez, Arnold Raul Abe</span>&nbsp;(4:38 PM - 2022/10/15)<br>
+      &nbsp;&nbsp;<span class="cut-text">Arcilla, Roman Garrison Pandapatan</span>&nbsp;(3:52 PM - 2022/10/15)<br>
+    </span>
+  </div>
+</div>
