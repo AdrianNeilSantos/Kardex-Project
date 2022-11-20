@@ -88,8 +88,9 @@ const generateNurseCards = () => {
       // for nurse delete modal toggle link
       const deleteLink = document.createElement('a');
       deleteLink.classList.add('delete-link', 'link', 'text-danger');
+      deleteLink.href = '#';
       deleteLink.setAttribute('data-bs-toggle', 'modal');
-      deleteLink.setAttribute('data-bs-target', `delete_nurse_${ nurse.id }`);
+      deleteLink.setAttribute('data-bs-target', `#delete_nurse_${ nurse.id }`);
       
       const deleteIcon = document.createElement('i');
       deleteIcon.classList.add('fa-solid', 'fa-trash');
@@ -120,6 +121,9 @@ const generateNurseCards = () => {
     visitProfileLink.href = window.location.href.slice(-1) === '/'
       ? window.location.href.slice(0, -1).split('/').slice(0, -1).join('/') + `/profile/${ nurse.id }`
       : window.location.href.split('/').slice(0, -1).join('/') + `/profile/${ nurse.id }`;
+
+    const nurseIdSpan = nurseCard.querySelector('.nurse-id-span');
+    nurseIdSpan.textContent = nurse.id;
 
     return nurseContainer;
   });
@@ -253,7 +257,6 @@ onDutyRangeMaxInput.addEventListener('keydown', filterNurses);
 const sortNurseSelect = document.querySelector('#sortNurseSelect');
 const sortNurses = () => {
   const sortVal = sortNurseSelect.value;
-  console.log(currNurses);
   switch (sortVal) {
   case '0':
     currNurses = _.orderBy(currNurses, ['last_name', 'first_name'], ['asc']);
@@ -264,10 +267,10 @@ const sortNurses = () => {
   default:
     // do nothing
   }
-  nurseGroupContainer.querySelectorAll('.kardex-container').forEach((el) => {
+  nurseGroupContainer.querySelectorAll('.nurse-container').forEach((el) => {
     el.style.order = currNurses
       .map((kardex) => kardex.id)
-      .indexOf(parseInt(el.querySelector('.kardex-id-span').textContent));
+      .indexOf(parseInt(el.querySelector('.nurse-id-span').textContent));
   });
 };
 sortNurses();
