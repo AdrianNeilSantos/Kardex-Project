@@ -264,6 +264,9 @@ def profile(request, pk):
     visiting_nurse = request.user
     target_nurse = Nurse.objects.get(id=pk)
 
+    if not request.user.is_superuser and visiting_nurse != target_nurse:
+        return redirect(f'/profile/{visiting_nurse.id}')
+
     form = NurseUpdateForm(instance=target_nurse)
     if (request.method == "POST"):
         print(request.POST)
@@ -306,9 +309,16 @@ def profile(request, pk):
 def nurseDashboard(request):
     nurses = Nurse.objects.all()
     context = {"nurses": nurses}
+
+    if not request.user.is_superuser:
+        return redirect('dashboard')
+
     return render(request, 'kardex_app/nurse/nurse-dashboard.html', context)
 
 def createNurse(request):
+    if not request.user.is_superuser:
+        return redirect('dashboard')
+
     form = NurseCreationForm()
     if(request.method == "POST"):
         form = NurseCreationForm(request.POST, request.FILES)
@@ -1215,7 +1225,6 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
         target_nurse = request.GET.get('nurse', '')
         if target_nurse:
             relevant_kardex = relevant_kardex.filter(Q(edited_by__icontains=target_nurse))
-        print('relevant_kardex', relevant_kardex, [target_nurse])
 
         target_name = request.GET.get('name', '')
         if target_name:
@@ -1290,7 +1299,6 @@ class PaginatedNurseList(APIView, LimitOffsetPagination):
         requesting_nurse = request.user
         visible_nurses = Nurse.objects.all()
 
-        print(request.META['HTTP_REFERER'])
         if request.META['HTTP_REFERER'].endswith('nurse-dashboard/'):
             visible_nurses = visible_nurses.filter(reduce(operator.or_,
                 (Q(ward__icontains=ward) for ward in requesting_nurse.ward.split(','))
@@ -1305,7 +1313,6 @@ class PaginatedNurseList(APIView, LimitOffsetPagination):
             visible_nurses = visible_nurses.filter(
                 Q(last_name__icontains=target_name) | Q(first_name__icontains=target_name)
             )
-        print('name', visible_nurses)
 
         on_duty_filters = {}
         target_min_on_duty = request.GET.get('min-on-duty', '')
@@ -1317,7 +1324,6 @@ class PaginatedNurseList(APIView, LimitOffsetPagination):
             on_duty_filters['on_duty__iendswith'] = target_max_on_duty
         
         visible_nurses = visible_nurses.filter(**on_duty_filters)
-        print('on_duty', visible_nurses)
 
         results = self.paginate_queryset(visible_nurses, request, view=self)
         serializers = NurseSerializer(results, many=True)

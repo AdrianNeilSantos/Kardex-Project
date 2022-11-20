@@ -79,7 +79,7 @@ class Kardex(models.Model):
 class Nurse(AbstractUser):
     # blank: False = required
     birthday = models.DateTimeField(auto_now_add=False, null=True, blank=True)
-    sex = models.CharField(max_length=10, default='Male', null=True, blank=True)
+    sex = models.CharField(max_length=10, null=True, blank=True)
     ward = models.CharField(max_length=255, null=True, blank=True)
     department = models.CharField(max_length=255, null=True, blank=True)
     nurse_level = models.CharField(max_length=255, null=True, blank=True)

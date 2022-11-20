@@ -1,0 +1,14 @@
+.required-span::after {
+  content: '*';
+  color: red;
+}
+
+.right-col {
+  min-height: 100vh;
+}
+
+@media only screen and (max-width: 991px) {
+  .right-col {
+    min-height: 0;
+  }
+}

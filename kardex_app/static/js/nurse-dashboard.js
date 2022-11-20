@@ -97,7 +97,7 @@ const generateNurseCards = () => {
       deleteLink.appendChild(deleteIcon);
 
       const deleteSpan = document.createElement('span');
-      deleteSpan.textContent = 'Delete';
+      deleteSpan.textContent = ' Delete';
       deleteLink.appendChild(deleteSpan);
 
       // for nurse delete modal
@@ -123,6 +123,7 @@ const generateNurseCards = () => {
       : window.location.href.split('/').slice(0, -1).join('/') + `/profile/${ nurse.id }`;
 
     const nurseIdSpan = nurseCard.querySelector('.nurse-id-span');
+    nurseIdSpan.classList.add('d-none');
     nurseIdSpan.textContent = nurse.id;
 
     return nurseContainer;

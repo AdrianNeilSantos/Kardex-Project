@@ -181,6 +181,9 @@
           aria-label="New Ward"
           aria-describedby="wardLabel"
           list="wardOptions"
+          {% if not request.user.is_superuser %}
+          readonly
+          {% endif %}
         >
         <datalist id="wardOptions">
           <option value="MED">
@@ -208,6 +211,9 @@
           aria-label="New Department"
           aria-describedby="departmentLabel"
           list="departmentOptions"
+          {% if not request.user.is_superuser %}
+          readonly
+          {% endif %}
         >
         <datalist id="departmentOptions">
           <option value="MED">
@@ -234,6 +240,9 @@
           value="{{ nurse.nurse_level|default:'' }}"
           aria-label="New Nurse Level"
           aria-describedby="nurseLevelLabel"
+          {% if not request.user.is_superuser %}
+          readonly
+          {% endif %}
         >
       </div>
       <h4 class="ms-2">
@@ -251,6 +260,9 @@
           value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:6|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
           aria-label="New On Duty Start"
           aria-describedby="onDutySundayLabel"
+          {% if not request.user.is_superuser %}
+          readonly
+          {% endif %}
         >
         <input
           type="text"
@@ -260,6 +272,9 @@
           value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:6|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
           aria-label="New On Duty End"
           aria-describedby="onDutyGeneralLabel"
+          {% if not request.user.is_superuser %}
+          readonly
+          {% endif %}
         >
       </div>
       <div id="specificOnDutyInputsDiv" class="d-none flex-column">
@@ -273,6 +288,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:0|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
             aria-label="New On Duty Start on Monday"
             aria-describedby="onDutyMondayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
           <input
             type="text"
@@ -282,6 +300,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:0|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
             aria-label="New On Duty End on Monday"
             aria-describedby="onDutyMondayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
         </div>
         <div class="input-group mb-3">
@@ -294,6 +315,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:1|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
             aria-label="New On Duty Start on Tuesday"
             aria-describedby="onDutyMondayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
           <input
             type="text"
@@ -303,6 +327,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:1|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
             aria-label="New On Duty End on Tuesday"
             aria-describedby="onDutyTuesdayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
         </div>
         <div class="input-group mb-3">
@@ -315,6 +342,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:2|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
             aria-label="New On Duty Start on Wednesday"
             aria-describedby="onDutyMondayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
           <input
             type="text"
@@ -324,6 +354,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:2|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
             aria-label="New On Duty End on Wednesday"
             aria-describedby="onDutyWednesdayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
         </div>
         <div class="input-group mb-3">
@@ -336,6 +369,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:3|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
             aria-label="New On Duty Start on Thursday"
             aria-describedby="onDutyThursdayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
           <input
             type="text"
@@ -345,6 +381,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:3|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
             aria-label="New On Duty End on Thursday"
             aria-describedby="onDutyThursdayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
         </div>
         <div class="input-group mb-3">
@@ -357,6 +396,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:4|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
             aria-label="New On Duty Start on Friday"
             aria-describedby="onDutyFridayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
           <input
             type="text"
@@ -366,6 +408,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:4|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
             aria-label="New On Duty End on Friday"
             aria-describedby="onDutyFridayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
         </div>
         <div class="input-group mb-3">
@@ -378,6 +423,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:5|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
             aria-label="New On Duty Start on Saturday"
             aria-describedby="onDutySaturdayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
           <input
             type="text"
@@ -387,6 +435,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:5|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
             aria-label="New On Duty End on Saturday"
             aria-describedby="onDutySaturdayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
         </div>
         <div class="input-group mb-3">
@@ -399,6 +450,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:6|split:'-'|get_by_idx:0|default:'' }}{% endif %}"
             aria-label="New On Duty Start on Sunday"
             aria-describedby="onDutySundayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
           <input
             type="text"
@@ -408,6 +462,9 @@
             value="{% if 'Missing' not in nurse.on_duty %}{{ nurse.on_duty|split:','|get_by_idx:6|split:'-'|get_by_idx:1|default:'' }}{% endif %}"
             aria-label="New On Duty End on Sunday"
             aria-describedby="onDutySundayLabel"
+            {% if not request.user.is_superuser %}
+            readonly
+            {% endif %}
           >
         </div>
       </div>
