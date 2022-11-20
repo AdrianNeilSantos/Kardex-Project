@@ -85,6 +85,28 @@
   </div>
 </div>
 {% endfor %}
+<div id="deleteKardexModal" class="delete-modal modal" tabindex="-1" aria-labelledby="deleteKardexModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="deleteKardexModalLabel" class="modal-title">Confirm Removing Kardex?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Are you sure you want to remove the Kardex of <b>{{ kardex.last_name }}, {{ kardex.first_name }}</b>?<br>
+          This action is not reversible, do you want to proceed with the removal?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a id="confirm-delete-link" href="{% url 'delete-kardex' kardex.id %}">
+          <button type="button" class="btn btn-danger">Confirm Removing Kardex</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="create-kardex-body w-100">
   <form id="createKardexForm" action="" method="post">
     {% csrf_token %}
@@ -340,11 +362,18 @@
       </button>
     </a>
     <a href="#">
-      <button type="button" id="deleteThisKardexBtn" class="btn btn-outline-danger px-4 me-3">
+      <button
+        type="button"
+        id="deleteThisKardexBtn"
+        class="btn btn-outline-danger px-4 me-3"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteKardexModal"
+      >
         Delete this Kardex?
       </button>
     </a>
   </section>
+  <span id="kardexIdSpan" class="d-none">{{ kardex.id|default:'1' }}</span>
   <section class="edit-history container-fluid container-lg d-flex flex-column">
     <span class="fs-2 fw-bold">Previously Edited By:</span>
     <ol>
