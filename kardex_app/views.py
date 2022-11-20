@@ -1207,11 +1207,10 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
         relevant_kardex = relevant_kardex.filter(reduce(operator.or_,
             (Q(name_of_ward__icontains=ward) for ward in requesting_nurse.ward.split(','))
         ))
-        print('relevant_kardex', relevant_kardex, request.user.ward.split(','))
+
         relevant_kardex = relevant_kardex.filter(reduce(operator.or_,
             (Q(department__icontains=department) for department in requesting_nurse.department.split(',')))
         )
-        print('relevant_kardex', relevant_kardex, requesting_nurse.department.split(','))
 
         target_nurse = request.GET.get('nurse', '')
         if target_nurse:
@@ -1223,7 +1222,6 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
             relevant_kardex = relevant_kardex.filter(
                 Q(last_name__icontains=target_name) | Q(first_name__icontains=target_name)
             )
-        print('relevant_kardex', relevant_kardex, [target_name])
 
         target_min_date = request.GET.get('min-date', '')
         if target_min_date:
@@ -1231,7 +1229,6 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
             date_format = ['%Y', '%m', '%d']
             target_min_date = timezone.make_aware(datetime.strptime('-'.join(split_min_date), '-'.join(date_format[:len(split_min_date)])))
             relevant_kardex = relevant_kardex.filter(Q(date_time__gte=target_min_date) | Q(date_added__gte=target_min_date))
-        print('relevant_kardex min-date', relevant_kardex, target_min_date)
 
         target_max_date = request.GET.get('max-date', '')
         if target_max_date:
@@ -1239,7 +1236,6 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
             date_format = ['%Y', '%m', '%d']
             target_max_date = timezone.make_aware(datetime.strptime('-'.join(split_max_date), '-'.join(date_format[:len(split_max_date)])))
             relevant_kardex = relevant_kardex.filter(Q(date_time__lte=target_max_date) | Q(date_added__lte=target_max_date))
-        print('relevant_kardex max-date', relevant_kardex, target_max_date)
 
         results = self.paginate_queryset(relevant_kardex, request, view=self)
         serializers = KardexSerializer(results, many=True)
@@ -1276,16 +1272,54 @@ class NurseList(APIView):
         serializers = NurseSerializer(nurses, many=True)
         return Response(serializers.data)
 
+# class PaginatedNurseList(APIView, LimitOffsetPagination):
+#     def get(self, request, format=None):
+#         all_nurse = Nurse.objects.all()
+#         nurses = all_nurse.filter(reduce(operator.or_,
+#             (Q(ward__icontains=ward) for ward in request.user.ward.split(',')))
+#         )
+#         nurses = nurses.filter(reduce(operator.or_,
+#             (Q(department__icontains=department) for department in request.user.department.split(',')))
+#         )
+#         results = self.paginate_queryset(nurses, request, view=self)
+#         serializers = NurseSerializer(results, many=True)
+#         return self.get_paginated_response(serializers.data)
+
 class PaginatedNurseList(APIView, LimitOffsetPagination):
     def get(self, request, format=None):
-        all_nurse = Nurse.objects.all()
-        nurses = all_nurse.filter(reduce(operator.or_,
-            (Q(ward__icontains=ward) for ward in request.user.ward.split(',')))
-        )
-        nurses = nurses.filter(reduce(operator.or_,
-            (Q(department__icontains=department) for department in request.user.department.split(',')))
-        )
-        results = self.paginate_queryset(nurses, request, view=self)
+        requesting_nurse = request.user
+        visible_nurses = Nurse.objects.all()
+
+        print(request.META['HTTP_REFERER'])
+        if request.META['HTTP_REFERER'].endswith('nurse-dashboard/'):
+            visible_nurses = visible_nurses.filter(reduce(operator.or_,
+                (Q(ward__icontains=ward) for ward in requesting_nurse.ward.split(','))
+            ))
+
+            visible_nurses = visible_nurses.filter(reduce(operator.or_,
+                (Q(department__icontains=department) for department in requesting_nurse.department.split(',')))
+            )
+
+        target_name = request.GET.get('name', '')
+        if target_name:
+            visible_nurses = visible_nurses.filter(
+                Q(last_name__icontains=target_name) | Q(first_name__icontains=target_name)
+            )
+        print('name', visible_nurses)
+
+        on_duty_filters = {}
+        target_min_on_duty = request.GET.get('min-on-duty', '')
+        if target_min_on_duty:
+            on_duty_filters['on_duty__istartswith'] = target_min_on_duty
+
+        target_max_on_duty = request.GET.get('max-on-duty', '')
+        if target_max_on_duty:
+            on_duty_filters['on_duty__iendswith'] = target_max_on_duty
+        
+        visible_nurses = visible_nurses.filter(**on_duty_filters)
+        print('on_duty', visible_nurses)
+
+        results = self.paginate_queryset(visible_nurses, request, view=self)
         serializers = NurseSerializer(results, many=True)
         return self.get_paginated_response(serializers.data)
 
@@ -1299,6 +1333,16 @@ def nurse_search(request):
         return Response(serializer.data)
     else:
         return Response({'Nurses': []})
+
+
+# class InsideOnDuty(Lookup):
+#     lookup_name = 'iod'
+
+#     def as_sql(self, compiler, connection):
+#         lhs, lhs_params = compiler.compile(self.lhs)
+#         rhs, rhs_params = compiler.compile(self.rhs)
+#         params = lhs_params + rhs_params
+#         return "DATE(%s) = DATE(%s)" % (lhs, rhs), params
 
 # code adapted from and thanks to
 # https://stackoverflow.com/a/17867797
