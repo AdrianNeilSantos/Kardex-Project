@@ -153,7 +153,6 @@ const getRelevantData = async (page) => {
   //       sCallerName = aRegexResult[1] || aRegexResult[2];
   //   }
   //   console.log(sCallerName);
-  console.log(page);
   freezePageControllers = true;
   kardexGroupContainer.style.minHeight = '282px';
   removeChildren('kardex-group-container');
@@ -434,6 +433,16 @@ const submitUpdateProfileForm = () => {
     onDutyInput.value = `${onDutyGeneralInputs[0].value}-${onDutyGeneralInputs[1].value},${onDutyGeneralInputs[0].value}-${onDutyGeneralInputs[1].value},${onDutyGeneralInputs[0].value}-${onDutyGeneralInputs[1].value},${onDutyGeneralInputs[0].value}-${onDutyGeneralInputs[1].value},${onDutyGeneralInputs[0].value}-${onDutyGeneralInputs[1].value},${onDutyGeneralInputs[0].value}-${onDutyGeneralInputs[1].value},${onDutyGeneralInputs[0].value}-${onDutyGeneralInputs[1].value}`;
   else
     onDutyInput.value = `${onDutyMondayStartInput.value}-${onDutyMondayEndInput.value},${onDutyTuesdayStartInput.value}-${onDutyTuesdayEndInput.value},${onDutyWednesdayStartInput.value}-${onDutyWednesdayEndInput.value},${onDutyThursdayStartInput.value}-${onDutyThursdayEndInput.value},${onDutyFridayStartInput.value}-${onDutyFridayEndInput.value},${onDutySaturdayStartInput.value}-${onDutySaturdayEndInput.value},${onDutySundayStartInput.value}-${onDutySundayEndInput.value}`;
+
+  const wardInput = document.querySelector('#wardInput');
+  wardInput.value = wardInput.value.includes(',')
+    ? wardInput.value.split(',').map((ward) => ward.trim()).join(',')
+    : wardInput.value.trim();
+
+  const departmentInput = document.querySelector('#departmentInput');
+  departmentInput.value = departmentInput.value.includes(',')
+    ? departmentInput.value.split(',').map((department) => department.trim()).join(',')
+    : departmentInput.value.trim();
 
   updateProfileForm.submit();
 };
