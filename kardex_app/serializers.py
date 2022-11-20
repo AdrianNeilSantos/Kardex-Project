@@ -16,8 +16,11 @@ class NurseSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
+            'birthday',
             'sex',
             'ward',
             'department',
+            'nurse_level',
+            'on_duty',
             'picture'
         )

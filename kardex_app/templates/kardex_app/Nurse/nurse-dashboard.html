@@ -2,162 +2,110 @@
 {% block content %}
 {% load static %}
 <link rel="stylesheet" href= {% static "css/nurse-dashboard.css" %}>
+<script defer>
+  const superuser = '{% if user.is_superuser %}true{% endif %}' === 'true';
+</script>
+<script defer src={% static "js/nurse-dashboard.js" %}></script>
+<!-- Delete Modal -->
+<div class="nurse-delete-modal modal fade" tabindex="1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-content">
+      <div class="modal-header">
+      <h2 class="modal-title fw-bold" id="deleteModalLabel">Delete Nurse</h2>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <h4>Confirm deleting <strong></strong>? </h4>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-danger">
+          <i class="fa-solid fa-trash"></i>
+          Delete
+        </a>
+        <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </a>
+      </div>
+  </div>
+  </div>
+</div>
 <div class="dashboard-body">
   <section class="kardex-section position-relative container-fluid container-xxl d-flex flex-column my-4 px-md-64">
     <div class="w-100 d-flex flex-column flex-xl-row justify-content-xl-between align-items-center">
       <div class="d-flex flex-column align-items-center flex-md-row mb-3">
-        <button type="button" class="btn btn-outline-dark fw-bold mb-3 me-md-3 mb-md-0">
-          0 Filters Selected
+        <button type="button" class="clear-filters-btn btn btn-outline-dark fw-bold mb-3 me-md-3 mb-md-0">
+          Clear Selected Filters
         </button>
         <div class="d-flex flex-column align-items-center flex-sm-row">
           <span class="fw-bold me-2">On Duty</span>
           <div class="d-flex align-items-center">
             <input
               type="text"
+              id="onDutyRangeMinInput"
               class="form-control w-156 text-center me-2"
-              placeholder="0"
+              placeholder="HHSS (e.g. 0800)"
             >
             <span class="fw-bold me-2">to</span>
             <input
               type="text"
+              id="onDutyRangeMaxInput"
               class="form-control w-156 text-center"
-              value="{{nurses|length}}"
-              readonly
+              placeholder="HHSS (e.g. 1700)"
             >
           </div>
         </div>
       </div>
       <div class="d-flex flex-column align-items-center flex-sm-row mb-3">
         <div class="d-flex mb-3 mb-sm-0">
-          <input class="form-control w-156 me-2" type="search" placeholder="Search" aria-label="Search">
-          <button type="button" class="btn btn-outline-dark me-3">Search</button>
+          <input id="searchDashboardInput" class="form-control w-156 me-2" type="search" placeholder="Search" aria-label="Search">
+          <button id="searchDashboardBtn" type="button" class="btn btn-outline-dark me-3">Search</button>
         </div>
-        <div class="dropdown">
-          <button
-            class="btn btn-outline-dark dropdown-toggle fw-bold px-4"
-            type="button"
-            id="sortingDropdown"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
-            Nurse - Descending
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="sortingDropdown">
-            <li><a class="dropdown-item" href="#">Nurse - Descending</a></li>
-            <li><a class="dropdown-item" href="#">Nurse - Ascending</a></li>
-          </ul>
-        </div>
+        <select
+          id="sortNurseSelect"
+          class="form-select btn-outline-dark fw-bold px-4"
+          aria-label="select for sorting nurses"
+        >
+          <option value="0">Name - A-Z&nbsp;&nbsp;</option>
+          <option value="1">Name - Z-A&nbsp;&nbsp;</option>
+        </select>
       </div>
     </div>
     <div class="d-flex flex-column align-items-center flex-xl-row">
       <div class="col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 mb-xl-0 ms-xl-4 ps-xl-2">
         <div class="d-flex mb-3 mb-sm-0">
-          <button type="button" class="btn btn-outline-dark fw-bold me-2">Prev</button>
+          <button type="button" class="prev-btn btn btn-outline-dark fw-bold me-2">Prev</button>
           <div class="input-group w-128 me-2">
             <span class="input-group-text" id="pageLabel">Page</span>
             <input
               type="number"
-              class="form-control"
+              class="page-input form-control"
               value="1"
               aria-label="Page"
               aria-describedby="pageLabel"
             >
           </div>
-          <button type="button" class="btn btn-outline-dark fw-bold me-3">Next</button>
+          <button type="button" class="next-btn btn btn-outline-dark fw-bold me-3">Next</button>
         </div>
-        <button type="button" class="btn btn-outline-dark fw-bold me-3">Refresh</button>
+        <button type="button" class="refresh-btn btn btn-outline-dark fw-bold">Refresh</button>
         {% if user.is_superuser %}
-        <a href="{% url 'create-nurse' %}" class="btn btn-success">
+        <a href="{% url 'create-nurse' %}" class="btn btn-outline-success">
           <i class="fa-solid fa-plus"></i>
           Add Nurse
         </a>
         {% endif %}
       </div>
       <div class="col-xl-6 d-flex align-items-center">
-        <span class="fs-5 text-center text-xl-start">
-          Showing 1-50 out of {{nurses|length}} Available Nurses across 18 pages
+        <span class="nurse-counter-span fs-5 text-center text-xl-start">
+          <!-- insert nurse counter here -->
         </span>
       </div>
     </div>
     <!-- Nurse -->
+    <div class="nurse-container d-none col-12 col-lg-6 col-xl-4 my-2 px-2">
+      {% include 'kardex_app/partials/nurse-card.html' %}
+    </div>
     <div class="nurse-group-container d-flex flex-wrap">
-      {% for nurse in nurses %}
-            <!-- Nurse item -->
-            <div class="col-lg-4 my-2 px-2">
-              <div class="card">
-                <!-- Nurse Status -->
-                <div class="card-header d-flex flex-row-reverse text-success">
-                  On Duty
-                  <i class="fa-solid fa-circle-dot d-flex justify-content-center align-items-center me-1"></i>
-                </div>
-                <!-- Nurse Information -->
-                <div class="card-body d-flex flex-row border-0 p-3">
-                  <div class="nurse-image col-4 d-flex justify-content-center align-items-center">
-                    {% if nurse.picture %}
-                    <img src={{nurse.picture.url}} class="card-img-top" alt="">
-                    {% else %}
-                    <img src={% static 'images/DO-3.jpg' %} class="card-img-top" alt="">
-                    {% endif %}
-                  </div>
-                  <div class="card-block col-8 d-flex justify-content-center align-items-center">
-                    <ul class="list-group list-group-flush w-100 text-nowrap ps-3">
-                      <li class="nurse-name list-group-item fw-bold">{{nurse.last_name}}, {{nurse.first_name}}</li>
-                      <li class="nurse-id list-group-item">{{nurse.id}}</li>
-                      <li class="nurse-demographic list-group-item">{{nurse.sex}}, 30</li>
-                      <li class="nurse-duty list-group-item">On Duty: 7:00AM to 7:00PM</li>
-                      <li class="nurse-request list-group-item">Request: 10/7/22 - 7:00PM</li>
-                    </ul>
-                   </div>
-                </div>
-                <!-- Nurse Action -->
-                <div class="card-footer d-flex flex-row-reverse">
-
-                  <!-- Delete Button Trigger -->
-                  {% if user.is_superuser %}
-                  <a type="submit" data-bs-toggle="modal" data-bs-target="#delete_nurse_{{nurse.id}}" class="link delete-link text-danger">
-                    <i class="fa-solid fa-trash"></i>
-                    Delete
-                  </a>
-                  {% endif %}
-
-                  <!-- Delete Modal -->
-                  <div class="modal fade" id="delete_nurse_{{nurse.id}}" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                      <div class="modal-content">
-                          <div class="modal-header">
-                          <h2 class="modal-title fw-bold" id="exampleModalLabel">Delete Nurse</h2>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body">
-                              <h4>Confirm deleting <strong>{{nurse.first_name}} {{nurse.last_name}}</strong>? </h4>
-                          </div>
-                          <div class="modal-footer">
-                            <a href="{% url 'delete-nurse' nurse.id %}" class="btn btn-danger">
-                              <i class="fa-solid fa-trash"></i>
-                              Delete
-                            </a>
-                            <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                              Cancel
-                            </a>
-                          </div>
-                      </div>
-                      </div>
-                  </div>
-
-
-                  <a href="" class="link action-request-link text-success me-3">
-                    <i class="fa-solid fa-envelope-open-text"></i>
-                    Action Request
-                  </a>
-                  <a href="{% url 'view-nurse' nurse.id %}" class="link visit-profile-link text-primary me-3">
-                    <i class="fa-solid fa-user"></i>
-                    Visit Profile
-                  </a>
-
-                  
-                </div>
-              </div>
-            </div>
-      {% endfor %}
+      <!-- nurse cards will be generated here -->
     </div>
     <div class="d-flex flex-column align-items-center flex-xl-row">
       <div class="order-2 order-xl-1 col-xl-6 d-flex flex-column align-items-center flex-sm-row mb-3 ms-xl-4 ps-xl-2">
@@ -176,10 +124,16 @@
           <button type="button" class="next-btn btn btn-outline-dark fw-bold me-3">Next</button>
         </div>
         <button type="button" class="refresh-btn btn btn-outline-dark fw-bold">Refresh</button>
+        {% if user.is_superuser %}
+        <a href="{% url 'create-nurse' %}" class="btn btn-outline-success">
+          <i class="fa-solid fa-plus"></i>
+          Add Nurse
+        </a>
+        {% endif %}
       </div>
       <div class="order-1 order-xl-2 col-xl-6 d-flex align-items-center mb-3">
-        <span class="kardex-counter-span fs-5 text-center text-xl-start">
-          <!-- insert kardex counter here -->
+        <span class="nurse-counter-span fs-5 text-center text-xl-start">
+          <!-- insert nurse counter here -->
         </span>
       </div>
     </div>
