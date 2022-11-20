@@ -153,3 +153,18 @@ const compareWPrev = (idx) => {
 comparePrevLinks.forEach((el) => {
   el.addEventListener('click', (e) => compareWPrev(e.target.id.replace(/\D/g, '')));
 });
+
+// const deleteThisKardexBtn = document.querySelector('#deleteThisKardexBtn');
+// const deleteKardexModal = document.querySelector('#deleteKardexModal');
+// const kardexIdSpan = document.querySelector('#kardexIdSpan');
+// const showDeleteKardexModal = () => {
+//   const modalBody = deleteKardexModal.querySelector('.modal-body');
+//   modalBody.querySelector('p').querySelector('b').textContent = `${lastNameInput.value.trim()} ${firstNameInput.value.trim()}`;
+  
+//   const modalFooter = deleteKardexModal.querySelector('.modal-footer');
+//   modalFooter.querySelector('.confirm-delete-link').href = `/delete-kardex/${ kardexIdSpan.textContent }`;
+  
+//   const activatedDeleteKardexModal = new bootstrap.Modal(deleteKardexModal);
+//   activatedDeleteKardexModal.show();
+// };
+// deleteThisKardexBtn.addEventListener('click', showDeleteKardexModal);
