@@ -5,10 +5,10 @@ databases:
 
 services:
   - type: web
-    name: e_kardex
+    name: kardex_project
     env: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn e_kardex.wsgi:application"
+    startCommand: "gunicorn kardex_project.wsgi:application"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
