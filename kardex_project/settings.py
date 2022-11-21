@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import dj_database_url
+
 from pathlib import Path
 import os
 
@@ -118,8 +120,9 @@ DATABASES = {
         'HOST': 'localhost',
         'POST': '5432',
     }
+} if DEBUG else {
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
