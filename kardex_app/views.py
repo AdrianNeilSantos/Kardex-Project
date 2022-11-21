@@ -139,8 +139,8 @@ def password_reset_request(request):
 #Kardex
 
 @login_required(login_url=login_URL)
-def dashboard(request):    
-    print(timezone.now())
+def dashboard(request):
+    # print(timezone.now())
     kardexs = list(Kardex.objects.all()[:100])
     context = { 'kardexs': kardexs }
 
@@ -269,15 +269,15 @@ def profile(request, pk):
 
     form = NurseUpdateForm(instance=target_nurse)
     if (request.method == "POST"):
-        print(request.POST)
+        # print(request.POST)
         post = request.POST.copy()
         birthday = datetime.strptime(post.get('birthday'), '%Y-%m-%d').date()
         post.update({
             'birthday': birthday
         })
-        print(post)
+        # print(post)
         form = NurseUpdateForm(post, request.FILES, instance=target_nurse)
-        print(form.errors)
+        # print(form.errors)
         if (form.is_valid()):
             form.save()
             return redirect(f'/profile/{pk}')
@@ -285,8 +285,8 @@ def profile(request, pk):
     nurse_on_duty = target_nurse.on_duty.split(',')[datetime.now().weekday()] \
         if target_nurse.on_duty and len(target_nurse.on_duty.split(',')) > 1 else '(Missing On Duty Schedule)'
     formatted_nurse_on_duty = '(Missing On Duty Schedule)'
-    print('nurse_on_duty', nurse_on_duty)
-    print(nurse_on_duty.split('-')[0][:2], nurse_on_duty.split('-')[0][-2:])
+    # print('nurse_on_duty', nurse_on_duty)
+    # print(nurse_on_duty.split('-')[0][:2], nurse_on_duty.split('-')[0][-2:])
     if 'Missing' not in nurse_on_duty:
         formatted_nurse_on_duty = list(map(lambda time: \
             f'{ time[:2] }:{ time[-2:] }AM' \
@@ -294,7 +294,7 @@ def profile(request, pk):
             else f'{ int(time[:2]) - 12 }:{ time[-2:] }PM', \
             nurse_on_duty.split('-')))
         formatted_nurse_on_duty = f'{ formatted_nurse_on_duty[0] } - { formatted_nurse_on_duty[1] }'
-    print(formatted_nurse_on_duty)
+    # print(formatted_nurse_on_duty)
     context = {
         'nurse': target_nurse,
         'form': form,
@@ -333,7 +333,7 @@ def updateNurse(request, pk):
     form = NurseUpdateForm(instance=nurse)
 
     if(request.method == "POST"):
-        print("THIS IS POST")
+        # print("THIS IS POST")
         form = NurseUpdateForm(request.POST, request.FILES, instance=nurse)
         if(form.is_valid()):
             form.save()

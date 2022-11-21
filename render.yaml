@@ -1,0 +1,20 @@
+databases:
+  - name: e-kardex
+    databaseName: e-kardex
+    user: e-kardex
+
+services:
+  - type: web
+    name: e-kardex
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn e-kardex.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: e-kardex
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
