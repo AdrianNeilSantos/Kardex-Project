@@ -28,7 +28,8 @@ SECRET_KEY = os.environ.get(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
+# DEBUG = 'RENDER' not in os.environ
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -56,7 +57,9 @@ INSTALLED_APPS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
-CSRF_TRUSTED_ORIGINS = ['https://901f-136-158-41-118.ap.ngrok.io']
+CSRF_TRUSTED_ORIGINS = []
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(RENDER_EXTERNAL_HOSTNAME)
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
