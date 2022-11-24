@@ -360,7 +360,19 @@ def deleteNurse(request, pk):
 
 #generate-reports
 def generateReports(request):
-    return render(request, 'kardex_app/generate-reports/generate-reports.html')
+    #Get list of all wards available
+    kardexs = Kardex.objects.all()
+
+    departments = []
+
+    for kardex in kardexs:
+        department = kardex.department
+        if department not in departments:
+            departments.append(department)
+
+    context = {"departments": departments}
+
+    return render(request, 'kardex_app/generate-reports/generate-reports.html', context)
 
 
   #Generating PDFS
@@ -450,9 +462,9 @@ def render_to_PDF(template_src, context_dict, fileName):
 
 
 
-def generate_front_1(work_book, style_head_row, style_data_row):
+def generate_front_1(work_book, style_head_row, style_data_row, department):
     ws = work_book.add_sheet(u'FRONT1')
-    context_header = get_context_front()
+    context_header = get_context_front(department)
     
     #Adjusts colum widths
     edit_col_width(ws, 1, 15)
@@ -465,7 +477,7 @@ def generate_front_1(work_book, style_head_row, style_data_row):
     current_row = START_ROW
 
     
-    current_row = add_front_header(ws,current_row,START_COL,END_COL)
+    current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
 
 
     for context in context_header:
@@ -603,12 +615,10 @@ def generate_front_1(work_book, style_head_row, style_data_row):
 
 
 
-
-
-def generate_front_2(work_book, style_head_row, style_data_row):
+def generate_front_2(work_book, style_head_row, style_data_row, department):
     
     ws = work_book.add_sheet(u'FRONT2')
-    context_header = get_context_front()
+    context_header = get_context_front(department)
     
     #Adjusts colum widths
     edit_col_width(ws, 1, 15)
@@ -621,7 +631,7 @@ def generate_front_2(work_book, style_head_row, style_data_row):
     current_row = START_ROW
 
     
-    current_row = add_front_header(ws,current_row,START_COL,END_COL)
+    current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
 
 
     for context in context_header:
@@ -759,10 +769,10 @@ def generate_front_2(work_book, style_head_row, style_data_row):
 
 
 
-def generate_front_3(work_book, style_head_row, style_data_row):
+def generate_front_3(work_book, style_head_row, style_data_row, department):
 
     ws = work_book.add_sheet(u'FRONT3')
-    context_header = get_context_front()
+    context_header = get_context_front(department)
     
     #Adjusts colum widths
     edit_col_width(ws, 1, 15)
@@ -775,7 +785,7 @@ def generate_front_3(work_book, style_head_row, style_data_row):
     current_row = START_ROW
 
     
-    current_row = add_front_header(ws,current_row,START_COL,END_COL)
+    current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
 
 
     for context in context_header:
@@ -915,10 +925,10 @@ def generate_front_3(work_book, style_head_row, style_data_row):
 
 
 
-def generate_back_1(work_book, style_head_row, style_data_row):
+def generate_back_1(work_book, style_head_row, style_data_row, department):
     ws = work_book.add_sheet(u'BACK1')
 
-    context_header = get_context_back()
+    context_header = get_context_back(department)
     
     #Adjusts colum widths
     edit_col_width(ws, 1, 15)
@@ -931,7 +941,7 @@ def generate_back_1(work_book, style_head_row, style_data_row):
     current_row = START_ROW
 
     
-    current_row = add_front_header(ws,current_row,START_COL,END_COL)
+    current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
 
 
     for context in context_header:
@@ -944,10 +954,10 @@ def generate_back_1(work_book, style_head_row, style_data_row):
 
 
 
-def generate_back_2(work_book, style_head_row, style_data_row):
+def generate_back_2(work_book, style_head_row, style_data_row, department):
     ws = work_book.add_sheet(u'BACK2')
 
-    context_header = get_context_back()
+    context_header = get_context_back(department)
     
     #Adjusts colum widths
     edit_col_width(ws, 1, 15)
@@ -960,7 +970,7 @@ def generate_back_2(work_book, style_head_row, style_data_row):
     current_row = START_ROW
 
     
-    current_row = add_front_header(ws,current_row,START_COL,END_COL)
+    current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
 
 
     for context in context_header:
@@ -970,10 +980,10 @@ def generate_back_2(work_book, style_head_row, style_data_row):
     ws.write(current_row,0, 'TOTAL')
 
 
-def generate_back_3(work_book, style_head_row, style_data_row):
+def generate_back_3(work_book, style_head_row, style_data_row, department):
     ws = work_book.add_sheet(u'BACK3')
 
-    context_header = get_context_back()
+    context_header = get_context_back(department)
     
     #Adjusts colum widths
     edit_col_width(ws, 1, 15)
@@ -986,7 +996,7 @@ def generate_back_3(work_book, style_head_row, style_data_row):
     current_row = START_ROW
 
     
-    current_row = add_front_header(ws,current_row,START_COL,END_COL)
+    current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
 
 
     for context in context_header:
@@ -998,7 +1008,7 @@ def generate_back_3(work_book, style_head_row, style_data_row):
 
 #Excel Utilities
 
-def add_front_header(ws,current_row,START_COL,END_COL):
+def add_front_header(ws,current_row,START_COL,END_COL,department):
     if "FRONT" in ws.name:
         style_sheet_header = xlwt.easyxf("""    
             align:
@@ -1041,7 +1051,7 @@ def add_front_header(ws,current_row,START_COL,END_COL):
     ws.write(current_row,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF:', style_label)
     ws.write_merge(current_row,current_row,3,6, "07-SEP-22", style_value)
     ws.write(current_row,9, 'FLOOR/SECTION:', style_label)
-    ws.write_merge(current_row,current_row,11,END_COL, "COVID", style_value)
+    ws.write_merge(current_row,current_row,11,END_COL, department, style_value)
     current_row += 2
 
     return current_row
@@ -1083,11 +1093,11 @@ def add_section(ws, current_row, START_COL, END_COL, header_name, style_head_row
 
 def add_data(ws, kardexs, current_row, END_COL, style_data_row):
     for kardex in kardexs:
-        ws.write(current_row,0, kardex.id, style_data_row)
-        ws.write(current_row,1, f'{kardex.first_name} {kardex.last_name}', style_data_row)
-        ws.write(current_row,2, kardex.age, style_data_row)
-        ws.write_merge(current_row,current_row,3, 8, kardex.sex, style_data_row)
-        ws.write_merge(current_row,current_row,9,END_COL, kardex.sex, style_data_row)
+        ws.write(current_row,0, f'{kardex.name_of_ward} {kardex.bed_num}', style_data_row)
+        ws.write(current_row,1, kardex.date_time, style_data_row)
+        ws.write(current_row,2, kardex.case_num, style_data_row)
+        ws.write_merge(current_row,current_row,3, 8, f'{kardex.first_name}, {kardex.last_name}', style_data_row)
+        ws.write_merge(current_row,current_row,9,END_COL, f'{kardex.diagnosis}, {kardex.condition}', style_data_row)
         current_row += 1 
 
     current_row += 1
@@ -1095,10 +1105,10 @@ def add_data(ws, kardexs, current_row, END_COL, style_data_row):
 
 
 
-def get_context_front():
-    admission = Kardex.objects.all()
-    discharges = Kardex.objects.all()
-    death = Kardex.objects.all()
+def get_context_front(department):
+    admission = Kardex.objects.filter(Q(department=department) & Q(is_admission=True))
+    discharges = Kardex.objects.filter(Q(department=department) & Q(is_discharges=True))
+    death = Kardex.objects.filter(Q(department=department) & Q(is_death=True))
     census = Kardex.objects.all()
 
     context = {"ADMISSION": admission, "DISCHARGES": discharges, "DEATH": death, "CENSUS OF PATIENTS": census}
@@ -1106,10 +1116,10 @@ def get_context_front():
     return context
 
 
-def get_context_back():
-    trans_in = Kardex.objects.all()
-    trans_out = Kardex.objects.all()
-    trans_other = Kardex.objects.all()
+def get_context_back(department):
+    trans_in = Kardex.objects.filter(Q(department=department) & Q(is_trans_in=True))
+    trans_out = Kardex.objects.filter(Q(department=department) & Q(is_trans_out=True))
+    trans_other = Kardex.objects.filter(Q(department=department) & Q(is_trans_other=True))
 
     context = {"TRANS-IN": trans_in, "TRANS-OUT": trans_out, "TRANSFER TO OTHER HOSPITAL":trans_other}
 
@@ -1127,7 +1137,7 @@ def edit_col_width(ws, target_col, width):
 
 
   #Generating ALL XLSX
-def generate_census_XLSX(request):
+def generate_census_XLSX(request, department):
     response = HttpResponse(content_type='application/vnd.ms-excel')
     fileName = "census"
     response['Content-Disposition'] = 'attachment;filename="'+str(fileName)+'.xls"'
@@ -1173,12 +1183,12 @@ def generate_census_XLSX(request):
 
     work_book = xlwt.Workbook(encoding = 'utf-8')
 
-    generate_front_1(work_book, style_head_row, style_data_row)
-    generate_back_1(work_book, style_head_row, style_data_row)
-    generate_front_2(work_book, style_head_row, style_data_row)
-    generate_back_2(work_book, style_head_row, style_data_row)
-    generate_front_3(work_book, style_head_row, style_data_row)
-    generate_back_3(work_book, style_head_row, style_data_row)
+    generate_front_1(work_book, style_head_row, style_data_row, department)
+    generate_back_1(work_book, style_head_row, style_data_row, department)
+    generate_front_2(work_book, style_head_row, style_data_row, department)
+    generate_back_2(work_book, style_head_row, style_data_row, department)
+    generate_front_3(work_book, style_head_row, style_data_row, department)
+    generate_back_3(work_book, style_head_row, style_data_row, department)
     
     write_excel_report(work_book, response)
 

@@ -40,8 +40,6 @@
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
               <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue"><span
                   class="material-icons">download</span>Get PDF</a>
-              <a href="{% url 'generate-census-XLSX' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get Excel</a>
             </div>
           </div>
           <div class="col">
@@ -55,8 +53,6 @@
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
               <a href="{% url 'diet_list_PDF' %}" class="btn report-button blue"><span
                   class="material-icons">download</span>Get PDF</a>
-              <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get Excel</a>
             </div>
           </div>
         </div>
@@ -73,8 +69,6 @@
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
               <a href="{% url 'nursing_endorsement_sheet_PDF' %}" class="btn report-button blue"><span
                   class="material-icons">download</span>Get PDF</a>
-              <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get Excel</a>
             </div>
           </div>
           <div class="col">
@@ -88,8 +82,6 @@
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
               <a href="{% url 'medication_endorsement_sheet_PDF' %}" class="btn report-button blue"><span
                   class="material-icons">download</span>Get PDF</a>
-              <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get Excel</a>
             </div>
           </div>
         </div>
@@ -106,8 +98,6 @@
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
               <a href="{% url 'bed_tags_PDF' %}" class="btn report-button blue"><span
                   class="material-icons">download</span>Get PDF</a>
-              <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get Excel</a>
             </div>
           </div>
           <div class="col">
@@ -121,8 +111,6 @@
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
               <a href="{% url 'medication_cards_PDF' %}" class="btn report-button blue"><span
                   class="material-icons">download</span>Get PDF</a>
-              <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get Excel</a>
             </div>
           </div>
         </div>
@@ -139,8 +127,6 @@
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
               <a href="{% url 'intravenous_fluid_tags_PDF' %}" class="btn report-button blue"><span
                   class="material-icons">download</span>Get PDF</a>
-              <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get Excel</a>
             </div>
           </div>
           <div class="col">
@@ -154,11 +140,31 @@
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
               <a href="{% url 'special_notes_PDF' %}" class="btn report-button blue"><span
                   class="material-icons">download</span>Get PDF</a>
-              <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get Excel</a>
             </div>
           </div>
         </div>
+
+        <br><br>
+        <div class="row">
+          <div class="col">
+            <div class="report-card">
+              <h1>Hospital Census Report</h1>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed condimentum dui, eu pulvinar tellus.
+                Ut
+                magna ex, aliquet et facilisis in, efficitur sit amet sapien. Morbi aliquet enim at aliquet vehicula.
+                Sed
+                pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
+                consectetur aliquet. Morbi mattis ac est ac elementum.</p>
+
+                {% for department in departments %}
+                <a href="{% url 'generate-census-XLSX' department %}" class="btn report-button blue"><span
+                  class="material-icons">download</span>{{department}}</a>
+                {% endfor %}
+
+            </div>
+          </div>
+        </div>
+
       </div>
       {% include 'kardex_app/partials/footer.html' %}
       <!-- JavaScript Bundle with Popper -->
