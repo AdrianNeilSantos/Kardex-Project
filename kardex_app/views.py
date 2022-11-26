@@ -1433,10 +1433,19 @@ def formKardexDict(kardex):
         'Age/Sex': f"{ kardex.age }/{ kardex.sex }" if kardex.age and kardex.sex else '',
         'Date/Time': kardex.date_time or '',
         'Hospital #': kardex.hospital_num or '',
+        'Bed #': kardex.bed_num or '',
+        'Case #': kardex.case_num or '',
+        'Condition': kardex.condition or '',
         'Department': kardex.department or '',
         'DX': kardex.dx or '',
         'DRS': kardex.drs or '',
         'Diet': kardex.diet or '',
+        'Category': '0' if kardex.is_admission else \
+            '1' if kardex.is_discharges else \
+            '2' if kardex.is_death else '3',
+        'Transfer Type': '0' if kardex.is_trans_in else \
+            '1' if kardex.is_trans_out else \
+            '2' if kardex.is_trans_other else '3',
         'Extra Fields': [field if field else '' for field in kardex.extra_fields],
         'Extra Field Values': [value if value else '' for value in kardex.extra_field_values],
         'Label Markers': [marker if marker else '' for marker in kardex.label_markers],
@@ -1460,6 +1469,15 @@ def formKardexComparisons(kardex1, kardex2):
         'Age/Sex': 'Revision' if f"{ kardex1.age }/{ kardex1.sex }" != f"{ kardex2.age }/{ kardex2.sex }" else '',
         'Date/Time': 'Revision' if kardex1.date_time != kardex2.date_time else '',
         'Hospital #': 'Revision' if kardex1.hospital_num != kardex2.hospital_num else '',
+        'Bed #': 'Revision' if kardex1.bed_num != kardex2.bed_num else '',
+        'Case #': 'Revision' if kardex1.case_num != kardex2.case_num else '',
+        'Condition': 'Revision' if kardex1.condition != kardex2.condition else '',
+        'Category': 'Revision' if kardex1.is_admission != kardex2.is_admission or \
+            kardex1.is_discharges != kardex2.is_discharges or \
+            kardex1.is_death != kardex2.is_death else '',
+        'Transfer Type': 'Revision' if kardex1.is_trans_in != kardex2.is_trans_in or \
+            kardex1.is_trans_out != kardex2.is_trans_out or \
+            kardex1.is_trans_other != kardex2.is_trans_other else '',
         'Department': 'Revision' if kardex1.department != kardex2.department else '',
         'DX': 'Revision' if kardex1.dx != kardex2.dx else '',
         'DRS': 'Revision' if kardex1.drs != kardex2.drs else '',

@@ -248,17 +248,17 @@ const submitCreateKardexForm = () => {
   switch (categoryInput.value) {
     case '0':
       isAdmissionInput.value = '1';
-      isDischargesInput.value = '';
-      isDeathInput.value = '';
+      isDischargesInput.value = '0';
+      isDeathInput.value = '0';
       break;
     case '1':
-      isAdmissionInput.value = '';
+      isAdmissionInput.value = '0';
       isDischargesInput.value = '1';
-      isDeathInput.value = '';
+      isDeathInput.value = '0';
       break;
     case '2':
-      isAdmissionInput.value = '';
-      isDischargesInput.value = '';
+      isAdmissionInput.value = '0';
+      isDischargesInput.value = '0';
       isDeathInput.value = '1';
       break;
     default:
@@ -268,17 +268,17 @@ const submitCreateKardexForm = () => {
   switch (transferTypeInput.value) {
     case '0':
       isTransInInput.value = '1';
-      isTransOutInput.value = '';
-      isTransOtherInput.value = '';
+      isTransOutInput.value = '0';
+      isTransOtherInput.value = '0';
       break;
     case '1':
-      isTransInInput.value = '';
+      isTransInInput.value = '0';
       isTransOutInput.value = '1';
-      isTransOtherInput.value = '';
+      isTransOtherInput.value = '0';
       break;
     case '2':
-      isTransInInput.value = '';
-      isTransOutInput.value = '';
+      isTransInInput.value = '0';
+      isTransOutInput.value = '0';
       isTransOtherInput.value = '1';
       break;
     default:
