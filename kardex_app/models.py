@@ -32,7 +32,6 @@ class Kardex(models.Model):
     hospital_num = models.CharField(max_length=255, null=True, blank=True)
     bed_num = models.CharField(max_length=255, null=True, blank=True)
     case_num = models.CharField(max_length=255, null=True, blank=True)
-    diagnosis = models.CharField(max_length=255, null=True, blank=True)
     condition = models.CharField(max_length=255, null=True, blank=True)
     is_admission = models.BooleanField(default=False)
     is_discharges = models.BooleanField(default=False)

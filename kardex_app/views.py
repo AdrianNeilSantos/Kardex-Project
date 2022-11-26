@@ -151,6 +151,15 @@ def createKardex(request):
     form = KardexForm()
     if(request.method == "POST"):
         post = request.POST.copy() # to make it mutable
+        new_post = {
+            'is_admission' : '1' if post.get('is_admission') == '1' else '',
+            'is_discharges' : '1' if post.get('is_discharges') == '1' else '',
+            'is_death' : '1' if post.get('is_death') == '1' else '',
+            'is_trans_in' : '1' if post.get('is_trans_in') == '1' else '',
+            'is_trans_out' : '1' if post.get('is_trans_out') == '1' else '',
+            'is_trans_other' : '1' if post.get('is_trans_other') == '1' else ''
+        }
+        post.update(new_post)
         post.update(splitToLists(post))
         post.update(stripValues(post))
         form = KardexForm(post)
@@ -1097,7 +1106,7 @@ def add_data(ws, kardexs, current_row, END_COL, style_data_row):
         ws.write(current_row,1, kardex.date_time, style_data_row)
         ws.write(current_row,2, kardex.case_num, style_data_row)
         ws.write_merge(current_row,current_row,3, 8, f'{kardex.first_name}, {kardex.last_name}', style_data_row)
-        ws.write_merge(current_row,current_row,9,END_COL, f'{kardex.diagnosis}, {kardex.condition}', style_data_row)
+        ws.write_merge(current_row,current_row,9,END_COL, f'{kardex.dx}, {kardex.condition}', style_data_row)
         current_row += 1 
 
     current_row += 1
@@ -1376,6 +1385,14 @@ def calculate_age(born):
     else:
         return 0
 
+def strToBool(value):
+    if value == '1' or lower(value) == 'true':
+        return True
+    elif value == '0' or lower(value) == 'false':
+        return False
+    else:
+        return None
+
 def splitToLists(query_dict):
     list_keys = [
         'extra_fields', 'extra_field_values',
@@ -1383,7 +1400,10 @@ def splitToLists(query_dict):
         'edited_by', 'edited_at',
     ]
     for key in query_dict.keys():
+        print(list_keys)
+        print('key', key, key in list_keys)
         if (key in list_keys):
+            print('bad action')
             query_dict[key] = query_dict[key].split(';;')
     return query_dict
 
