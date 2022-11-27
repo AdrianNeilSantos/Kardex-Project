@@ -489,11 +489,31 @@ def generate_front_1(work_book, style_head_row, style_data_row, department):
     current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
 
 
+    #[start, end] format
+    row_admission = [0, 0]
+    row_discharges = [0, 0]
+    row_death = [0, 0]
+
     for context in context_header:
         current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
+        data_start_row = current_row
         if context == "CENSUS OF PATIENTS":
             continue
+        if context == "ADMISSION":
+            row_admission[0] = data_start_row
+        elif context == "DISCHARGES":
+            row_discharges[0] = data_start_row
+        elif context == "DEATH":
+            row_death[0] = data_start_row
+
         current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
+
+        if context == "ADMISSION":
+            row_admission[1] = current_row - 1
+        elif context == "DISCHARGES":
+            row_discharges[1] = current_row - 1
+        elif context == "DEATH":
+            row_death[1] = current_row - 1
 
     #Generating census report headers
 
@@ -557,16 +577,54 @@ def generate_front_1(work_book, style_head_row, style_data_row, department):
     #Generating census of patients categories and data
     current_row += 1
     current_col = 3
+
+    row_census = [0] * 11
+    print(row_census)
     for category in categories:
         ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
         for department in departments:
-            ws.write(current_row, current_col, "", style_census_data)
+            if category == "Remaining from yesterday MN report":
+                ws.write(current_row, current_col, xlwt.Formula("0"), style_census_data)
+                row_census[0] = current_row + 1
+            elif category == "Admission":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_admission[0]}:$A${row_admission[1]};"{department}")'), style_census_data)
+                row_census[1] = current_row + 1
+            #TODO
+            elif category == "Transfer in from other floor":
+                ws.write(current_row, current_col, xlwt.Formula(f'0'), style_census_data)
+                row_census[2] = current_row + 1
+            elif category == "Total of No. 1,2,3":
+                ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[0]}:{chr(65 + current_col)}{row_census[2]})'), style_census_data)
+                row_census[3] = current_row + 1
+            elif category == "Discharges (Alive) this census day":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_discharges[0]}:$A${row_discharges[1]};"{department}")'), style_census_data)
+                row_census[4] = current_row + 1
+            #TODO
+            elif category == "Transfer out from other floor":
+                ws.write(current_row, current_col, xlwt.Formula(f'0'), style_census_data)
+                row_census[5] = current_row + 1
+            elif category == "Deaths":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_death[0]}:$A${row_death[1]};"{department}")'), style_census_data)
+                row_census[6] = current_row + 1
+            elif category == "Total No. of 5,6,7":
+                ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[4]}:{chr(65 + current_col)}{row_census[6]})'), style_census_data)
+                row_census[7] = current_row + 1
+            elif category == "Remaining at 12 MN 4 minus 8":
+                ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[3]}-{chr(65 + current_col)}{row_census[7]}'), style_census_data)
+                row_census[8] = current_row + 1
+            #TODO
+            elif category == "Admission & Discharge on the same day (including death)":
+                ws.write(current_row, current_col, xlwt.Formula(f'0'), style_census_data)
+                row_census[9] = current_row + 1
+            elif category == "Total in-pt. service days of care (9+10)":
+                ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[8]}+{chr(65 + current_col)}{row_census[9]}'), style_census_data)
+                row_census[10] = current_row + 1
             current_col += 1
         current_col = 3
         current_row += 1
 
     current_row += 1
-
+#f"COUNTIF($A${row_admission[0]}:$A${row_admission[1]};MED)")
 
     #Generating bottom summary
     ws.write(current_row,0, 'Total Admission:') 
@@ -1102,7 +1160,7 @@ def add_section(ws, current_row, START_COL, END_COL, header_name, style_head_row
 
 def add_data(ws, kardexs, current_row, END_COL, style_data_row):
     for kardex in kardexs:
-        ws.write(current_row,0, f'{kardex.name_of_ward} {kardex.bed_num}', style_data_row)
+        ws.write(current_row,0, f'{kardex.name_of_ward}', style_data_row)
         ws.write(current_row,1, kardex.date_time, style_data_row)
         ws.write(current_row,2, kardex.case_num, style_data_row)
         ws.write_merge(current_row,current_row,3, 8, f'{kardex.first_name}, {kardex.last_name}', style_data_row)
