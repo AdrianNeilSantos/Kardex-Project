@@ -471,10 +471,10 @@ def render_to_PDF(template_src, context_dict, fileName):
 
 
 
-def generate_front_1(work_book, style_head_row, style_data_row, department):
+def generate_front_1(work_book, style_head_row, style_data_row, department, request):
     ws = work_book.add_sheet(u'FRONT1')
     context_header = get_context_front(department)
-    
+    dept = department
     #Adjusts colum widths
     edit_col_width(ws, 1, 15)
     edit_col_width(ws, 2, 12)
@@ -578,8 +578,17 @@ def generate_front_1(work_book, style_head_row, style_data_row, department):
     current_row += 1
     current_col = 3
 
+    #retrieve count of back
+    context_back = get_context_back(dept)
+    trans_in_count = len(context_back["TRANS-IN"])
+    trans_out_count = len(context_back["TRANS-OUT"])
+    trans_other_count = len(context_back["TRANSFER TO OTHER HOSPITAL"])
+
+    row_trans_in = 6
+    row_trans_out = row_trans_in + 4
+
+
     row_census = [0] * 11
-    print(row_census)
     for category in categories:
         ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
         for department in departments:
@@ -589,9 +598,8 @@ def generate_front_1(work_book, style_head_row, style_data_row, department):
             elif category == "Admission":
                 ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_admission[0]}:$A${row_admission[1]};"{department}")'), style_census_data)
                 row_census[1] = current_row + 1
-            #TODO
             elif category == "Transfer in from other floor":
-                ws.write(current_row, current_col, xlwt.Formula(f'0'), style_census_data)
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF(BACK1!$A${row_trans_in}:$A${row_trans_in+trans_in_count};"{department}")'), style_census_data)
                 row_census[2] = current_row + 1
             elif category == "Total of No. 1,2,3":
                 ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[0]}:{chr(65 + current_col)}{row_census[2]})'), style_census_data)
@@ -599,9 +607,8 @@ def generate_front_1(work_book, style_head_row, style_data_row, department):
             elif category == "Discharges (Alive) this census day":
                 ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_discharges[0]}:$A${row_discharges[1]};"{department}")'), style_census_data)
                 row_census[4] = current_row + 1
-            #TODO
             elif category == "Transfer out from other floor":
-                ws.write(current_row, current_col, xlwt.Formula(f'0'), style_census_data)
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF(BACK1!$A${row_trans_out}:$A${row_trans_out+trans_out_count};"{department}")'), style_census_data)
                 row_census[5] = current_row + 1
             elif category == "Deaths":
                 ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_death[0]}:$A${row_death[1]};"{department}")'), style_census_data)
@@ -612,7 +619,6 @@ def generate_front_1(work_book, style_head_row, style_data_row, department):
             elif category == "Remaining at 12 MN 4 minus 8":
                 ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[3]}-{chr(65 + current_col)}{row_census[7]}'), style_census_data)
                 row_census[8] = current_row + 1
-            #TODO
             elif category == "Admission & Discharge on the same day (including death)":
                 ws.write(current_row, current_col, xlwt.Formula(f'0'), style_census_data)
                 row_census[9] = current_row + 1
@@ -659,7 +665,7 @@ def generate_front_1(work_book, style_head_row, style_data_row, department):
         """
     )
 
-    ws.write_merge(current_row,current_row,5,8, '', style_prepared_by)
+    ws.write_merge(current_row,current_row,5,8, f'{request.user.first_name} {request.user.last_name}', style_prepared_by)
     
 
     style_date = xlwt.easyxf("""    
@@ -682,7 +688,7 @@ def generate_front_1(work_book, style_head_row, style_data_row, department):
 
 
 
-def generate_front_2(work_book, style_head_row, style_data_row, department):
+def generate_front_2(work_book, style_head_row, style_data_row, department, request):
     
     ws = work_book.add_sheet(u'FRONT2')
     context_header = get_context_front(department)
@@ -836,7 +842,7 @@ def generate_front_2(work_book, style_head_row, style_data_row, department):
 
 
 
-def generate_front_3(work_book, style_head_row, style_data_row, department):
+def generate_front_3(work_book, style_head_row, style_data_row, department, request):
 
     ws = work_book.add_sheet(u'FRONT3')
     context_header = get_context_front(department)
@@ -992,7 +998,7 @@ def generate_front_3(work_book, style_head_row, style_data_row, department):
 
 
 
-def generate_back_1(work_book, style_head_row, style_data_row, department):
+def generate_back_1(work_book, style_head_row, style_data_row, department, request):
     ws = work_book.add_sheet(u'BACK1')
 
     context_header = get_context_back(department)
@@ -1021,7 +1027,7 @@ def generate_back_1(work_book, style_head_row, style_data_row, department):
 
 
 
-def generate_back_2(work_book, style_head_row, style_data_row, department):
+def generate_back_2(work_book, style_head_row, style_data_row, department, request):
     ws = work_book.add_sheet(u'BACK2')
 
     context_header = get_context_back(department)
@@ -1047,7 +1053,7 @@ def generate_back_2(work_book, style_head_row, style_data_row, department):
     ws.write(current_row,0, 'TOTAL')
 
 
-def generate_back_3(work_book, style_head_row, style_data_row, department):
+def generate_back_3(work_book, style_head_row, style_data_row, department, request):
     ws = work_book.add_sheet(u'BACK3')
 
     context_header = get_context_back(department)
@@ -1250,12 +1256,14 @@ def generate_census_XLSX(request, department):
 
     work_book = xlwt.Workbook(encoding = 'utf-8')
 
-    generate_front_1(work_book, style_head_row, style_data_row, department)
-    generate_back_1(work_book, style_head_row, style_data_row, department)
-    generate_front_2(work_book, style_head_row, style_data_row, department)
-    generate_back_2(work_book, style_head_row, style_data_row, department)
-    generate_front_3(work_book, style_head_row, style_data_row, department)
-    generate_back_3(work_book, style_head_row, style_data_row, department)
+
+    generate_back_1(work_book, style_head_row, style_data_row, department,request)
+    generate_back_2(work_book, style_head_row, style_data_row, department,request)
+    generate_back_3(work_book, style_head_row, style_data_row, department,request)
+    generate_front_1(work_book, style_head_row, style_data_row, department,request)
+    generate_front_2(work_book, style_head_row, style_data_row, department,request)
+    generate_front_3(work_book, style_head_row, style_data_row, department,request)
+
     
     write_excel_report(work_book, response)
 
