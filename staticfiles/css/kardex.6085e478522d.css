@@ -1,0 +1,99 @@
+.grid-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, calc(100% / 3));
+  gap: 0;
+  grid-auto-rows: auto;
+}
+
+.ivf-cell {
+  grid-column: 1;
+  grid-row: 1;
+  border-top: 2px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 2px solid black;
+}
+
+.laboratory-work-ups-cell {
+  grid-column: 2;
+  grid-row: 1;
+  border-top: 2px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+}
+
+.medications-cell {
+  grid-column: 3;
+  grid-row: 1 / 4;
+  border-top: 2px solid black;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+  border-left: 1px solid black;
+}
+
+.side-drip-cell {
+  grid-column: 1;
+  grid-row: 2;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 2px solid black;
+}
+
+.special-notations-cell {
+  grid-column: 2;
+  grid-row: 2 / 4;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 2px solid black;
+  border-left: 1px solid black;
+}
+
+.referrals-cell {
+  grid-column: 1;
+  grid-row: 3;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 2px solid black;
+  border-left: 2px solid black;
+}
+
+.lower-left-fields {
+  width: calc(100% * 2/3);
+}
+
+.lower-right-fields {
+  width: calc(100% / 3);
+}
+
+.add-field, .extra-field {
+  width: calc(100% * 2/3);
+}
+
+.required-span::after {
+  content: '*';
+  color: red;
+}
+
+.modal-card {
+  border-radius: 4px;
+  border: 1px solid #C8C9CA;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+@media only screen and (max-width: 767px) {
+  .cell-header {
+    font-size: 1.25rem;
+  }
+
+  .lower-left-fields, .lower-right-fields, .add-field, .extra-field {
+    width: 100%;
+  }
+}
+
+/* @media only screen and (max-width: 576px) {
+  .cell-header {
+    font-size: 1rem;
+  }
+} */

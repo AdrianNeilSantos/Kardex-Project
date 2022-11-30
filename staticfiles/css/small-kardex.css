@@ -1,0 +1,21 @@
+.small-kardex {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  border: 1px solid black;
+  border-radius: 4px;
+}
+
+.small-kardex-stripes {
+  background-image: url(../images/index-bg.jpg);
+  background-size: 220px 220px;
+  height: 220px;
+  overflow: hidden;
+}
+
+.small-kardex-stripes:hover {
+  overflow-y: scroll;
+}
+
+.small-kardex-stripes {
+  line-height: 1.38;
+  white-space: nowrap;
+}

@@ -1,0 +1,14 @@
+.list-group li {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.list-group li::-webkit-scrollbar {
+  -webkit-appearance: none;
+  height: 3px;
+}
+
+.list-group li::-webkit-scrollbar-thumb {
+  /* border-radius: 7px !important; */
+  background-color: rgb(195, 207, 217);
+}
