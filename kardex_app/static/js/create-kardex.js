@@ -16,7 +16,6 @@ const sexInput = document.querySelector('#sexInput');
 
 const createKardexBtn = document.querySelector('#createKardexBtn');
 
-
 // const handleDepartmentInputs = () => {
 //   const extraFieldNameInputs = Array.from(document.querySelectorAll('[id^="extraFieldNameInput"]'))
 //     .concat(document.querySelector('#newFieldNameInput'));
@@ -220,6 +219,16 @@ const displayErrors = (errors) => {
 const editedByInput = document.querySelector('#editedByInput');
 const editedAtInput = document.querySelector('#editedAtInput');
 const userIdSpan = document.querySelector('#userIdSpan');
+
+const isAdmissionInput = document.querySelector('#isAdmissionInput');
+const isDischargesInput = document.querySelector('#isDischargesInput');
+const isDeathInput = document.querySelector('#isDeathInput');
+const isTransInInput = document.querySelector('#isTransInInput');
+const isTransOutInput = document.querySelector('#isTransOutInput');
+const isTransOtherInput = document.querySelector('#isTransOtherInput');
+
+const categoryInput = document.querySelector('#categoryInput');
+const transferTypeInput = document.querySelector('#transferTypeInput');
 const submitCreateKardexForm = () => {
   const formInputs = document.querySelectorAll('#createKardexForm .form-control');
   formInputs.forEach((el) => {
@@ -235,6 +244,46 @@ const submitCreateKardexForm = () => {
 
   const sex = ageSexInput.value.split('/')[1];
   sexInput.value = sex;
+
+  switch (categoryInput.value) {
+    case '0':
+      isAdmissionInput.value = '1';
+      isDischargesInput.value = '0';
+      isDeathInput.value = '0';
+      break;
+    case '1':
+      isAdmissionInput.value = '0';
+      isDischargesInput.value = '1';
+      isDeathInput.value = '0';
+      break;
+    case '2':
+      isAdmissionInput.value = '0';
+      isDischargesInput.value = '0';
+      isDeathInput.value = '1';
+      break;
+    default:
+      // do nothing
+  }
+
+  switch (transferTypeInput.value) {
+    case '0':
+      isTransInInput.value = '1';
+      isTransOutInput.value = '0';
+      isTransOtherInput.value = '0';
+      break;
+    case '1':
+      isTransInInput.value = '0';
+      isTransOutInput.value = '1';
+      isTransOtherInput.value = '0';
+      break;
+    case '2':
+      isTransInInput.value = '0';
+      isTransOutInput.value = '0';
+      isTransOtherInput.value = '1';
+      break;
+    default:
+      // do nothing
+  }
 
   createKardexForm.submit();
 };

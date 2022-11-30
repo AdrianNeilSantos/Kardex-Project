@@ -149,6 +149,36 @@
           >
         </div>
         <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">BED #:</span>
+          <input
+            name="bed_num"
+            id="bedNumInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Bed #"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">CASE #:</span>
+          <input
+            name="case_num"
+            id="caseNumInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Case #"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">CONDITION:</span>
+          <input
+            name="condition"
+            id="conditionInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Condition"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
           <span class="required-span text-nowrap fs-2 fw-bold me-3">DEPARTMENT:</span>
           <input
             name="department"
@@ -191,6 +221,32 @@
             placeholder="Diet"
           >
         </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">CATEGORY:</span>
+          <select
+            name="category"
+            id="categoryInput"
+            class="underline-field form-select"
+          >
+            <option value="3" selected>N/A</option>
+            <option value="0">Admission</option>
+            <option value="1">Discharge</option>
+            <option value="2">Death</option>
+          </select>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">TRANSFER:</span>
+          <select
+            name="transfer_type"
+            id="transferTypeInput"
+            class="underline-field form-select"
+          >
+            <option value="3" selected>N/A</option>
+            <option value="0">Transfer In</option>
+            <option value="1">Transfer Out</option>
+            <option value="2">Transfer to Other Hospital</option>
+          </select>
+        </div>
       </div>
     </section>
     <section class="extra-fields container-fluid container-lg">
@@ -228,6 +284,42 @@
     <input
       name="sex"
       id="sexInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_admission"
+      id="isAdmissionInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_discharges"
+      id="isDischargesInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_death"
+      id="isDeathInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_trans_in"
+      id="isTransInInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_trans_out"
+      id="isTransOutInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_trans_other"
+      id="isTransOtherInput"
       type="text"
       class="d-none"
     >
@@ -280,20 +372,8 @@
       type="button"
       class="suggestion-btn btn btn-outline-dark me-3 mb-3"
     >
-      Bed #
-    </button>
-    <button
-      type="button"
-      class="suggestion-btn btn btn-outline-dark me-3 mb-3"
-    >
       Clinical Area
     </button>
-    <!-- <button
-      type="button"
-      class="suggestion-btn btn btn-outline-dark me-3 mb-3"
-    >
-      Department
-    </button> -->
     <button
       type="button"
       class="suggestion-btn btn btn-outline-dark me-3 mb-3"

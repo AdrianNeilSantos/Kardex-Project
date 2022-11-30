@@ -32,7 +32,45 @@
               class="d-flex flex-column px-3"
             >
               {% for key, value in instance.items %}
-              {% if key not in 'Extra Fields,Extra Field Values,Label Values,Label Markers,Edited By,Edited At' %}
+              {% if key in 'Category,Transfer Type' %}
+              <div
+                id="{{ key|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
+                class="mb-3"
+              >
+                <span class="fw-bold">{{ key }}:</span>
+                {% if forloop.parentloop.counter0 < kardex_comparisons|length %}
+                {% if kardex_comparisons|get_by_idx:forloop.parentloop.counter0|get_item:key == 'Revision' %}
+                <span class="change-span d-none fw-bold text-primary">(Revision)</span>
+                {% elif kardex_comparisons|get_by_idx:forloop.parentloop.counter0|get_item:key == 'Addition' %}
+                <span class="change-span d-none fw-bold text-success">(Addition)</span>
+                {% endif %}
+                {% endif %}
+                <br>
+                {% if key == 'Category' %}
+                {% if value == '0' %}
+                <span>Admission</span>
+                {% elif value == '1' %}
+                <span>Discharges</span>
+                {% elif value == '2' %}
+                <span>Death</span>
+                {% else %}
+                <span>N/A</span>
+                {% endif %}
+                {% endif %}
+                {% if key == 'Transfer Type' %}
+                {% if value == '0' %}
+                <span>Transfer In</span>
+                {% elif value == '1' %}
+                <span>Transfer Out</span>
+                {% elif value == '2' %}
+                <span>Transfer to Other Hospital</span>
+                {% else %}
+                <span>N/A</span>
+                {% endif %}
+                {% endif %}
+              </div>
+              {% endif %}
+              {% if key not in 'Category,Transfer Type,Extra Fields,Extra Field Values,Label Values,Label Markers,Edited By,Edited At' %}
               <div
                 id="{{ key|title|cut:' '|cut:'-'|cut:'/'|lowerfirst }}{{ forloop.parentloop.counter }}"
                 class="mb-3"
@@ -224,7 +262,7 @@
             id="dateTimeInput"
             class="underline-field form-control"
             placeholder="Date/Time (YYYY-MM-DDTHH:MM)"
-            value="{{ kardex.date_time|default:'' }}"
+            value="{{ kardex.date_time|date:'Y-m-d\TH:i'|default:'' }}"
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -236,6 +274,39 @@
             class="underline-field form-control"
             placeholder="Hospital #"
             value="{{ kardex.hospital_num|default:'' }}"
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">BED #:</span>
+          <input
+            name="bed_num"
+            id="bedNumInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Bed #"
+            value={{ kardex.bed_num|default:'' }}
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">CASE #:</span>
+          <input
+            name="case_num"
+            id="caseNumInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Case #"
+            value={{ kardex.case_num|default:'' }}
+          >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">CONDITION:</span>
+          <input
+            name="condition"
+            id="conditionInput"
+            type="text"
+            class="underline-field form-control"
+            placeholder="Condition"
+            value={{ kardex.condition|default:'' }}
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -283,6 +354,32 @@
             placeholder="Diet"
             value="{{ kardex.diet|default:'' }}"
           >
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">CATEGORY:</span>
+          <select
+            name="category"
+            id="categoryInput"
+            class="underline-field form-select"
+          >
+            <option value="3" {% if not kardex.is_admission and not kardex.is_discharges and not kardex.is_death %}selected{% endif %}>N/A</option>
+            <option value="0" {% if kardex.is_admission %}selected{% endif %}>Admission</option>
+            <option value="1" {% if kardex.is_discharges %}selected{% endif %}>Discharge</option>
+            <option value="2" {% if kardex.is_death %}selected{% endif %}>Death</option>
+          </select>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+          <span class="text-nowrap fs-2 fw-bold me-3">TRANSFER:</span>
+          <select
+            name="transfer_type"
+            id="transferTypeInput"
+            class="underline-field form-select"
+          >
+            <option value="3" {% if not kardex.is_trans_in and not kardex.is_trans_out and not kardex.is_trans_other %}selected{% endif %}>N/A</option>
+            <option value="0" {% if kardex.is_trans_in %}selected{% endif %}>Transfer In</option>
+            <option value="1" {% if kardex.is_trans_out %}selected{% endif %}>Transfer Out</option>
+            <option value="2" {% if kardex.is_trans_other %}selected{% endif %}>Transfer to Other Hospital</option>
+          </select>
         </div>
       </div>
     </section>
@@ -349,6 +446,42 @@
     <input
       name="sex"
       id="sexInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_admission"
+      id="isAdmissionInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_discharges"
+      id="isDischargesInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_death"
+      id="isDeathInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_trans_in"
+      id="isTransInInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_trans_out"
+      id="isTransOutInput"
+      type="text"
+      class="d-none"
+    >
+    <input
+      name="is_trans_other"
+      id="isTransOtherInput"
       type="text"
       class="d-none"
     >

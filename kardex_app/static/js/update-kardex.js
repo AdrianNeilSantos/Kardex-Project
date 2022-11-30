@@ -18,9 +18,22 @@ lastNameInput.addEventListener('keyup', (e) => e.target.value = e.target.value.r
 const ageSexInput = document.querySelector('#ageSexInput');
 const dateTimeInput = document.querySelector('#dateTimeInput');
 const hospitalNumInput = document.querySelector('#hospitalNumInput');
+const bedNumInput = document.querySelector('#bedNumInput');
+const caseNumInput = document.querySelector('#caseNumInput');
+const conditionInput = document.querySelector('#conditionInput');
+const departmentInput = document.querySelector('#departmentInput');
 const dxInput = document.querySelector('#dxInput');
 const drsInput = document.querySelector('#drsInput');
 const dietInput = document.querySelector('#dietInput');
+const categoryInput = document.querySelector('#categoryInput');
+const transferTypeInput = document.querySelector('#transferTypeInput');
+
+const isAdmissionInput = document.querySelector('#isAdmissionInput');
+const isDischargesInput = document.querySelector('#isDischargesInput');
+const isDeathInput = document.querySelector('#isDeathInput');
+const isTransInInput = document.querySelector('#isTransInInput');
+const isTransOutInput = document.querySelector('#isTransOutInput');
+const isTransOtherInput = document.querySelector('#isTransOtherInput');
 
 const ageInput = document.querySelector('#ageInput');
 const sexInput = document.querySelector('#sexInput');
@@ -78,63 +91,113 @@ const compareWCurr = (idx) => {
 
   const currNameOfWard = currVersionBody.querySelector('[id^="nameOfWard"]');
   currNameOfWard.id = 'nameOfWardCurr';
-  currNameOfWard.getElementsByTagName('span')[1].textContent = nameOfWardInput.value.trim();
+  [...currNameOfWard.getElementsByTagName('span')].at(-1).textContent = nameOfWardInput.value.trim();
 
   const currIvf = currVersionBody.querySelector('[id^="ivf"]');
   currIvf.id = 'ivfCurr';
-  currIvf.getElementsByTagName('span')[1].textContent = ivfInput.value.trim();
+  [...currIvf.getElementsByTagName('span')].at(-1).textContent = ivfInput.value.trim();
 
   const currLaboratoryWorkUps = currVersionBody.querySelector('[id^="laboratoryWorkUps"]');
   currLaboratoryWorkUps.id = 'laboratoryWorkUpsCurr';
-  currLaboratoryWorkUps.getElementsByTagName('span')[1].textContent = laboratoryWorkUps.value.trim();
+  [...currLaboratoryWorkUps.getElementsByTagName('span')].at(-1).textContent = laboratoryWorkUps.value.trim();
 
   const currMedications = currVersionBody.querySelector('[id^="medications"]');
   currMedications.id = 'medicationsCurr';
-  currMedications.getElementsByTagName('span')[1].textContent = medicationsInput.value.trim();
+  [...currMedications.getElementsByTagName('span')].at(-1).textContent = medicationsInput.value.trim();
 
   const currSideDrip = currVersionBody.querySelector('[id^="sideDrip"]');
   currSideDrip.id = 'sideDripCurr';
-  currSideDrip.getElementsByTagName('span')[1].textContent = sideDripInput.value.trim();
+  [...currSideDrip.getElementsByTagName('span')].at(-1).textContent = sideDripInput.value.trim();
 
   const currSpecialNotations = currVersionBody.querySelector('[id^="specialNotations"]');
   currSpecialNotations.id = 'specialNotationsCurr';
-  currSpecialNotations.getElementsByTagName('span')[1].textContent = specialNotationsInput.value.trim();
+  [...currSpecialNotations.getElementsByTagName('span')].at(-1).textContent = specialNotationsInput.value.trim();
 
   const currReferrals = currVersionBody.querySelector('[id^="referrals"]');
   currReferrals.id = 'referralsCurr';
-  currReferrals.getElementsByTagName('span')[1].textContent = referralsInput.value.trim();
+  [...currReferrals.getElementsByTagName('span')].at(-1).textContent = referralsInput.value.trim();
 
   const currFirstName = currVersionBody.querySelector('[id^="firstName"]:not([id^="nameOfWard"]');
   currFirstName.id = 'firstNameCurr';
-  currFirstName.getElementsByTagName('span')[1].textContent = firstNameInput.value.trim();
+  [...currFirstName.getElementsByTagName('span')].at(-1).textContent = firstNameInput.value.trim();
 
   const currLastName = currVersionBody.querySelector('[id^="lastName"]:not([id^="nameOfWard"]');
   currLastName.id = 'lastNameCurr';
-  currLastName.getElementsByTagName('span')[1].textContent = lastNameInput.value.trim();
+  [...currLastName.getElementsByTagName('span')].at(-1).textContent = lastNameInput.value.trim();
 
   const currAgeSex = currVersionBody.querySelector('[id^="ageSex"]');
   currAgeSex.id = 'ageSexCurr';
-  currAgeSex.getElementsByTagName('span')[1].textContent = ageSexInput.value.trim();
+  [...currAgeSex.getElementsByTagName('span')].at(-1).textContent = ageSexInput.value.trim();
 
   const currDateTime = currVersionBody.querySelector('[id^="dateTime"]');
   currDateTime.id = 'dateTimeCurr';
-  currDateTime.getElementsByTagName('span')[1].textContent = dateTimeInput.value.trim();
+  [...currDateTime.getElementsByTagName('span')].at(-1).textContent = dateTimeInput.value.trim();
 
   const currHospitalNum = currVersionBody.querySelector('[id^="hospital#"]');
   currHospitalNum.id = 'hospitalNumCurr';
-  currHospitalNum.getElementsByTagName('span')[1].textContent = hospitalNumInput.value.trim();
+  [...currHospitalNum.getElementsByTagName('span')].at(-1).textContent = hospitalNumInput.value.trim();
+
+  const currBedNum = currVersionBody.querySelector('[id^="bed#"]');
+  currBedNum.id = 'bedNumCurr';
+  [...currBedNum.getElementsByTagName('span')].at(-1).textContent = bedNumInput.value.trim();
+
+  const currCaseNum = currVersionBody.querySelector('[id^="case#"]');
+  currCaseNum.id = 'caseNumCurr';
+  [...currCaseNum.getElementsByTagName('span')].at(-1).textContent = caseNumInput.value.trim();
+
+  const currCondition = currVersionBody.querySelector('[id^="condition"]');
+  currCondition.id = 'conditionCurr';
+  [...currCondition.getElementsByTagName('span')].at(-1).textContent = conditionInput.value.trim();
+
+  const currDepartment = currVersionBody.querySelector('[id^="department"]');
+  currDepartment.id = 'departmentCurr';
+  [...currDepartment.getElementsByTagName('span')].at(-1).textContent = departmentInput.value.trim();
 
   const currDx = currVersionBody.querySelector('[id^="dx"]');
   currDx.id = 'dxCurr';
-  currDx.getElementsByTagName('span')[1].textContent = dxInput.value.trim();
+  [...currDx.getElementsByTagName('span')].at(-1).textContent = dxInput.value.trim();
 
   const currDrs = currVersionBody.querySelector('[id^="drs"]');
   currDrs.id = 'drsCurr';
-  currDrs.getElementsByTagName('span')[1].textContent = drsInput.value.trim();
+  [...currDrs.getElementsByTagName('span')].at(-1).textContent = drsInput.value.trim();
 
   const currDiet = currVersionBody.querySelector('[id^="diet"]');
   currDiet.id = 'dietCurr';
-  currDiet.getElementsByTagName('span')[1].textContent = dietInput.value.trim();
+  [...currDiet.getElementsByTagName('span')].at(-1).textContent = dietInput.value.trim();
+
+  const currCategory = currVersionBody.querySelector('[id^="category"]');
+  currCategory.id = 'categoryCurr';
+  const currCategorySpan = [...currCategory.getElementsByTagName('span')].at(-1);
+  switch (categoryInput.value) {
+    case '0':
+      currCategorySpan.textContent = 'Admission';
+      break;
+    case '1':
+      currCategorySpan.textContent = 'Discharges';
+      break;
+    case '2':
+      currCategorySpan.textContent = 'Death';
+      break;
+    default:
+      currCategorySpan.textContent = 'N/A';
+  }
+
+  const currTransferType = currVersionBody.querySelector('[id^="transferType"]');
+  currTransferType.id = 'transferTypeCurr';
+  const currTransferTypeSpan = [...currTransferType.getElementsByTagName('span')].at(-1);
+  switch (transferTypeInput.value) {
+    case '0':
+      currTransferTypeSpan.textContent = 'Transfer In';
+      break;
+    case '1':
+      currTransferTypeSpan.textContent = 'Transfer Out';
+      break;
+    case '2':
+      currTransferTypeSpan.textContent = 'Transfer to Other Hospital';
+      break;
+    default:
+      currTransferTypeSpan.textContent = 'N/A';
+  }
 
   versionModal
     .querySelector('.modal-body')
@@ -355,6 +418,7 @@ const displayErrors = (errors) => {
 const editedByInput = document.querySelector('#editedByInput');
 const editedAtInput = document.querySelector('#editedAtInput');
 const userIdSpan = document.querySelector('#userIdSpan');
+
 const submitUpdateKardexForm = () => {
   const formInputs = document.querySelectorAll('#updateKardexForm .form-control');
   formInputs.forEach((el) => {
@@ -370,6 +434,46 @@ const submitUpdateKardexForm = () => {
 
   const sex = ageSexInput.value.split('/')[1];
   sexInput.value = sex;
+
+  switch (categoryInput.value) {
+    case '0':
+      isAdmissionInput.value = '1';
+      isDischargesInput.value = '0';
+      isDeathInput.value = '0';
+      break;
+    case '1':
+      isAdmissionInput.value = '0';
+      isDischargesInput.value = '1';
+      isDeathInput.value = '0';
+      break;
+    case '2':
+      isAdmissionInput.value = '0';
+      isDischargesInput.value = '0';
+      isDeathInput.value = '1';
+      break;
+    default:
+      // do nothing
+  }
+
+  switch (transferTypeInput.value) {
+    case '0':
+      isTransInInput.value = '1';
+      isTransOutInput.value = '0';
+      isTransOtherInput.value = '0';
+      break;
+    case '1':
+      isTransInInput.value = '0';
+      isTransOutInput.value = '1';
+      isTransOtherInput.value = '0';
+      break;
+    case '2':
+      isTransInInput.value = '0';
+      isTransOutInput.value = '0';
+      isTransOtherInput.value = '1';
+      break;
+    default:
+      // do nothing
+  }
 
   updateKardexForm.submit();
 };
