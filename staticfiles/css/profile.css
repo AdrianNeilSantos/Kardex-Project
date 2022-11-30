@@ -1,0 +1,24 @@
+.card-img-top {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  border: 1px solid black;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.img-btns {
+  position: absolute;
+  right: 32px;
+  bottom: -12px;
+}
+
+.i-btn {
+  width: 42px;
+  height: 36px;
+  padding: 8px;
+}
+
+@media only screen and (max-width: 575px) {
+  .request-access-extension-btn {
+    height: auto;
+  }
+}
