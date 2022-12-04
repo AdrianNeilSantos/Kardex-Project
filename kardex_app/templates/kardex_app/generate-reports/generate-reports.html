@@ -38,7 +38,7 @@
                 Sed
                 pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue"><span
+              <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue" target="_blank" ><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
@@ -51,7 +51,7 @@
                 Sed
                 pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'diet_list_PDF' %}" class="btn report-button blue"><span
+              <a href="{% url 'diet_list_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
@@ -67,7 +67,7 @@
                 Sed
                 pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'nursing_endorsement_sheet_PDF' %}" class="btn report-button blue"><span
+              <a href="{% url 'nursing_endorsement_sheet_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
@@ -80,7 +80,7 @@
                 Sed
                 pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'medication_endorsement_sheet_PDF' %}" class="btn report-button blue"><span
+              <a href="{% url 'medication_endorsement_sheet_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
@@ -96,7 +96,7 @@
                 Sed
                 pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'bed_tags_PDF' %}" class="btn report-button blue"><span
+              <a href="{% url 'bed_tags_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
@@ -109,7 +109,7 @@
                 Sed
                 pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'medication_cards_PDF' %}" class="btn report-button blue"><span
+              <a href="{% url 'medication_cards_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
@@ -125,7 +125,7 @@
                 Sed
                 pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'intravenous_fluid_tags_PDF' %}" class="btn report-button blue"><span
+              <a href="{% url 'intravenous_fluid_tags_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
@@ -138,7 +138,7 @@
                 Sed
                 pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'special_notes_PDF' %}" class="btn report-button blue"><span
+              <a href="{% url 'special_notes_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
@@ -157,7 +157,7 @@
                 consectetur aliquet. Morbi mattis ac est ac elementum.</p>
 
                 {% for department in departments %}
-                <a href="{% url 'generate-census-XLSX' department %}" class="btn report-button blue"><span
+                <a href="{% url 'generate-census-XLSX' department %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>{{department}}</a>
                 {% endfor %}
 

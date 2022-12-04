@@ -385,6 +385,7 @@ def generateReports(request):
 
     return render(request, 'kardex_app/generate-reports/generate-reports.html', context)
 
+
 def bedTags(request):
     return render(request, 'kardex_app/generate-reports/bed-tags.html')
 
@@ -473,6 +474,8 @@ def render_to_PDF(template_src, context_dict, fileName):
 
     if not pdf.err:
         return response
+
+
 
 
 
