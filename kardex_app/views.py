@@ -31,6 +31,7 @@ import xlwt
 from datetime import date
 import operator
 from functools import reduce
+import itertools
 
 # for REST API
 from rest_framework.views import APIView
@@ -1304,12 +1305,22 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
         relevant_kardex = Kardex.objects.all()
 
         relevant_kardex = relevant_kardex.filter(reduce(operator.or_,
-            (Q(name_of_ward__icontains=ward) for ward in requesting_nurse.ward.split(','))
+            (
+                filter for filter in itertools.chain(
+                    (Q(name_of_ward__icontains=ward) for ward in requesting_nurse.ward.split(',')),
+                    [Q(edited_by__icontains=str(requesting_nurse.id))]
+                )
+            )
         ))
 
         relevant_kardex = relevant_kardex.filter(reduce(operator.or_,
-            (Q(department__icontains=department) for department in requesting_nurse.department.split(',')))
-        )
+            (
+                filter for filter in itertools.chain(
+                    (Q(department__icontains=department) for department in requesting_nurse.department.split(',')),
+                    [Q(edited_by__icontains=str(requesting_nurse.id))]
+                )
+            )
+        ))
 
         target_nurse = request.GET.get('nurse', '')
         if target_nurse:
