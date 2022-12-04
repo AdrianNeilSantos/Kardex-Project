@@ -259,14 +259,14 @@ const sortNurseSelect = document.querySelector('#sortNurseSelect');
 const sortNurses = () => {
   const sortVal = sortNurseSelect.value;
   switch (sortVal) {
-  case '0':
-    currNurses = _.orderBy(currNurses, ['last_name', 'first_name'], ['asc']);
-    break;
-  case '1':
-    currNurses = _.orderBy(currNurses, ['last_name', 'first_name'], ['desc']);
-    break;
-  default:
-    // do nothing
+    case '0':
+      currNurses = _.orderBy(currNurses, ['last_name', 'first_name'], ['asc']);
+      break;
+    case '1':
+      currNurses = _.orderBy(currNurses, ['last_name', 'first_name'], ['desc']);
+      break;
+    default:
+      // do nothing
   }
   nurseGroupContainer.querySelectorAll('.nurse-container').forEach((el) => {
     el.style.order = currNurses

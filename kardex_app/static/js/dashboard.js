@@ -124,7 +124,7 @@ const generateChart = (targetId, chartData) => {
     .attr('id', 'title')
     .attr('text-anchor', 'middle')
     .style('font-size', window.innerWidth / 1440 * 24)
-    .text('United States GDP');
+    .text('Nurse Login Frequency');
 
   svg
     .selectAll('rect')
@@ -174,7 +174,7 @@ const generateChart = (targetId, chartData) => {
       const vizModal = new bootstrap.Modal(document.querySelector('#vizModal'));
       vizModal.show();
 
-      document.querySelector('.modal-title').textContent = 'United States GDP';
+      document.querySelector('.modal-title').textContent = 'Nurse Login Frequency';
     });
 
   const xAxis = d3.axisBottom(xScale);

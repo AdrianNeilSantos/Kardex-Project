@@ -25,10 +25,28 @@
               Kardex
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.view_name == 'generate-reports' %}active{% endif %}" href="{% url 'generate-reports' %}">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="{% url 'generate-reports' %}"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
               Reports
             </a>
+            <ul class="dropdown-menu">
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.view_name == 'generate-reports' %}active{% endif %}" href="{% url 'generate-reports' %}">
+                  Generate Reports
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.view_name == 'bed-tags' %}active{% endif %}" href="{% url 'bed-tags' %}">
+                  Generate Bed Tags
+                </a>
+              </li>
+            </ul>
           </li>
           {% if request.user.is_superuser %}
           <li class="nav-item">

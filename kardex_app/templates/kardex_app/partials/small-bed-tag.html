@@ -1,0 +1,24 @@
+{% load static %}
+<link rel="stylesheet" href= {% static "css/small-bed-tag.css" %}>
+<div class="small-bed-tag box-shadow d-none col-12 pt-5 pb-1 w-100">
+  <div class="small-bed-tag-contents pt-5">
+    <div class="small-bed-tag-body d-flex flex-column p-2">
+      <span class="small-bed-tag-text d-flex flex-column align-items-center"></span>
+    </div>
+    <div
+      class="bottom-links d-flex justify-content-end"
+      data-html2canvas-ignore="true"
+    >
+      <a
+        class="download-as-jpg-link text-success text-decoration-none"
+        href="#"
+      >
+        Download as JPG
+        <i class="fa-solid fa-down me-3"></i>
+      </a>
+    </div>
+    <span class="bed-tag-id-span" class="d-none">
+      <!-- insert bed-tag id here -->
+    </span>
+  </div>
+</div>

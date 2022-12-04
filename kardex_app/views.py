@@ -330,6 +330,7 @@ def createNurse(request):
 
     form = NurseCreationForm()
     if(request.method == "POST"):
+        print(request.POST)
         form = NurseCreationForm(request.POST, request.FILES)
         if(form.is_valid()):
             form.save()
@@ -382,6 +383,9 @@ def generateReports(request):
     context = {"departments": departments}
 
     return render(request, 'kardex_app/generate-reports/generate-reports.html', context)
+
+def bedTags(request):
+    return render(request, 'kardex_app/generate-reports/bed-tags.html')
 
 
   #Generating PDFS
