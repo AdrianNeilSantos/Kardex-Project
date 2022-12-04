@@ -28,7 +28,7 @@ from django.utils import timezone
 import pandas as pd
 import xlwt
 
-from datetime import date
+from datetime import date, timedelta
 import operator
 from functools import reduce
 import itertools
@@ -487,6 +487,230 @@ def generate_front_1(ws, style_head_row, style_data_row, department, request):
     edit_col_width(ws, 2, 12)
     edit_col_width(ws, 3, 12)
 
+    now = timezone.now()
+    current_date = now.strftime("%d-%B-%Y")
+
+    START_COL = 0
+    END_COL = 13
+    START_ROW = 6
+    current_row = START_ROW
+
+    
+    current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
+
+
+    #[start, end] format
+    row_admission = [0, 0]
+    row_discharges = [0, 0]
+    row_death = [0, 0]
+    total_admission = 0
+
+    for context in context_header:
+        current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
+        data_start_row = current_row
+        if context == "CENSUS OF PATIENTS":
+            continue
+        if context == "ADMISSION":
+            row_admission[0] = data_start_row
+        elif context == "DISCHARGES":
+            row_discharges[0] = data_start_row
+        elif context == "DEATH":
+            row_death[0] = data_start_row
+
+        current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
+
+        if context == "ADMISSION":
+            row_admission[1] = current_row - 1
+        elif context == "DISCHARGES":
+            row_discharges[1] = current_row - 1
+        elif context == "DEATH":
+            row_death[1] = current_row - 1
+
+    #Generating census report headers
+
+
+
+
+    departments = ["MED", "OB", "GYNE", "PED", 'SURG-A', 'SURG-P', 'OPHTHA', 'ENT', 'ORTHO', 'SICK BB', 'WELL BB']
+
+    current_col = 0
+    for department in departments:
+        if current_col == 0:
+            ws.write_merge(current_row,current_row, current_col, 2, 'DEPARTMENT', style_head_row)
+            current_col += 3
+        
+        ws.write(current_row,current_col, department, style_head_row)
+        current_col += 1
+
+
+    style_census_categories = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
+        font:
+            name Calibri,
+            colour_index Black,
+            height 200;
+        """
+    )
+
+
+    style_census_data = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz right;
+        borders:
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 200;
+        """
+    )
+
+    categories = ["Remaining from yesterday MN report", "Admission", "Transfer in from other floor", "Total of No. 1,2,3", "Discharges (Alive) this census day",
+                    "Transfer out from other floor", "Deaths", "Total No. of 5,6,7", "Remaining at 12 MN 4 minus 8", "Admission & Discharge on the same day (including death)",
+                    "Total in-pt. service days of care (9+10)"
+                ]
+    
+    
+    #Generating census of patients categories and data
+    current_row += 1
+    current_col = 3
+
+    #retrieve count of back
+    context_back = get_context_back(dept)
+    trans_in_count = len(context_back["TRANS-IN"])
+    trans_out_count = len(context_back["TRANS-OUT"])
+    trans_other_count = len(context_back["TRANSFER TO OTHER HOSPITAL"])
+
+    row_trans_in = 6
+    row_trans_out = row_trans_in + 4
+
+
+    row_census = [0] * 11
+    for category in categories:
+        ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
+        for department in departments:
+            if category == "Remaining from yesterday MN report":
+                ws.write(current_row, current_col, xlwt.Formula("0"), style_census_data)
+                row_census[0] = current_row + 1
+            elif category == "Admission":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_admission[0]}:$A${row_admission[1]};"{department}")'), style_census_data)
+                row_census[1] = current_row + 1
+            elif category == "Transfer in from other floor":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF(BACK1!$A${row_trans_in}:$A${row_trans_in+trans_in_count};"{department}")'), style_census_data)
+                row_census[2] = current_row + 1
+            elif category == "Total of No. 1,2,3":
+                ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[0]}:{chr(65 + current_col)}{row_census[2]})'), style_census_data)
+                row_census[3] = current_row + 1
+            elif category == "Discharges (Alive) this census day":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_discharges[0]}:$A${row_discharges[1]};"{department}")'), style_census_data)
+                row_census[4] = current_row + 1
+            elif category == "Transfer out from other floor":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF(BACK1!$A${row_trans_out}:$A${row_trans_out+trans_out_count};"{department}")'), style_census_data)
+                row_census[5] = current_row + 1
+            elif category == "Deaths":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_death[0]}:$A${row_death[1]};"{department}")'), style_census_data)
+                row_census[6] = current_row + 1
+            elif category == "Total No. of 5,6,7":
+                ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[4]}:{chr(65 + current_col)}{row_census[6]})'), style_census_data)
+                row_census[7] = current_row + 1
+            elif category == "Remaining at 12 MN 4 minus 8":
+                ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[3]}-{chr(65 + current_col)}{row_census[7]}'), style_census_data)
+                row_census[8] = current_row + 1
+            elif category == "Admission & Discharge on the same day (including death)":
+                ws.write(current_row, current_col, xlwt.Formula(f'0'), style_census_data)
+                row_census[9] = current_row + 1
+            elif category == "Total in-pt. service days of care (9+10)":
+                ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[8]}+{chr(65 + current_col)}{row_census[9]}'), style_census_data)
+                row_census[10] = current_row + 1
+            current_col += 1
+        current_col = 3
+        current_row += 1
+
+    current_row += 1
+#f"COUNTIF($A${row_admission[0]}:$A${row_admission[1]};MED)")
+
+    #Generating bottom summary
+    ws.write(current_row,0, 'Total Admission:') 
+    ws.write(current_row,2, 'NEURO:') 
+    ws.write(current_row,5, 'URO:') 
+    ws.write(current_row,8, 'POST OP:')
+    ws.write(current_row,11, 'OTHERS:')
+
+    current_row += 1
+    ws.write(current_row,0, 'Total Discharges:') 
+
+    current_row += 1
+    ws.write(current_row,0, 'Last:') 
+
+    current_row += 1
+    ws.write(current_row,0, 'Today:')
+    ws.write_merge(current_row,current_row,3,4, 'Prepared by:')
+
+
+    style_prepared_by = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 220;
+        """
+    )
+
+    ws.write_merge(current_row,current_row,5,8, f'{request.user.first_name} {request.user.last_name}', style_prepared_by)
+    
+
+    style_date = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 220;
+        """
+    )
+    
+    ws.write(current_row,10, 'Date:')
+
+
+    ws.write_merge(current_row,current_row,11,13, current_date, style_date)
+
+    return ws
+
+
+
+def generate_front_2(ws, style_head_row, style_data_row, department, request):
+    context_header = get_context_front(department)
+    dept = department
+    #Adjusts colum widths
+    edit_col_width(ws, 1, 15)
+    edit_col_width(ws, 2, 12)
+    edit_col_width(ws, 3, 12)
+
     START_COL = 0
     END_COL = 13
     START_ROW = 6
@@ -697,163 +921,11 @@ def generate_front_1(ws, style_head_row, style_data_row, department, request):
 
 
 
-def generate_front_2(ws, style_head_row, style_data_row, department, request):
-    context_header = get_context_front(department)
-    
-    #Adjusts colum widths
-    edit_col_width(ws, 1, 15)
-    edit_col_width(ws, 2, 12)
-    edit_col_width(ws, 3, 12)
-
-    START_COL = 0
-    END_COL = 13
-    START_ROW = 6
-    current_row = START_ROW
-
-    
-    current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
-
-
-    for context in context_header:
-        current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
-        if context == "CENSUS OF PATIENTS":
-            continue
-        current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
-
-    #Generating census report headers
-
-
-
-
-    departments = ["MED", "OB", "GYNE", "PED", 'SURG-A', 'SURG-P', 'OPHTHA', 'ENT', 'ORTHO', 'SICK BB', 'WELL BB']
-
-    current_col = 0
-    for department in departments:
-        if current_col == 0:
-            ws.write_merge(current_row,current_row, current_col, 2, 'DEPARTMENT', style_head_row)
-            current_col += 3
-        
-        ws.write(current_row,current_col, department, style_head_row)
-        current_col += 1
-
-
-    style_census_categories = xlwt.easyxf("""    
-        align:
-            wrap on,
-            vert center,
-            horiz left;
-        borders:
-            left THIN,
-            right THIN,
-            top THIN,
-            bottom THIN;
-        font:
-            name Calibri,
-            colour_index Black,
-            height 200;
-        """
-    )
-
-
-    style_census_data = xlwt.easyxf("""    
-        align:
-            wrap on,
-            vert center,
-            horiz right;
-        borders:
-            left THIN,
-            right THIN,
-            top THIN,
-            bottom THIN;
-        font:
-            name Calibri,
-            bold on,
-            colour_index Black,
-            height 200;
-        """
-    )
-
-    categories = ["Remaining from yesterday MN report", "Admission", "Transfer in from other floor", "Total of No. 1,2,3", "Discharges (Alive) this census day",
-                    "Transfer out from other floor", "Deaths", "Total No. of 5,6,7", "Remaining at 12 MN 4 minus 8", "Admission & Discharge on the same day (including death)",
-                    "Total in-pt. service days of care (9+10)"
-                ]
-    
-    
-    #Generating census of patients categories and data
-    current_row += 1
-    current_col = 3
-    for category in categories:
-        ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
-        for department in departments:
-            ws.write(current_row, current_col, "", style_census_data)
-            current_col += 1
-        current_col = 3
-        current_row += 1
-
-    current_row += 1
-
-
-    #Generating bottom summary
-    ws.write(current_row,0, 'Total Admission:') 
-    ws.write(current_row,2, 'NEURO:') 
-    ws.write(current_row,5, 'URO:') 
-    ws.write(current_row,8, 'POST OP:')
-    ws.write(current_row,11, 'OTHERS:')
-
-    current_row += 1
-    ws.write(current_row,0, 'Total Discharges:') 
-
-    current_row += 1
-    ws.write(current_row,0, 'Last:') 
-
-    current_row += 1
-    ws.write(current_row,0, 'Today:')
-    ws.write_merge(current_row,current_row,3,4, 'Prepared by:')
-
-
-    style_prepared_by = xlwt.easyxf("""    
-        align:
-            wrap on,
-            vert center,
-            horiz left;
-        borders:
-            bottom THIN;
-        font:
-            name Calibri,
-            bold on,
-            colour_index Black,
-            height 220;
-        """
-    )
-
-    ws.write_merge(current_row,current_row,5,8, '', style_prepared_by)
-    
-
-    style_date = xlwt.easyxf("""    
-        align:
-            wrap on,
-            vert center,
-            horiz left;
-        borders:
-            bottom THIN;
-        font:
-            name Calibri,
-            bold on,
-            colour_index Black,
-            height 220;
-        """
-    )
-    
-    ws.write(current_row,10, 'Date:')
-    ws.write_merge(current_row,current_row,11,13, '07-Sep-22', style_date)
-
-
-
 
 
 def generate_front_3(ws, style_head_row, style_data_row, department, request):
     context_header = get_context_front(department)
-    
+    dept = department
     #Adjusts colum widths
     edit_col_width(ws, 1, 15)
     edit_col_width(ws, 2, 12)
@@ -868,11 +940,31 @@ def generate_front_3(ws, style_head_row, style_data_row, department, request):
     current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
 
 
+    #[start, end] format
+    row_admission = [0, 0]
+    row_discharges = [0, 0]
+    row_death = [0, 0]
+
     for context in context_header:
         current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
+        data_start_row = current_row
         if context == "CENSUS OF PATIENTS":
             continue
+        if context == "ADMISSION":
+            row_admission[0] = data_start_row
+        elif context == "DISCHARGES":
+            row_discharges[0] = data_start_row
+        elif context == "DEATH":
+            row_death[0] = data_start_row
+
         current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
+
+        if context == "ADMISSION":
+            row_admission[1] = current_row - 1
+        elif context == "DISCHARGES":
+            row_discharges[1] = current_row - 1
+        elif context == "DEATH":
+            row_death[1] = current_row - 1
 
     #Generating census report headers
 
@@ -936,16 +1028,60 @@ def generate_front_3(ws, style_head_row, style_data_row, department, request):
     #Generating census of patients categories and data
     current_row += 1
     current_col = 3
+
+    #retrieve count of back
+    context_back = get_context_back(dept)
+    trans_in_count = len(context_back["TRANS-IN"])
+    trans_out_count = len(context_back["TRANS-OUT"])
+    trans_other_count = len(context_back["TRANSFER TO OTHER HOSPITAL"])
+
+    row_trans_in = 6
+    row_trans_out = row_trans_in + 4
+
+
+    row_census = [0] * 11
     for category in categories:
         ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
         for department in departments:
-            ws.write(current_row, current_col, "", style_census_data)
+            if category == "Remaining from yesterday MN report":
+                ws.write(current_row, current_col, xlwt.Formula("0"), style_census_data)
+                row_census[0] = current_row + 1
+            elif category == "Admission":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_admission[0]}:$A${row_admission[1]};"{department}")'), style_census_data)
+                row_census[1] = current_row + 1
+            elif category == "Transfer in from other floor":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF(BACK1!$A${row_trans_in}:$A${row_trans_in+trans_in_count};"{department}")'), style_census_data)
+                row_census[2] = current_row + 1
+            elif category == "Total of No. 1,2,3":
+                ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[0]}:{chr(65 + current_col)}{row_census[2]})'), style_census_data)
+                row_census[3] = current_row + 1
+            elif category == "Discharges (Alive) this census day":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_discharges[0]}:$A${row_discharges[1]};"{department}")'), style_census_data)
+                row_census[4] = current_row + 1
+            elif category == "Transfer out from other floor":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF(BACK1!$A${row_trans_out}:$A${row_trans_out+trans_out_count};"{department}")'), style_census_data)
+                row_census[5] = current_row + 1
+            elif category == "Deaths":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_death[0]}:$A${row_death[1]};"{department}")'), style_census_data)
+                row_census[6] = current_row + 1
+            elif category == "Total No. of 5,6,7":
+                ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[4]}:{chr(65 + current_col)}{row_census[6]})'), style_census_data)
+                row_census[7] = current_row + 1
+            elif category == "Remaining at 12 MN 4 minus 8":
+                ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[3]}-{chr(65 + current_col)}{row_census[7]}'), style_census_data)
+                row_census[8] = current_row + 1
+            elif category == "Admission & Discharge on the same day (including death)":
+                ws.write(current_row, current_col, xlwt.Formula(f'0'), style_census_data)
+                row_census[9] = current_row + 1
+            elif category == "Total in-pt. service days of care (9+10)":
+                ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[8]}+{chr(65 + current_col)}{row_census[9]}'), style_census_data)
+                row_census[10] = current_row + 1
             current_col += 1
         current_col = 3
         current_row += 1
 
     current_row += 1
-
+#f"COUNTIF($A${row_admission[0]}:$A${row_admission[1]};MED)")
 
     #Generating bottom summary
     ws.write(current_row,0, 'Total Admission:') 
@@ -980,7 +1116,7 @@ def generate_front_3(ws, style_head_row, style_data_row, department, request):
         """
     )
 
-    ws.write_merge(current_row,current_row,5,8, '', style_prepared_by)
+    ws.write_merge(current_row,current_row,5,8, f'{request.user.first_name} {request.user.last_name}', style_prepared_by)
     
 
     style_date = xlwt.easyxf("""    
@@ -1000,6 +1136,8 @@ def generate_front_3(ws, style_head_row, style_data_row, department, request):
     
     ws.write(current_row,10, 'Date:')
     ws.write_merge(current_row,current_row,11,13, '07-Sep-22', style_date)
+
+    return ws
 
 
 
@@ -1092,6 +1230,7 @@ def generate_back_3(ws, style_head_row, style_data_row, department, request):
 #Excel Utilities
 
 def add_front_header(ws,current_row,START_COL,END_COL,department):
+    
     if "FRONT" in ws.name:
         style_sheet_header = xlwt.easyxf("""    
             align:
@@ -1132,7 +1271,9 @@ def add_front_header(ws,current_row,START_COL,END_COL,department):
         )
 
     ws.write(current_row,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF:', style_label)
-    ws.write_merge(current_row,current_row,3,6, "07-SEP-22", style_value)
+    now = timezone.now()
+    current_date = now.strftime("%d-%B-%Y")
+    ws.write_merge(current_row,current_row,3,6, current_date, style_value)
     ws.write(current_row,9, 'FLOOR/SECTION:', style_label)
     ws.write_merge(current_row,current_row,11,END_COL, department, style_value)
     current_row += 2
