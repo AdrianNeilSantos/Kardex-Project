@@ -24,21 +24,17 @@
 </head>
 
 <body>
-    <h6 style="text-align: center">Republic of the Philippines</h6>
-    <h6 style="text-align: center">Department of Health</h6>
-    <p style="text-align: center">"PHIC Accredited"</p>
+    <h6 style="text-align: center; font-size: 1.3rem;">Republic of the Philippines</h6>
+    <h6 style="text-align: center; font-size: 1.3rem;">Department of Health</h6>
+    <p style="text-align: center; font-size: 1.3rem;">"PHIC Accredited"</p>
     <br>
     <h1 style="text-align: center">Diet List</h1>
     <hr>
 
-    <div class="row">
-        <div class="col-md-8">
-            <h3>Ward: </h3>
-        </div>
-        <div class="col-md-4">
-            <h3>Date: </h3>
-        </div>
-    </div>
+    <table style="border: none;">
+        <th style="width: 70%; text-align: left; font-size: 1.3rem;">Ward: </th>
+        <th style="width: 30%; text-align: left; font-size: 1.3rem;">Date: </th>
+    </table>
 
     <table class="table table-hover">
         <thead>
@@ -61,7 +57,7 @@
                 <td>{{kardex.hospital_num}}</td>
                 <td>{{kardex.dx}}</td>
                 <td>{{kardex.diet}}</td>
-                <td>{{kardex.extra_field_values[kardex.extra_fields.index('Diet Remarks')}}</td>
+                <td>Halal</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -69,19 +65,22 @@
 
     <br>
 
-    <p style="text-align: center;">Prepared by: </p>
-    <p style="text-align: center;">(Nurse on Duty)</p>
+    <p style="text-align: center; font-size: 1.3rem;">Prepared by: {{user.first_name}} {{user.last_name}}</p>
+    <p style="text-align: center; font-size: 1.3rem;">(Nurse on Duty)</p>
 
     <br>
 
-    Note:
+    <p style="font-size: 1.3rem;">Note:</p>
 
     <ol>
-        <li>Diet list of the day should be forwarded to the Dietary service before 5:30 A.M. daily.</li>
-        <li>Orders for diet changes and new admission should be sent to the Nutrition and Dietetics before 6:30 A.M. for
+        <li style="font-size: 1.3rem;">Diet list of the day should be forwarded to the Dietary service before 5:30 A.M.
+            daily.</li>
+        <li style="font-size: 1.3rem;">Orders for diet changes and new admission should be sent to the Nutrition and
+            Dietetics before 6:30 A.M. for
             breakfast; for lunch 10:30 A.M. and for supper 5:00 P.M. Diet changes made after these hours will take
             effect on the next meal.</li>
-        <li>Diet list should be prepared in duplicate copies (original copy- Dietary service, second copy- Nursing
+        <li style="font-size: 1.3rem;">Diet list should be prepared in duplicate copies (original copy- Dietary service,
+            second copy- Nursing
             Service.)</li>
     </ol>
 </body>
