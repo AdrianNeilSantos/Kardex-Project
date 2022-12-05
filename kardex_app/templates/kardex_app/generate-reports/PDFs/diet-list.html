@@ -55,13 +55,13 @@
         <tbody>
             {% for kardex in kardexs %}
             <tr>
-                <td>1</td>
-                <td>{{kardex.name}}</td>
+                <td>{{kardex.bed_num}}</td>
+                <td>{{kardex.last_name}}, {{kardex.first_name}}</td>
                 <td>{{kardex.age}}</td>
                 <td>{{kardex.hospital_num}}</td>
-                <td>Status post appendetomy</td>
-                <td>Soft Diet</td>
-                <td>Halal</td>
+                <td>{{kardex.dx}}</td>
+                <td>{{kardex.diet}}</td>
+                <td>{{kardex.extra_field_values[kardex.extra_fields.index('Diet Remarks')}}</td>
             </tr>
             {% endfor %}
         </tbody>
