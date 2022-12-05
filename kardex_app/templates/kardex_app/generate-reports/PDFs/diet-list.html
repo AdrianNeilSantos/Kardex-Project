@@ -1,22 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-     <!-- Bootstrap 5.2.2 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <title>Diet List</title>
+    <!-- Bootstrap 5.2.2 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <style>
-
-        p {
-            text-align: center;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
         table {
             border: 1px solid black;
             border-collapse: collapse;
@@ -29,51 +22,68 @@
         }
     </style>
 </head>
+
 <body>
-    <p> Republic of the Philippines <br>
-        Department of Health <br>
-        <i> “PHIC Accredited” </i>
-    </p>
-    <h1>Diet List</h1>
+    <h6 style="text-align: center">Republic of the Philippines</h6>
+    <h6 style="text-align: center">Department of Health</h6>
+    <p style="text-align: center">"PHIC Accredited"</p>
+    <br>
+    <h1 style="text-align: center">Diet List</h1>
+    <hr>
 
-    <b>Ward:</b> {{kardex.name_of_ward}} <br>
-    <b>Username:</b> {{user.username}}  <br>
-    <b>Email Address:</b> {{user.email}} <br>
-    <b> Kardex</b> 
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Ward: </h3>
+        </div>
+        <div class="col-md-4">
+            <h3>Date: </h3>
+        </div>
+    </div>
 
-    <br><br>
-    
-    <h3>Details</h3>
-    
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>Bed No.</th>
-                <th>Patient Name</th>
-                <th>Age</th>
-                <th>Sex</th>
-                <th>Hospital Number</th>
+                <th>BED NO.</th>
+                <th>NAME OF PATIENT</th>
+                <th>AGE</th>
+                <th>HOSPITAL NO./HRN</th>
+                <th>DIAGNOSIS</th>
+                <th>DIET RX</th>
+                <th>REMARKS (Pt. classification, food preference, diet changes, religion, etc.)</th>
             </tr>
         </thead>
         <tbody>
             {% for kardex in kardexs %}
             <tr>
-                <td>{{kardex.extra_field_values}}</td>
-                <td>{{kardex.first_name}} {{kardex.last_name}}</td>
+                <td>1</td>
+                <td>{{kardex.name}}</td>
                 <td>{{kardex.age}}</td>
-                <td>{{kardex.sex}}</td>
                 <td>{{kardex.hospital_num}}</td>
+                <td>Status post appendetomy</td>
+                <td>Soft Diet</td>
+                <td>Halal</td>
             </tr>
-            {% endfor %}            
+            {% endfor %}
         </tbody>
     </table>
-    
-    <br><br>   
 
+    <br>
 
+    <p style="text-align: center;">Prepared by: </p>
+    <p style="text-align: center;">(Nurse on Duty)</p>
 
-  <!-- JavaScript Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <br>
 
+    Note:
+
+    <ol>
+        <li>Diet list of the day should be forwarded to the Dietary service before 5:30 A.M. daily.</li>
+        <li>Orders for diet changes and new admission should be sent to the Nutrition and Dietetics before 6:30 A.M. for
+            breakfast; for lunch 10:30 A.M. and for supper 5:00 P.M. Diet changes made after these hours will take
+            effect on the next meal.</li>
+        <li>Diet list should be prepared in duplicate copies (original copy- Dietary service, second copy- Nursing
+            Service.)</li>
+    </ol>
 </body>
+
 </html>
