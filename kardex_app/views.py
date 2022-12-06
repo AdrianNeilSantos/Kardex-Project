@@ -407,10 +407,10 @@ def diet_list_PDF(request):
 
 
     for kardex in kardexs:
-        if "Remarks" in kardex.extra_fields:
-            remarks_list.append(kardex.extra_field_values[kardex.extra_fields.index("Remarks")])
+        if "Diet Remarks" in kardex.extra_fields:
+            remarks_list.append(kardex.extra_field_values[kardex.extra_fields.index("Diet Remarks")])
         else:
-            remarks_list.append("")
+            remarks_list.append(" ")
 
 
     now = timezone.now()
