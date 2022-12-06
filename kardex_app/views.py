@@ -331,7 +331,6 @@ def createNurse(request):
 
     form = NurseCreationForm()
     if(request.method == "POST"):
-        print(request.POST)
         form = NurseCreationForm(request.POST, request.FILES)
         if(form.is_valid()):
             form.save()
@@ -1680,10 +1679,7 @@ def splitToLists(query_dict):
         'edited_by', 'edited_at',
     ]
     for key in query_dict.keys():
-        print(list_keys)
-        print('key', key, key in list_keys)
         if (key in list_keys):
-            print('bad action')
             query_dict[key] = query_dict[key].split(';;')
     return query_dict
 

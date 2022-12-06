@@ -16,6 +16,15 @@
             padding: 2px;
         }
 
+        .table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .table td {
+            width: 14.2857142857%;
+        }
+
         @page {
             size: letter;
             margin: 1in;
@@ -38,28 +47,28 @@
 
     <table class="table table-hover">
         <thead>
-            <tr>
+            <tr style="font-size: 12px">
                 <th>BED NO.</th>
                 <th>NAME OF PATIENT</th>
                 <th>AGE</th>
                 <th>HOSPITAL NO./HRN</th>
                 <th>DIAGNOSIS</th>
                 <th>DIET RX</th>
-                <th>REMARKS (Pt. classification, food preference, diet changes, religion, etc.)</th>
+                <th>REMARKS <br>(Pt. classification, food preference, diet changes, religion, etc.)</th>
             </tr>
         </thead>
         <tbody>
             {% for index, kardex in enumerated_kardexs %}
             <tr>
-                <td>{{kardex.bed_num}}</td>
+                <td>{{kardex.bed_num|default:''}}</td>
                 <td>{{kardex.last_name}}, {{kardex.first_name}}</td>
-                <td>{{kardex.age}}</td>
-                <td>{{kardex.hospital_num}}</td>
-                <td>{{kardex.dx}}</td>
-                <td>{{kardex.diet}}</td>
+                <td>{{kardex.age|default:''}}</td>
+                <td>{{kardex.hospital_num|default:''}}</td>
+                <td>{{kardex.dx|default:''}}</td>
+                <td>{{kardex.diet|default:''}}</td>
                 {% for remarks in remarks_list %}
                     {% if forloop.counter0 == index %}
-                    <td>{{remarks}}</td>
+                    <td>{{remarks|default:''}}</td>
                     {% endif %}
                 {% endfor %}
             </tr>
