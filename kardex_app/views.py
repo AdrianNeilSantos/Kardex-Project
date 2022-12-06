@@ -460,7 +460,17 @@ def medication_endorsement_sheet_PDF(request):
 def nursing_endorsement_sheet_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/nursing-endorsement-sheet.html"
     kardexs = Kardex.objects.all()
-    context = {"user": request.user, "kardexs": kardexs}
+
+    contraptions_list = []
+
+    for kardex in kardexs:
+        if "Contraptions" in kardex.extra_fields:
+            contraptions_list.append(kardex.extra_field_values[kardex.extra_fields.index("Contraptions")])
+        else:
+            contraptions_list.append("")
+
+
+    context = {"user": request.user, "enumerated_kardexs": enumerate(kardexs), "contraptions_list": contraptions_list,}
     fileName = "nursing-endorsement-sheet"
 
     return render_to_PDF(template_path, context, fileName)
