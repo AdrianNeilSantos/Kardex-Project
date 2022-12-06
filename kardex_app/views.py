@@ -412,7 +412,29 @@ def intravenous_fluid_tags_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/intravenous-fluid-tags.html"
     kardexs = Kardex.objects.all()
     
-    context = {"user": request.user, "kardexs": kardexs}
+
+    date_start_list = []
+    date_consumed_list = []
+    nod_name_sig_list = []
+    for kardex in kardexs:
+        if "Date & Time Started" in kardex.extra_fields:
+            date_start_list.append(kardex.extra_field_values[kardex.extra_fields.index("Date & Time Started")])
+        else:
+            date_start_list.append("")
+        if "Date & Time Consumed" in kardex.extra_fields:
+            date_consumed_list.append(kardex.extra_field_values[kardex.extra_fields.index("Date & Time Consumed")])
+        else:
+            date_consumed_list.append("")
+        if "NOD name/Signature" in kardex.extra_fields:
+            nod_name_sig_list.append(kardex.extra_field_values[kardex.extra_fields.index("NOD name/Signature")])
+        else:
+            nod_name_sig_list.append("")
+
+
+
+
+    context = {"user": request.user, "enumerated_kardexs": enumerate(kardexs), "date_start_list": date_start_list, "date_consumed_list": date_consumed_list,
+                "nod_name_sig_list": nod_name_sig_list, }
     fileName = "intravenous-fluid-tags"
 
     return render_to_PDF(template_path, context, fileName)

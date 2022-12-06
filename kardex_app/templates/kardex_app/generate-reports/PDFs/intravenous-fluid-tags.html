@@ -32,7 +32,7 @@
 </head>
 <body>
 
-    {% for kardex in kardexs %}
+    {% for index, kardex in enumerated_kardexs %}
     <br><br><br><br><br><br>
     <h1 class="header">Intravenous Fluid Tag</h1>
     
@@ -53,7 +53,7 @@
           </tr>
           <tr>
             <td>Medication(s) Added:</td>
-            <td>{{medications}}</td>
+            <td>{{kardex.medications}}</td>
           </tr>
           <tr>
             <td>Regulation:</td>
@@ -61,15 +61,28 @@
           </tr>
           <tr>
             <td>Date & Time Started:</td>
-            <td>Date</td>
+            {% for start in date_start_list %}
+              {% if forloop.counter0 == index %}
+                <td>{{start}}</td>
+              {% endif %}
+            {% endfor %}
+
           </tr>
           <tr>
             <td>Date & Time Consumed:</td>
-            <td>Date</td>
+            {% for consumed in date_consumed_list %}
+              {% if forloop.counter0 == index %}
+                <td>{{consumed}}</td>
+              {% endif %}
+            {% endfor %}
           </tr>
           <tr>
             <td>NOD name/Signature:</td>
-            <td>None</td>
+            {% for name_sig in nod_name_sig_list %}
+              {% if forloop.counter0 == index %}
+                <td>{{name_sig}}</td>
+              {% endif %}
+            {% endfor %}
           </tr>
         </tbody>
       </table>
