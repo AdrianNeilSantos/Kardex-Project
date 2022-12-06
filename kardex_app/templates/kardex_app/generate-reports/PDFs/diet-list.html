@@ -32,8 +32,8 @@
     <hr>
 
     <table style="border: none;">
-        <th style="width: 70%; text-align: left; font-size: 1.3rem;">Ward: </th>
-        <th style="width: 30%; text-align: left; font-size: 1.3rem;">Date: </th>
+        <th style="width: 70%; text-align: left; font-size: 1.3rem;">Ward: {{user.ward}}</th>
+        <th style="width: 30%; text-align: left; font-size: 1.3rem;">Date: {{current_date}}</th>
     </table>
 
     <table class="table table-hover">
@@ -49,7 +49,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for kardex in kardexs %}
+            {% for index, kardex in enumerated_kardexs %}
             <tr>
                 <td>{{kardex.bed_num}}</td>
                 <td>{{kardex.last_name}}, {{kardex.first_name}}</td>
@@ -57,7 +57,11 @@
                 <td>{{kardex.hospital_num}}</td>
                 <td>{{kardex.dx}}</td>
                 <td>{{kardex.diet}}</td>
-                <td>Halal</td>
+                {% for remarks in remarks_list %}
+                    {% if forloop.counter0 == index %}
+                    <td>{{remarks}}</td>
+                    {% endif %}
+                {% endfor %}
             </tr>
             {% endfor %}
         </tbody>

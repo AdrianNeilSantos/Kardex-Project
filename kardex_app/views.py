@@ -402,7 +402,22 @@ def bed_tags_PDF(request):
 def diet_list_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/diet-list.html"
     kardexs = Kardex.objects.all()
-    context = {"user": request.user, "kardexs": kardexs}
+
+    remarks_list = []
+
+
+
+    for kardex in kardexs:
+        if "Remarks" in kardex.extra_fields:
+            remarks_list.append(kardex.extra_field_values[kardex.extra_fields.index("Remarks")])
+        else:
+            remarks_list.append("")
+
+
+    now = timezone.now()
+    current_date = now.strftime("%d-%B-%Y")
+
+    context = {"user": request.user, "enumerated_kardexs": enumerate(kardexs), "remarks_list": remarks_list, "current_date":current_date,}
     fileName = "diet_list"
 
     return render_to_PDF(template_path, context, fileName)
