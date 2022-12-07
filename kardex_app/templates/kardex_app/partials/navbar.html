@@ -25,28 +25,10 @@
               Kardex
             </a>
           </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link {% if request.resolver_match.view_name == 'generate-reports' %}active{% endif %} dropdown-toggle"
-              href="{% url 'generate-reports' %}"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Reports
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.view_name == 'generate-reports' %}active{% endif %}" href="{% url 'generate-reports' %}">
+              Generate Reports
             </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'generate-reports' %}active{% endif %}" href="{% url 'generate-reports' %}">
-                  Generate Reports
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'bed-tags' %}active{% endif %}" href="{% url 'bed-tags' %}">
-                  Generate Bed Tags
-                </a>
-              </li>
-            </ul>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="https://forms.gle/M5iaQjrdBW4e6Nj16"  target="_blank">
