@@ -484,7 +484,7 @@ def medication_endorsement_sheet_PDF(request):
     now = timezone.now()
     current_date = now.strftime("%d-%B-%Y")
     
-    context = {"user": request.user, "kardexs": kardexs, "formatted_nurse_on_duty": formatted_nurse_on_duty, "enumerated_kardexs": enumerate(kardexs),"current_date":current_date,}
+    context = {"user": request.user, "kardexs": kardexs, "formatted_nurse_on_duty": formatted_nurse_on_duty, "enumerated_kardexs": enumerate(kardexs), "enumerated_kardexs_2": enumerate(kardexs),"current_date":current_date,}
     fileName = "medication-endorsement-sheet"
 
     return render_to_PDF(template_path, context, fileName)
