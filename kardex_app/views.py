@@ -494,7 +494,8 @@ def nursing_endorsement_sheet_PDF(request):
     kardexs = Kardex.objects.all()
 
     contraptions_list = []
-
+    now = timezone.now()
+    current_date = now.strftime("%d-%B-%Y")
     for kardex in kardexs:
         if "Contraptions" in kardex.extra_fields:
             contraptions_list.append(kardex.extra_field_values[kardex.extra_fields.index("Contraptions")])
@@ -502,7 +503,7 @@ def nursing_endorsement_sheet_PDF(request):
             contraptions_list.append("")
 
 
-    context = {"user": request.user, "enumerated_kardexs": enumerate(kardexs), "contraptions_list": contraptions_list,}
+    context = {"user": request.user, "enumerated_kardexs": enumerate(kardexs), "contraptions_list": contraptions_list,"current_date": current_date,}
     fileName = "nursing-endorsement-sheet"
 
     return render_to_PDF(template_path, context, fileName)
