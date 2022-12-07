@@ -27,7 +27,7 @@
           </li>
           <li class="nav-item dropdown">
             <a
-              class="nav-link dropdown-toggle"
+              class="nav-link {% if request.resolver_match.view_name == 'generate-reports' %}active{% endif %} dropdown-toggle"
               href="{% url 'generate-reports' %}"
               role="button"
               data-bs-toggle="dropdown"
