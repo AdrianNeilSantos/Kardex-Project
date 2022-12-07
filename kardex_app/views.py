@@ -466,7 +466,25 @@ def medication_cards_PDF(request):
 def medication_endorsement_sheet_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/medication-endorsement-sheet.html"
     kardexs = Kardex.objects.all()
-    context = {"user": request.user, "kardexs": kardexs}
+    
+    # target_nurse = Nurse.objects.get(id=request.user.id)
+    nurse_on_duty = request.user.on_duty.split(',')[datetime.now().weekday()] \
+        if request.user.on_duty and len(request.user.on_duty.split(',')) > 1 else '(Missing On Duty Schedule)'
+    formatted_nurse_on_duty = '(Missing On Duty Schedule)'
+    # print('nurse_on_duty', nurse_on_duty)
+    # print(nurse_on_duty.split('-')[0][:2], nurse_on_duty.split('-')[0][-2:])
+    if 'Missing' not in nurse_on_duty:
+        formatted_nurse_on_duty = list(map(lambda time: \
+            f'{ time[:2] }:{ time[-2:] }AM' \
+            if int(time) < 1300 \
+            else f'{ int(time[:2]) - 12 }:{ time[-2:] }PM', \
+            nurse_on_duty.split('-')))
+        formatted_nurse_on_duty = f'{ formatted_nurse_on_duty[0] } - { formatted_nurse_on_duty[1] }'
+
+    now = timezone.now()
+    current_date = now.strftime("%d-%B-%Y")
+    
+    context = {"user": request.user, "kardexs": kardexs, "formatted_nurse_on_duty": formatted_nurse_on_duty, "enumerated_kardexs": enumerate(kardexs),"current_date":current_date,}
     fileName = "medication-endorsement-sheet"
 
     return render_to_PDF(template_path, context, fileName)
