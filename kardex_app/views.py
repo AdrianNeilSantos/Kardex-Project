@@ -60,7 +60,7 @@ def register(request):
 
     context = {"form": form}
 
-    return render(request, 'kardex_app/Authentication/register.html', context)
+    return render(request, 'kardex_app/authentication/register.html', context)
 
 def signIn(request):
     if(request.method == "POST"):
@@ -77,7 +77,7 @@ def signIn(request):
             print("Login Fail.")
             messages.error(request, "Incorrect password or username.")
 
-    return render(request, 'kardex_app/Authentication/sign-in.html')
+    return render(request, 'kardex_app/authentication/sign-in.html')
 
 def signOut(request):
     logout(request)
@@ -100,11 +100,11 @@ def changePassword(request):
       "form": form,
     }
 
-    return render(request, 'kardex_app/Authentication/password-change.html', context)
+    return render(request, 'kardex_app/authentication/password-change.html', context)
 
 
 def forgotPassword(request):
-    return render(request, 'kardex_app/Authentication/password-forgot.html')
+    return render(request, 'kardex_app/authentication/password-forgot.html')
 
 def password_reset_request(request):
 	if request.method == "POST":
@@ -115,7 +115,7 @@ def password_reset_request(request):
 			if associated_users.exists():
 				for user in associated_users:
 					subject = "Password Reset Requested"
-					email_template_name = 'kardex_app/Authentication/password-reset-email.html'
+					email_template_name = 'kardex_app/authentication/password-reset-email.html'
 					c = {
 					"email":user.email,
 					'domain':'127.0.0.1:8000',
@@ -132,7 +132,7 @@ def password_reset_request(request):
 						return HttpResponse('Invalid header found.')
 					return redirect ("/password-reset/done/")
 	password_reset_form = PasswordResetForm()
-	return render(request=request, template_name='kardex_app/Authentication/password-reset.html', context={"password_reset_form":password_reset_form})
+	return render(request=request, template_name='kardex_app/authentication/password-reset.html', context={"password_reset_form":password_reset_form})
 
 # End of Authentication
 
