@@ -48,6 +48,11 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://forms.gle/M5iaQjrdBW4e6Nj16"  target="_blank">
+              Survey
+            </a>
+          </li>
           {% if request.user.is_superuser %}
           <li class="nav-item">
             <a class="nav-link {% if request.resolver_match.view_name == 'nurse-dashboard' %}active{% endif %}" href="{% url 'nurse-dashboard' %}">
