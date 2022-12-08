@@ -246,10 +246,10 @@ const sortKardexs = () => {
   const sortVal = sortKardexSelect.value;
   switch (sortVal) {
     case '0':
-      currKardexs = _.orderBy(currKardexs, ['name'], ['asc']);
+      currKardexs = _.orderBy(currKardexs, ['last_name', 'first_name'], ['asc', 'asc']);
       break;
     case '1':
-      currKardexs = _.orderBy(currKardexs, ['name'], ['desc']);
+      currKardexs = _.orderBy(currKardexs, ['last_name', 'first_name'], ['desc', 'desc']);
       break;
     case '2':
       currKardexs = _.orderBy(currKardexs, ['date_time', 'date_added'], ['desc', 'desc']);
