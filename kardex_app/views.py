@@ -45,7 +45,9 @@ login_URL = "/sign-in/"
 
 # Create your views here.
 def home(request):
-    return render(request, 'kardex_app/home.html')
+    if request.user.is_authenticated:
+        return redirect('/dashboard/')
+    return redirect('/sign-in')
 
 
 # Authentication
