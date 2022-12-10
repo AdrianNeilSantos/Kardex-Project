@@ -41,23 +41,23 @@
         <tbody>
           <tr>
             <td>Bed No.:</td>
-            <td>{{kardex.bed_num}}</td>
+            <td>{{kardex.bed_num|default:''}}</td>
           </tr>
           <tr>
             <td>Name of Patient:</td>
-            <td>{{kardex.first_name}}  {{kardex.last_name}}</td>
+            <td>{{kardex.first_name}} {{kardex.last_name}}</td>
           </tr>
           <tr>
             <td>Name of IV Fluid:</td>
-            <td>{{kardex.ivf}}</td>
+            <td>{{kardex.ivf|default:''}}</td>
           </tr>
           <tr>
             <td>Medication(s) Added:</td>
-            <td>{{kardex.medications}}</td>
+            <td>{{kardex.medications|default:''}}</td>
           </tr>
           <tr>
             <td>Regulation:</td>
-            <td>None</td>
+            <td></td>
           </tr>
           <tr>
             <td>Date & Time Started:</td>

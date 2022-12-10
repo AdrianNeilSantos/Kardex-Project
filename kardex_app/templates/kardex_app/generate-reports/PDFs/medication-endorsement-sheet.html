@@ -5,8 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medication Endorsement Log Sheet</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"
+    >
+    {% load my_templatetags %}
     <style>
         table {
             border: 1px solid black;
@@ -17,6 +20,10 @@
         .table {
             width: 100%;
             table-layout: fixed;
+        }
+
+        .table td {
+            width: 33.33%;
         }
 
         @page {
@@ -57,16 +64,26 @@
             {% for index, kardex in enumerated_kardexs %}
             <tr>
                 <td>
-                    <b>Bed {{kardex.bed_num|default:''}} {{kardex.last_name}} {{kardex.first_name}}</b> <br>
-                    {{kardex.medications}}
+                    <b>{% if kardex.bed_num %}BED {{kardex.bed_num}}{% endif %} {{kardex.last_name}} {{kardex.first_name}}</b>
                 </td>
-                <td> </td>
-                <td> </td>
+                <td></td>
+                <td></td>
             </tr>
+            {% if kardex.medications %}
+            {% for medication in kardex.medications|split:',' %}
+            <tr>
+                <td>
+                    <b>{{medication}}</b>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            {% endif %}
             <tr>
                 <td><br></td>
-                <td> </td>
-                <td> </td>
+                <td></td>
+                <td></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -78,7 +95,9 @@
         <tr>
             <td> <b>SPECIAL NOTATIONS:</b><br>
                 {% for index, kardex in enumerated_kardexs_2 %}
-                    {{kardex.special_notations}} - patient {{kardex.last_name}} <br>
+                {% if kardex.special_notations %}
+                {{kardex.special_notations}} - patient {{kardex.last_name}}<br>
+                {% endif %}
                 {% endfor %}
             </td>
         </tr>
