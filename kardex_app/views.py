@@ -179,6 +179,16 @@ def updateKardex(request, pk):
     form = KardexForm(instance=kardex)
     if(request.method == "POST"):
         post = request.POST.copy()
+        print(post)
+        new_post = {
+            'is_admission' : '1' if post.get('is_admission') == '1' else '',
+            'is_discharges' : '1' if post.get('is_discharges') == '1' else '',
+            'is_death' : '1' if post.get('is_death') == '1' else '',
+            'is_trans_in' : '1' if post.get('is_trans_in') == '1' else '',
+            'is_trans_out' : '1' if post.get('is_trans_out') == '1' else '',
+            'is_trans_other' : '1' if post.get('is_trans_other') == '1' else ''
+        }
+        post.update(new_post)
         post.update(splitToLists(post))
         post.update(stripValues(post))
         form = KardexForm(post, instance=kardex)
