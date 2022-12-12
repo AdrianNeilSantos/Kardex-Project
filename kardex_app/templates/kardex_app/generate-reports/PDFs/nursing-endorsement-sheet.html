@@ -57,17 +57,17 @@
         <tbody>
             {% for index, kardex in enumerated_kardexs %}
             <tr>
-                <td width="10%">{{kardex.bed_num}}</td>
-                <td width="20%">{{kardex.first_name}}  {{kardex.last_name}}</td>
-                <td width="5%"> {% if kardex.sex == 'Male' %} {{kardex.age}} {% endif %} </td>
-                <td width="5%"> {% if kardex.sex == 'Female' %} {{kardex.age}} {% endif %}</td>
+                <td width="10%">{{kardex.bed_num|default:''}}</td>
+                <td width="20%">{{kardex.first_name}} {{kardex.last_name}}</td>
+                <td width="5%"> {% if kardex.sex == 'Male' %} {{kardex.age|default:''}} {% endif %} </td>
+                <td width="5%"> {% if kardex.sex == 'Female' %} {{kardex.age|default:''}} {% endif %}</td>
                     {% for contraptions in contraptions_list %}
                         {% if forloop.counter0 == index %}
-                        <td width="20%">{{contraptions}}</td>
+                        <td width="20%">{{contraptions|default:''}}</td>
                         {% endif %}
                     {% endfor %}
-                <td width="25%">{{kardex.special_notations}}</td>
-                <td width="15%">{{kardex.diet}}</td>
+                <td width="25%">{{kardex.special_notations|default:''}}</td>
+                <td width="15%">{{kardex.diet|default:''}}</td>
             </tr>
             {% endfor %}            
         </tbody>
