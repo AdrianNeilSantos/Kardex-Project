@@ -364,7 +364,8 @@
           <select
             name="category"
             id="categoryInput"
-            class="underline-field form-select"
+            class="underline-field bg-white form-select"
+            disabled
           >
             <option value="3" {% if not kardex.is_admission and not kardex.is_discharges and not kardex.is_death %}selected{% endif %}>N/A</option>
             <option value="0" {% if kardex.is_admission %}selected{% endif %}>Admission</option>
@@ -377,7 +378,8 @@
           <select
             name="transfer_type"
             id="transferTypeInput"
-            class="underline-field form-select"
+            class="underline-field bg-white form-select"
+            disabled
           >
             <option value="3" {% if not kardex.is_trans_in and not kardex.is_trans_out and not kardex.is_trans_other %}selected{% endif %}>N/A</option>
             <option value="0" {% if kardex.is_trans_in %}selected{% endif %}>Transfer In</option>
