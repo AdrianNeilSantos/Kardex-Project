@@ -233,6 +233,7 @@
             id="firstNameInput"
             class="underline-field form-control"
             value="{{ kardex.first_name|default:'' }}"
+            disabled
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -243,6 +244,7 @@
             id="lastNameInput"
             class="underline-field form-control"
             value="{{ kardex.last_name|default:'' }}"
+            disabled
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -287,8 +289,8 @@
             id="bedNumInput"
             type="text"
             class="underline-field form-control"
-            placeholder="Bed #"
             value={{ kardex.bed_num|default:'' }}
+            disabled
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -298,8 +300,8 @@
             id="caseNumInput"
             type="text"
             class="underline-field form-control"
-            placeholder="Case #"
             value={{ kardex.case_num|default:'' }}
+            disabled
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -309,8 +311,8 @@
             id="conditionInput"
             type="text"
             class="underline-field form-control"
-            placeholder="Condition"
             value={{ kardex.condition|default:'' }}
+            disabled
           >
         </div>
         <div class="d-flex align-items-center mb-3">
@@ -320,7 +322,6 @@
             id="departmentInput"
             type="text"
             class="underline-field bg-white form-control"
-            placeholder="Department"
             value="{{ kardex.department|default:'' }}"
             disabled
           >
