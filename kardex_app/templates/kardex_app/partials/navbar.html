@@ -53,7 +53,7 @@
         <div class="d-flex align-items-center">
           {% if request.user.is_authenticated %}
           <!-- Display user -->
-          <a href="#" class="dark-link me-3">
+          <a href="{% url 'profile' user.id  %}" class="dark-link me-3">
             <i class="fa-solid fa-user fs-4 fw-bold"></i>
             <span class="fs-5">{{request.user.last_name}}</span>
           </a>
