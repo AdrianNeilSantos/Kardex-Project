@@ -30,11 +30,7 @@
               Generate Reports
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://forms.gle/M5iaQjrdBW4e6Nj16"  target="_blank">
-              Survey
-            </a>
-          </li>
+
           {% if request.user.is_superuser %}
           <li class="nav-item">
             <a class="nav-link {% if request.resolver_match.view_name == 'nurse-dashboard' %}active{% endif %}" href="{% url 'nurse-dashboard' %}">
@@ -42,46 +38,16 @@
             </a>
           </li>
           {% endif %}
+
+          <li class="nav-item">
+            <a class="nav-link" href="https://forms.gle/M5iaQjrdBW4e6Nj16"  target="_blank">
+              Survey
+            </a>
+          </li>
           {% else %}
             <li class="nav-item">
               <a class="nav-link {% if request.resolver_match.view_name == 'sign-in' %}active{% endif %}" href="{% url 'sign-in' %}">Sign In</a>
             </li>
-          {% endif %}
-          {% if request.user.is_superuser %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Tests
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item active">
-                <a class="nav-link {% if request.resolver_match.view_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'sign-in' %}active{% endif %}" href="{% url 'sign-in' %}">Sign In</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'register' %}active{% endif %}" href="{% url 'register' %}">Register</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'password-change' %}active{% endif %}" href="{% url 'password-change' %}">changePassword</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'password-forgot' %}active{% endif %}" href="{% url 'password-forgot' %}">forgotPassword</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'password-reset' %}active{% endif %}" href="{% url 'password-reset' %}">Reset Password</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">dashboard</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'create-kardex' %}active{% endif %}" href="{% url 'create-kardex' %}">createKardex</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.view_name == 'generate-reports' %}active{% endif %}" href="{% url 'generate-reports' %}">generateReports</a>
-              </li>
-            </ul>
-          </li>
           {% endif %}
         </ul>
         <div class="d-flex align-items-center">
