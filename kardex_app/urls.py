@@ -14,9 +14,9 @@ urlpatterns = [
     path('password-forgot/', views.forgotPassword, name="password-forgot"),
 
     path("password-reset", views.password_reset_request, name="password-reset"),
-    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='kardex_app/Authentication/password-reset-done.html'), name='password-reset-done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='kardex_app/Authentication/password-reset-confirm.html', success_url = reverse_lazy('password-reset-complete')), name='password-reset-confirm'),
-    path('password-reset-complete', auth_views.PasswordResetCompleteView.as_view(template_name='kardex_app/Authentication/password-reset-complete.html'), name='password-reset-complete'),   
+    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='kardex_app/authentication/password-reset-done.html'), name='password-reset-done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='kardex_app/authentication/password-reset-confirm.html', success_url = reverse_lazy('password-reset-complete')), name='password-reset-confirm'),
+    path('password-reset-complete', auth_views.PasswordResetCompleteView.as_view(template_name='kardex_app/authentication/password-reset-complete.html'), name='password-reset-complete'),   
     # End of Authentication
 
     #Kardex 
@@ -50,6 +50,7 @@ urlpatterns = [
 
     #Generate Reports
     path('generate-reports/', views.generateReports, name="generate-reports"),
+    path('bed-tags/', views.bedTags, name="bed-tags"),
     path('diet_list_PDF/', views.diet_list_PDF, name="diet_list_PDF"),
     path('bed_tags_PDF/', views.bed_tags_PDF, name="bed_tags_PDF"),
     path('intravenous_fluid_tags_PDF/', views.intravenous_fluid_tags_PDF, name="intravenous_fluid_tags_PDF"),

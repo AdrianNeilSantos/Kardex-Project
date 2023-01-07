@@ -124,7 +124,7 @@ const generateChart = (targetId, chartData) => {
     .attr('id', 'title')
     .attr('text-anchor', 'middle')
     .style('font-size', window.innerWidth / 1440 * 24)
-    .text('United States GDP');
+    .text('Nurse Login Frequency');
 
   svg
     .selectAll('rect')
@@ -174,7 +174,7 @@ const generateChart = (targetId, chartData) => {
       const vizModal = new bootstrap.Modal(document.querySelector('#vizModal'));
       vizModal.show();
 
-      document.querySelector('.modal-title').textContent = 'United States GDP';
+      document.querySelector('.modal-title').textContent = 'Nurse Login Frequency';
     });
 
   const xAxis = d3.axisBottom(xScale);
@@ -462,10 +462,10 @@ const sortKardexs = () => {
   const sortVal = sortKardexSelect.value;
   switch (sortVal) {
     case '0':
-      currKardexs = _.orderBy(currKardexs, ['name'], ['asc']);
+      currKardexs = _.orderBy(currKardexs, ['last_name', 'first_name'], ['asc', 'asc']);
       break;
     case '1':
-      currKardexs = _.orderBy(currKardexs, ['name'], ['desc']);
+      currKardexs = _.orderBy(currKardexs, ['last_name', 'first_name'], ['desc', 'desc']);
       break;
     case '2':
       currKardexs = _.orderBy(currKardexs, ['date_time', 'date_added'], ['desc', 'desc']);

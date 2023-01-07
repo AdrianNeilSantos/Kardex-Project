@@ -26,138 +26,96 @@
       <h1 style="text-align: center; margin-top: 35px;"><b>Generate Reports</b></h1>
 
       <br><br>
+      <h2 style="text-align: center; margin-top: 35px;"><b>PDF Files</b></h2>
+      <br><br>
+
 
       <div class="container">
         <div class="row">
           <div class="col">
             <div class="report-card">
-              <h1>Ward Census</h1>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed condimentum dui, eu pulvinar tellus.
-                Ut
-                magna ex, aliquet et facilisis in, efficitur sit amet sapien. Morbi aliquet enim at aliquet vehicula.
-                Sed
-                pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
-                consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'ward_census_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get PDF</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="report-card">
               <h1>Diet List</h1>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed condimentum dui, eu pulvinar tellus.
-                Ut
-                magna ex, aliquet et facilisis in, efficitur sit amet sapien. Morbi aliquet enim at aliquet vehicula.
-                Sed
-                pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
-                consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'diet_list_PDF' %}" class="btn report-button blue"><span
+              <p>
+                A diet list report is a document that outlines the specific foods and beverages that an individual consumes on a regular basis. This report is typically used as a tool for tracking an individual's dietary habits and ensuring that they are meeting their nutritional needs. The report may include information about the quantities of each food or beverage consumed, as well as the time of day that they are consumed.
+              </p>
+              <a href="{% url 'diet_list_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
-        </div>
-        <br><br>
-        <div class="row">
           <div class="col">
             <div class="report-card">
               <h1>Nursing Endorsement Sheet</h1>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed condimentum dui, eu pulvinar tellus.
-                Ut
-                magna ex, aliquet et facilisis in, efficitur sit amet sapien. Morbi aliquet enim at aliquet vehicula.
-                Sed
-                pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
-                consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'nursing_endorsement_sheet_PDF' %}" class="btn report-button blue"><span
+              <p>
+                A nursing endorsement sheet is a document that is used to verify the qualifications and credentials of a nurse who is seeking endorsement to practice in a different state. This sheet typically includes information about the nurse's education, training, and experience, as well as any licensure exams that they have passed.
+
+              </p>
+              <a href="{% url 'nursing_endorsement_sheet_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
+
+        </div>
+        <br><br>
+        <div class="row">
+
           <div class="col">
             <div class="report-card">
               <h1>Medication Endorsement Sheet</h1>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed condimentum dui, eu pulvinar tellus.
-                Ut
-                magna ex, aliquet et facilisis in, efficitur sit amet sapien. Morbi aliquet enim at aliquet vehicula.
-                Sed
-                pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
-                consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'medication_endorsement_sheet_PDF' %}" class="btn report-button blue"><span
+              <p>
+                
+                A medication endorsement sheet is a document that is used to verify the qualifications and credentials of a healthcare professional who is seeking endorsement to prescribe or dispense medications. This sheet typically includes information about the individual's education, training, and experience in prescribing or dispensing medications, as well as any licensure exams or certifications that they have passed. 
+              </p>
+              <a href="{% url 'medication_endorsement_sheet_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
-        </div>
-        <br><br>
-        <div class="row">
           <div class="col">
             <div class="report-card">
               <h1>Bed Tags</h1>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed condimentum dui, eu pulvinar tellus.
-                Ut
-                magna ex, aliquet et facilisis in, efficitur sit amet sapien. Morbi aliquet enim at aliquet vehicula.
-                Sed
-                pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
-                consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'bed_tags_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get PDF</a>
-            </div>
-          </div>
-          <div class="col">
-            <div class="report-card">
-              <h1>Medication Cards</h1>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed condimentum dui, eu pulvinar tellus.
-                Ut
-                magna ex, aliquet et facilisis in, efficitur sit amet sapien. Morbi aliquet enim at aliquet vehicula.
-                Sed
-                pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
-                consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'medication_cards_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get PDF</a>
+              <p>
+                
+                Bed tags are labels or tags that are attached to hospital beds or other medical equipment. These tags are used to identify the specific bed or piece of equipment, as well as any important information about its use or maintenance.
+
+              </p>
+              <a href="{% url 'bed-tags' %}" class="btn report-button blue" target="_blank"><span
+                  class="material-icons">download</span>Get Tags</a>
             </div>
           </div>
         </div>
         <br><br>
         <div class="row">
+
           <div class="col">
             <div class="report-card">
               <h1>Intravenous Fluid Tags</h1>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed condimentum dui, eu pulvinar tellus.
-                Ut
-                magna ex, aliquet et facilisis in, efficitur sit amet sapien. Morbi aliquet enim at aliquet vehicula.
-                Sed
-                pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
-                consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'intravenous_fluid_tags_PDF' %}" class="btn report-button blue"><span
+              <p>
+                
+                Intravenous (IV) fluid tags are labels or tags that are attached to IV bags or other containers of intravenous fluids. These tags are used to identify the specific type of IV fluid, as well as the volume and concentration of the fluid.
+              
+              </p>
+              <a href="{% url 'intravenous_fluid_tags_PDF' %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>Get PDF</a>
             </div>
           </div>
           <div class="col">
-            <div class="report-card">
-              <h1>Special Notes</h1>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed condimentum dui, eu pulvinar tellus.
-                Ut
-                magna ex, aliquet et facilisis in, efficitur sit amet sapien. Morbi aliquet enim at aliquet vehicula.
-                Sed
-                pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
-                consectetur aliquet. Morbi mattis ac est ac elementum.</p>
-              <a href="{% url 'special_notes_PDF' %}" class="btn report-button blue"><span
-                  class="material-icons">download</span>Get PDF</a>
-            </div>
+
           </div>
         </div>
-
+        <br><br>
+        <h2 style="text-align: center; margin-top: 35px;"><b>Excel Files</b></h2>
         <br><br>
         <div class="row">
           <div class="col">
             <div class="report-card">
               <h1>Hospital Census Report</h1>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed condimentum dui, eu pulvinar tellus.
-                Ut
-                magna ex, aliquet et facilisis in, efficitur sit amet sapien. Morbi aliquet enim at aliquet vehicula.
-                Sed
-                pretium justo in tellus elementum egestas. Praesent ut gravida mauris. Morbi ultricies nulla eget
-                consectetur aliquet. Morbi mattis ac est ac elementum.</p>
+              <p>
+                
+                A hospital census report is a document that provides detailed information about the number and types of patients who are currently receiving care at a hospital. This report typically includes information about the number of patients who are admitted to the hospital, the number of patients who are in the emergency department, and the number of patients who are in outpatient clinics or other areas of the hospital.
+
+              </p>
 
                 {% for department in departments %}
-                <a href="{% url 'generate-census-XLSX' department %}" class="btn report-button blue"><span
+                <a href="{% url 'generate-census-XLSX' department %}" class="btn report-button blue" target="_blank"><span
                   class="material-icons">download</span>{{department}}</a>
                 {% endfor %}
 

@@ -28,9 +28,10 @@ from django.utils import timezone
 import pandas as pd
 import xlwt
 
-from datetime import date
+from datetime import date, timedelta
 import operator
 from functools import reduce
+import itertools
 
 # for REST API
 from rest_framework.views import APIView
@@ -44,7 +45,9 @@ login_URL = "/sign-in/"
 
 # Create your views here.
 def home(request):
-    return render(request, 'kardex_app/home.html')
+    if request.user.is_authenticated:
+        return redirect('/dashboard/')
+    return redirect('/sign-in')
 
 
 # Authentication
@@ -59,7 +62,7 @@ def register(request):
 
     context = {"form": form}
 
-    return render(request, 'kardex_app/Authentication/register.html', context)
+    return render(request, 'kardex_app/authentication/register.html', context)
 
 def signIn(request):
     if(request.method == "POST"):
@@ -76,7 +79,7 @@ def signIn(request):
             print("Login Fail.")
             messages.error(request, "Incorrect password or username.")
 
-    return render(request, 'kardex_app/Authentication/sign-in.html')
+    return render(request, 'kardex_app/authentication/sign-in.html')
 
 def signOut(request):
     logout(request)
@@ -99,11 +102,11 @@ def changePassword(request):
       "form": form,
     }
 
-    return render(request, 'kardex_app/Authentication/password-change.html', context)
+    return render(request, 'kardex_app/authentication/password-change.html', context)
 
 
 def forgotPassword(request):
-    return render(request, 'kardex_app/Authentication/password-forgot.html')
+    return render(request, 'kardex_app/authentication/password-forgot.html')
 
 def password_reset_request(request):
 	if request.method == "POST":
@@ -114,7 +117,7 @@ def password_reset_request(request):
 			if associated_users.exists():
 				for user in associated_users:
 					subject = "Password Reset Requested"
-					email_template_name = 'kardex_app/Authentication/password-reset-email.html'
+					email_template_name = 'kardex_app/authentication/password-reset-email.html'
 					c = {
 					"email":user.email,
 					'domain':'127.0.0.1:8000',
@@ -131,7 +134,7 @@ def password_reset_request(request):
 						return HttpResponse('Invalid header found.')
 					return redirect ("/password-reset/done/")
 	password_reset_form = PasswordResetForm()
-	return render(request=request, template_name='kardex_app/Authentication/password-reset.html', context={"password_reset_form":password_reset_form})
+	return render(request=request, template_name='kardex_app/authentication/password-reset.html', context={"password_reset_form":password_reset_form})
 
 # End of Authentication
 
@@ -176,6 +179,16 @@ def updateKardex(request, pk):
     form = KardexForm(instance=kardex)
     if(request.method == "POST"):
         post = request.POST.copy()
+        print(post)
+        new_post = {
+            'is_admission' : '1' if post.get('is_admission') == '1' else '',
+            'is_discharges' : '1' if post.get('is_discharges') == '1' else '',
+            'is_death' : '1' if post.get('is_death') == '1' else '',
+            'is_trans_in' : '1' if post.get('is_trans_in') == '1' else '',
+            'is_trans_out' : '1' if post.get('is_trans_out') == '1' else '',
+            'is_trans_other' : '1' if post.get('is_trans_other') == '1' else ''
+        }
+        post.update(new_post)
         post.update(splitToLists(post))
         post.update(stripValues(post))
         form = KardexForm(post, instance=kardex)
@@ -384,6 +397,10 @@ def generateReports(request):
     return render(request, 'kardex_app/generate-reports/generate-reports.html', context)
 
 
+def bedTags(request):
+    return render(request, 'kardex_app/generate-reports/bed-tags.html')
+
+
   #Generating PDFS
 def bed_tags_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/bed-tags.html"
@@ -396,7 +413,22 @@ def bed_tags_PDF(request):
 def diet_list_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/diet-list.html"
     kardexs = Kardex.objects.all()
-    context = {"user": request.user, "kardexs": kardexs}
+
+    remarks_list = []
+
+
+
+    for kardex in kardexs:
+        if "Diet Remarks" in kardex.extra_fields:
+            remarks_list.append(kardex.extra_field_values[kardex.extra_fields.index("Diet Remarks")])
+        else:
+            remarks_list.append(" ")
+
+
+    now = timezone.now()
+    current_date = now.strftime("%d-%B-%Y")
+
+    context = {"user": request.user, "enumerated_kardexs": enumerate(kardexs), "remarks_list": remarks_list, "current_date":current_date,}
     fileName = "diet_list"
 
     return render_to_PDF(template_path, context, fileName)
@@ -406,7 +438,29 @@ def intravenous_fluid_tags_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/intravenous-fluid-tags.html"
     kardexs = Kardex.objects.all()
     
-    context = {"user": request.user, "kardexs": kardexs}
+
+    date_start_list = []
+    date_consumed_list = []
+    nod_name_sig_list = []
+    for kardex in kardexs:
+        if "Date & Time Started" in kardex.extra_fields:
+            date_start_list.append(kardex.extra_field_values[kardex.extra_fields.index("Date & Time Started")])
+        else:
+            date_start_list.append("")
+        if "Date & Time Consumed" in kardex.extra_fields:
+            date_consumed_list.append(kardex.extra_field_values[kardex.extra_fields.index("Date & Time Consumed")])
+        else:
+            date_consumed_list.append("")
+        if "NOD name/Signature" in kardex.extra_fields:
+            nod_name_sig_list.append(kardex.extra_field_values[kardex.extra_fields.index("NOD name/Signature")])
+        else:
+            nod_name_sig_list.append("")
+
+
+
+
+    context = {"user": request.user, "enumerated_kardexs": enumerate(kardexs), "date_start_list": date_start_list, "date_consumed_list": date_consumed_list,
+                "nod_name_sig_list": nod_name_sig_list, }
     fileName = "intravenous-fluid-tags"
 
     return render_to_PDF(template_path, context, fileName)
@@ -424,7 +478,25 @@ def medication_cards_PDF(request):
 def medication_endorsement_sheet_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/medication-endorsement-sheet.html"
     kardexs = Kardex.objects.all()
-    context = {"user": request.user, "kardexs": kardexs}
+    
+    # target_nurse = Nurse.objects.get(id=request.user.id)
+    nurse_on_duty = request.user.on_duty.split(',')[datetime.now().weekday()] \
+        if request.user.on_duty and len(request.user.on_duty.split(',')) > 1 else '(Missing On Duty Schedule)'
+    formatted_nurse_on_duty = '(Missing On Duty Schedule)'
+    # print('nurse_on_duty', nurse_on_duty)
+    # print(nurse_on_duty.split('-')[0][:2], nurse_on_duty.split('-')[0][-2:])
+    if 'Missing' not in nurse_on_duty:
+        formatted_nurse_on_duty = list(map(lambda time: \
+            f'{ time[:2] }:{ time[-2:] }AM' \
+            if int(time) < 1300 \
+            else f'{ int(time[:2]) - 12 }:{ time[-2:] }PM', \
+            nurse_on_duty.split('-')))
+        formatted_nurse_on_duty = f'{ formatted_nurse_on_duty[0] } - { formatted_nurse_on_duty[1] }'
+
+    now = timezone.now()
+    current_date = now.strftime("%d-%B-%Y")
+    
+    context = {"user": request.user, "kardexs": kardexs, "formatted_nurse_on_duty": formatted_nurse_on_duty, "enumerated_kardexs": enumerate(kardexs), "enumerated_kardexs_2": enumerate(kardexs),"current_date":current_date,}
     fileName = "medication-endorsement-sheet"
 
     return render_to_PDF(template_path, context, fileName)
@@ -432,7 +504,18 @@ def medication_endorsement_sheet_PDF(request):
 def nursing_endorsement_sheet_PDF(request):
     template_path = "kardex_app/generate-reports/PDFs/nursing-endorsement-sheet.html"
     kardexs = Kardex.objects.all()
-    context = {"user": request.user, "kardexs": kardexs}
+
+    contraptions_list = []
+    now = timezone.now()
+    current_date = now.strftime("%d-%B-%Y")
+    for kardex in kardexs:
+        if "Contraptions" in kardex.extra_fields:
+            contraptions_list.append(kardex.extra_field_values[kardex.extra_fields.index("Contraptions")])
+        else:
+            contraptions_list.append("")
+
+
+    context = {"user": request.user, "enumerated_kardexs": enumerate(kardexs), "contraptions_list": contraptions_list,"current_date": current_date,}
     fileName = "nursing-endorsement-sheet"
 
     return render_to_PDF(template_path, context, fileName)
@@ -471,8 +554,233 @@ def render_to_PDF(template_src, context_dict, fileName):
 
 
 
-def generate_front_1(work_book, style_head_row, style_data_row, department, request):
-    ws = work_book.add_sheet(u'FRONT1')
+
+
+def generate_front_1(ws, style_head_row, style_data_row, department, request):
+    context_header = get_context_front(department)
+    dept = department
+    #Adjusts colum widths
+    edit_col_width(ws, 1, 15)
+    edit_col_width(ws, 2, 12)
+    edit_col_width(ws, 3, 12)
+
+    now = timezone.now()
+    current_date = now.strftime("%d-%B-%Y")
+
+    START_COL = 0
+    END_COL = 13
+    START_ROW = 6
+    current_row = START_ROW
+
+    
+    current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
+
+
+    #[start, end] format
+    row_admission = [0, 0]
+    row_discharges = [0, 0]
+    row_death = [0, 0]
+    total_admission = 0
+
+    for context in context_header:
+        current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
+        data_start_row = current_row
+        if context == "CENSUS OF PATIENTS":
+            continue
+        if context == "ADMISSION":
+            row_admission[0] = data_start_row
+        elif context == "DISCHARGES":
+            row_discharges[0] = data_start_row
+        elif context == "DEATH":
+            row_death[0] = data_start_row
+
+        current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
+
+        if context == "ADMISSION":
+            row_admission[1] = current_row - 1
+        elif context == "DISCHARGES":
+            row_discharges[1] = current_row - 1
+        elif context == "DEATH":
+            row_death[1] = current_row - 1
+
+    #Generating census report headers
+
+
+
+
+    departments = ["MED", "OB", "GYNE", "PED", 'SURG-A', 'SURG-P', 'OPHTHA', 'ENT', 'ORTHO', 'SICK BB', 'WELL BB']
+
+    current_col = 0
+    for department in departments:
+        if current_col == 0:
+            ws.write_merge(current_row,current_row, current_col, 2, 'DEPARTMENT', style_head_row)
+            current_col += 3
+        
+        ws.write(current_row,current_col, department, style_head_row)
+        current_col += 1
+
+
+    style_census_categories = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
+        font:
+            name Calibri,
+            colour_index Black,
+            height 200;
+        """
+    )
+
+
+    style_census_data = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz right;
+        borders:
+            left THIN,
+            right THIN,
+            top THIN,
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 200;
+        """
+    )
+
+    categories = ["Remaining from yesterday MN report", "Admission", "Transfer in from other floor", "Total of No. 1,2,3", "Discharges (Alive) this census day",
+                    "Transfer out from other floor", "Deaths", "Total No. of 5,6,7", "Remaining at 12 MN 4 minus 8", "Admission & Discharge on the same day (including death)",
+                    "Total in-pt. service days of care (9+10)"
+                ]
+    
+    
+    #Generating census of patients categories and data
+    current_row += 1
+    current_col = 3
+
+    #retrieve count of back
+    context_back = get_context_back(dept)
+    trans_in_count = len(context_back["TRANS-IN"])
+    trans_out_count = len(context_back["TRANS-OUT"])
+    trans_other_count = len(context_back["TRANSFER TO OTHER HOSPITAL"])
+
+    row_trans_in = 6
+    row_trans_out = row_trans_in + 4
+
+
+    row_census = [0] * 11
+    for category in categories:
+        ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
+        for department in departments:
+            if category == "Remaining from yesterday MN report":
+                ws.write(current_row, current_col, xlwt.Formula("0"), style_census_data)
+                row_census[0] = current_row + 1
+            elif category == "Admission":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_admission[0]}:$A${row_admission[1]};"{department}")'), style_census_data)
+                row_census[1] = current_row + 1
+            elif category == "Transfer in from other floor":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF(BACK1!$A${row_trans_in}:$A${row_trans_in+trans_in_count};"{department}")'), style_census_data)
+                row_census[2] = current_row + 1
+            elif category == "Total of No. 1,2,3":
+                ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[0]}:{chr(65 + current_col)}{row_census[2]})'), style_census_data)
+                row_census[3] = current_row + 1
+            elif category == "Discharges (Alive) this census day":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_discharges[0]}:$A${row_discharges[1]};"{department}")'), style_census_data)
+                row_census[4] = current_row + 1
+            elif category == "Transfer out from other floor":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF(BACK1!$A${row_trans_out}:$A${row_trans_out+trans_out_count};"{department}")'), style_census_data)
+                row_census[5] = current_row + 1
+            elif category == "Deaths":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_death[0]}:$A${row_death[1]};"{department}")'), style_census_data)
+                row_census[6] = current_row + 1
+            elif category == "Total No. of 5,6,7":
+                ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[4]}:{chr(65 + current_col)}{row_census[6]})'), style_census_data)
+                row_census[7] = current_row + 1
+            elif category == "Remaining at 12 MN 4 minus 8":
+                ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[3]}-{chr(65 + current_col)}{row_census[7]}'), style_census_data)
+                row_census[8] = current_row + 1
+            elif category == "Admission & Discharge on the same day (including death)":
+                ws.write(current_row, current_col, xlwt.Formula(f'0'), style_census_data)
+                row_census[9] = current_row + 1
+            elif category == "Total in-pt. service days of care (9+10)":
+                ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[8]}+{chr(65 + current_col)}{row_census[9]}'), style_census_data)
+                row_census[10] = current_row + 1
+            current_col += 1
+        current_col = 3
+        current_row += 1
+
+    current_row += 1
+#f"COUNTIF($A${row_admission[0]}:$A${row_admission[1]};MED)")
+
+    #Generating bottom summary
+    ws.write(current_row,0, 'Total Admission:') 
+    ws.write(current_row,2, 'NEURO:') 
+    ws.write(current_row,5, 'URO:') 
+    ws.write(current_row,8, 'POST OP:')
+    ws.write(current_row,11, 'OTHERS:')
+
+    current_row += 1
+    ws.write(current_row,0, 'Total Discharges:') 
+
+    current_row += 1
+    ws.write(current_row,0, 'Last:') 
+
+    current_row += 1
+    ws.write(current_row,0, 'Today:')
+    ws.write_merge(current_row,current_row,3,4, 'Prepared by:')
+
+
+    style_prepared_by = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 220;
+        """
+    )
+
+    ws.write_merge(current_row,current_row,5,8, f'{request.user.first_name} {request.user.last_name}', style_prepared_by)
+    
+
+    style_date = xlwt.easyxf("""    
+        align:
+            wrap on,
+            vert center,
+            horiz left;
+        borders:
+            bottom THIN;
+        font:
+            name Calibri,
+            bold on,
+            colour_index Black,
+            height 220;
+        """
+    )
+    
+    ws.write(current_row,10, 'Date:')
+
+
+    ws.write_merge(current_row,current_row,11,13, current_date, style_date)
+
+    return ws
+
+
+
+def generate_front_2(ws, style_head_row, style_data_row, department, request):
     context_header = get_context_front(department)
     dept = department
     #Adjusts colum widths
@@ -686,13 +994,15 @@ def generate_front_1(work_book, style_head_row, style_data_row, department, requ
     ws.write(current_row,10, 'Date:')
     ws.write_merge(current_row,current_row,11,13, '07-Sep-22', style_date)
 
+    return ws
 
 
-def generate_front_2(work_book, style_head_row, style_data_row, department, request):
-    
-    ws = work_book.add_sheet(u'FRONT2')
+
+
+
+def generate_front_3(ws, style_head_row, style_data_row, department, request):
     context_header = get_context_front(department)
-    
+    dept = department
     #Adjusts colum widths
     edit_col_width(ws, 1, 15)
     edit_col_width(ws, 2, 12)
@@ -707,11 +1017,31 @@ def generate_front_2(work_book, style_head_row, style_data_row, department, requ
     current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
 
 
+    #[start, end] format
+    row_admission = [0, 0]
+    row_discharges = [0, 0]
+    row_death = [0, 0]
+
     for context in context_header:
         current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
+        data_start_row = current_row
         if context == "CENSUS OF PATIENTS":
             continue
+        if context == "ADMISSION":
+            row_admission[0] = data_start_row
+        elif context == "DISCHARGES":
+            row_discharges[0] = data_start_row
+        elif context == "DEATH":
+            row_death[0] = data_start_row
+
         current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
+
+        if context == "ADMISSION":
+            row_admission[1] = current_row - 1
+        elif context == "DISCHARGES":
+            row_discharges[1] = current_row - 1
+        elif context == "DEATH":
+            row_death[1] = current_row - 1
 
     #Generating census report headers
 
@@ -775,16 +1105,60 @@ def generate_front_2(work_book, style_head_row, style_data_row, department, requ
     #Generating census of patients categories and data
     current_row += 1
     current_col = 3
+
+    #retrieve count of back
+    context_back = get_context_back(dept)
+    trans_in_count = len(context_back["TRANS-IN"])
+    trans_out_count = len(context_back["TRANS-OUT"])
+    trans_other_count = len(context_back["TRANSFER TO OTHER HOSPITAL"])
+
+    row_trans_in = 6
+    row_trans_out = row_trans_in + 4
+
+
+    row_census = [0] * 11
     for category in categories:
         ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
         for department in departments:
-            ws.write(current_row, current_col, "", style_census_data)
+            if category == "Remaining from yesterday MN report":
+                ws.write(current_row, current_col, xlwt.Formula("0"), style_census_data)
+                row_census[0] = current_row + 1
+            elif category == "Admission":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_admission[0]}:$A${row_admission[1]};"{department}")'), style_census_data)
+                row_census[1] = current_row + 1
+            elif category == "Transfer in from other floor":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF(BACK1!$A${row_trans_in}:$A${row_trans_in+trans_in_count};"{department}")'), style_census_data)
+                row_census[2] = current_row + 1
+            elif category == "Total of No. 1,2,3":
+                ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[0]}:{chr(65 + current_col)}{row_census[2]})'), style_census_data)
+                row_census[3] = current_row + 1
+            elif category == "Discharges (Alive) this census day":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_discharges[0]}:$A${row_discharges[1]};"{department}")'), style_census_data)
+                row_census[4] = current_row + 1
+            elif category == "Transfer out from other floor":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF(BACK1!$A${row_trans_out}:$A${row_trans_out+trans_out_count};"{department}")'), style_census_data)
+                row_census[5] = current_row + 1
+            elif category == "Deaths":
+                ws.write(current_row, current_col, xlwt.Formula(f'COUNTIF($A${row_death[0]}:$A${row_death[1]};"{department}")'), style_census_data)
+                row_census[6] = current_row + 1
+            elif category == "Total No. of 5,6,7":
+                ws.write(current_row, current_col, xlwt.Formula(f'SUM({chr(65 + current_col)}{row_census[4]}:{chr(65 + current_col)}{row_census[6]})'), style_census_data)
+                row_census[7] = current_row + 1
+            elif category == "Remaining at 12 MN 4 minus 8":
+                ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[3]}-{chr(65 + current_col)}{row_census[7]}'), style_census_data)
+                row_census[8] = current_row + 1
+            elif category == "Admission & Discharge on the same day (including death)":
+                ws.write(current_row, current_col, xlwt.Formula(f'0'), style_census_data)
+                row_census[9] = current_row + 1
+            elif category == "Total in-pt. service days of care (9+10)":
+                ws.write(current_row, current_col, xlwt.Formula(f'{chr(65 + current_col)}{row_census[8]}+{chr(65 + current_col)}{row_census[9]}'), style_census_data)
+                row_census[10] = current_row + 1
             current_col += 1
         current_col = 3
         current_row += 1
 
     current_row += 1
-
+#f"COUNTIF($A${row_admission[0]}:$A${row_admission[1]};MED)")
 
     #Generating bottom summary
     ws.write(current_row,0, 'Total Admission:') 
@@ -819,7 +1193,7 @@ def generate_front_2(work_book, style_head_row, style_data_row, department, requ
         """
     )
 
-    ws.write_merge(current_row,current_row,5,8, '', style_prepared_by)
+    ws.write_merge(current_row,current_row,5,8, f'{request.user.first_name} {request.user.last_name}', style_prepared_by)
     
 
     style_date = xlwt.easyxf("""    
@@ -840,166 +1214,14 @@ def generate_front_2(work_book, style_head_row, style_data_row, department, requ
     ws.write(current_row,10, 'Date:')
     ws.write_merge(current_row,current_row,11,13, '07-Sep-22', style_date)
 
-
-
-def generate_front_3(work_book, style_head_row, style_data_row, department, request):
-
-    ws = work_book.add_sheet(u'FRONT3')
-    context_header = get_context_front(department)
-    
-    #Adjusts colum widths
-    edit_col_width(ws, 1, 15)
-    edit_col_width(ws, 2, 12)
-    edit_col_width(ws, 3, 12)
-
-    START_COL = 0
-    END_COL = 13
-    START_ROW = 6
-    current_row = START_ROW
-
-    
-    current_row = add_front_header(ws,current_row,START_COL,END_COL, department)
-
-
-    for context in context_header:
-        current_row = add_section(ws, current_row, START_COL, END_COL, context, style_head_row)
-        if context == "CENSUS OF PATIENTS":
-            continue
-        current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
-
-    #Generating census report headers
-
-
-
-
-    departments = ["MED", "OB", "GYNE", "PED", 'SURG-A', 'SURG-P', 'OPHTHA', 'ENT', 'ORTHO', 'SICK BB', 'WELL BB']
-
-    current_col = 0
-    for department in departments:
-        if current_col == 0:
-            ws.write_merge(current_row,current_row, current_col, 2, 'DEPARTMENT', style_head_row)
-            current_col += 3
-        
-        ws.write(current_row,current_col, department, style_head_row)
-        current_col += 1
-
-
-    style_census_categories = xlwt.easyxf("""    
-        align:
-            wrap on,
-            vert center,
-            horiz left;
-        borders:
-            left THIN,
-            right THIN,
-            top THIN,
-            bottom THIN;
-        font:
-            name Calibri,
-            colour_index Black,
-            height 200;
-        """
-    )
-
-
-    style_census_data = xlwt.easyxf("""    
-        align:
-            wrap on,
-            vert center,
-            horiz right;
-        borders:
-            left THIN,
-            right THIN,
-            top THIN,
-            bottom THIN;
-        font:
-            name Calibri,
-            bold on,
-            colour_index Black,
-            height 200;
-        """
-    )
-
-    categories = ["Remaining from yesterday MN report", "Admission", "Transfer in from other floor", "Total of No. 1,2,3", "Discharges (Alive) this census day",
-                    "Transfer out from other floor", "Deaths", "Total No. of 5,6,7", "Remaining at 12 MN 4 minus 8", "Admission & Discharge on the same day (including death)",
-                    "Total in-pt. service days of care (9+10)"
-                ]
-    
-    
-    #Generating census of patients categories and data
-    current_row += 1
-    current_col = 3
-    for category in categories:
-        ws.write_merge(current_row,current_row,0,2, f'{categories.index(category) + 1}. {category}', style_census_categories)
-        for department in departments:
-            ws.write(current_row, current_col, "", style_census_data)
-            current_col += 1
-        current_col = 3
-        current_row += 1
-
-    current_row += 1
-
-
-    #Generating bottom summary
-    ws.write(current_row,0, 'Total Admission:') 
-    ws.write(current_row,2, 'NEURO:') 
-    ws.write(current_row,5, 'URO:') 
-    ws.write(current_row,8, 'POST OP:')
-    ws.write(current_row,11, 'OTHERS:')
-
-    current_row += 1
-    ws.write(current_row,0, 'Total Discharges:') 
-
-    current_row += 1
-    ws.write(current_row,0, 'Last:') 
-
-    current_row += 1
-    ws.write(current_row,0, 'Today:')
-    ws.write_merge(current_row,current_row,3,4, 'Prepared by:')
-
-
-    style_prepared_by = xlwt.easyxf("""    
-        align:
-            wrap on,
-            vert center,
-            horiz left;
-        borders:
-            bottom THIN;
-        font:
-            name Calibri,
-            bold on,
-            colour_index Black,
-            height 220;
-        """
-    )
-
-    ws.write_merge(current_row,current_row,5,8, '', style_prepared_by)
-    
-
-    style_date = xlwt.easyxf("""    
-        align:
-            wrap on,
-            vert center,
-            horiz left;
-        borders:
-            bottom THIN;
-        font:
-            name Calibri,
-            bold on,
-            colour_index Black,
-            height 220;
-        """
-    )
-    
-    ws.write(current_row,10, 'Date:')
-    ws.write_merge(current_row,current_row,11,13, '07-Sep-22', style_date)
+    return ws
 
 
 
 
 
-def generate_back_1(work_book, style_head_row, style_data_row, department, request):
-    ws = work_book.add_sheet(u'BACK1')
+
+def generate_back_1(ws, style_head_row, style_data_row, department, request):
 
     context_header = get_context_back(department)
     
@@ -1027,8 +1249,9 @@ def generate_back_1(work_book, style_head_row, style_data_row, department, reque
 
 
 
-def generate_back_2(work_book, style_head_row, style_data_row, department, request):
-    ws = work_book.add_sheet(u'BACK2')
+
+
+def generate_back_2(ws, style_head_row, style_data_row, department, request):
 
     context_header = get_context_back(department)
     
@@ -1053,8 +1276,9 @@ def generate_back_2(work_book, style_head_row, style_data_row, department, reque
     ws.write(current_row,0, 'TOTAL')
 
 
-def generate_back_3(work_book, style_head_row, style_data_row, department, request):
-    ws = work_book.add_sheet(u'BACK3')
+
+
+def generate_back_3(ws, style_head_row, style_data_row, department, request):
 
     context_header = get_context_back(department)
     
@@ -1077,11 +1301,13 @@ def generate_back_3(work_book, style_head_row, style_data_row, department, reque
         current_row = add_data(ws, context_header[context], current_row, END_COL, style_data_row)
 
     ws.write(current_row,0, 'TOTAL')
+
 
 
 #Excel Utilities
 
 def add_front_header(ws,current_row,START_COL,END_COL,department):
+    
     if "FRONT" in ws.name:
         style_sheet_header = xlwt.easyxf("""    
             align:
@@ -1122,7 +1348,9 @@ def add_front_header(ws,current_row,START_COL,END_COL,department):
         )
 
     ws.write(current_row,0, 'FOR THE 24 HRS ENDED MIDNIGHT OF:', style_label)
-    ws.write_merge(current_row,current_row,3,6, "07-SEP-22", style_value)
+    now = timezone.now()
+    current_date = now.strftime("%d-%B-%Y")
+    ws.write_merge(current_row,current_row,3,6, current_date, style_value)
     ws.write(current_row,9, 'FLOOR/SECTION:', style_label)
     ws.write_merge(current_row,current_row,11,END_COL, department, style_value)
     current_row += 2
@@ -1257,14 +1485,20 @@ def generate_census_XLSX(request, department):
     work_book = xlwt.Workbook(encoding = 'utf-8')
 
 
-    generate_back_1(work_book, style_head_row, style_data_row, department,request)
-    generate_back_2(work_book, style_head_row, style_data_row, department,request)
-    generate_back_3(work_book, style_head_row, style_data_row, department,request)
-    generate_front_1(work_book, style_head_row, style_data_row, department,request)
-    generate_front_2(work_book, style_head_row, style_data_row, department,request)
-    generate_front_3(work_book, style_head_row, style_data_row, department,request)
+    ws_front_1 = work_book.add_sheet(u"FRONT1")
+    ws_back_1 = work_book.add_sheet(u"BACK1")
+    ws_front_2 = work_book.add_sheet(u"FRONT2")
+    ws_back_2 = work_book.add_sheet(u"BACK2")
+    ws_front_3 = work_book.add_sheet(u"FRONT3")
+    ws_back_3 = work_book.add_sheet(u"BACK3")
 
-    
+    generate_back_1(ws_back_1, style_head_row, style_data_row, department,request)
+    generate_back_2(ws_back_2, style_head_row, style_data_row, department,request)
+    generate_back_3(ws_back_3, style_head_row, style_data_row, department,request)
+    generate_front_1(ws_front_1, style_head_row, style_data_row, department,request)
+    generate_front_2(ws_front_2, style_head_row, style_data_row, department,request)
+    generate_front_3(ws_front_3, style_head_row, style_data_row, department,request)
+
     write_excel_report(work_book, response)
 
     return response
@@ -1300,12 +1534,22 @@ class PaginatedKardexList(APIView, LimitOffsetPagination):
         relevant_kardex = Kardex.objects.all()
 
         relevant_kardex = relevant_kardex.filter(reduce(operator.or_,
-            (Q(name_of_ward__icontains=ward) for ward in requesting_nurse.ward.split(','))
+            (
+                filter for filter in itertools.chain(
+                    (Q(name_of_ward__icontains=ward) for ward in requesting_nurse.ward.split(',')),
+                    [Q(edited_by__icontains=str(requesting_nurse.id))]
+                )
+            )
         ))
 
         relevant_kardex = relevant_kardex.filter(reduce(operator.or_,
-            (Q(department__icontains=department) for department in requesting_nurse.department.split(',')))
-        )
+            (
+                filter for filter in itertools.chain(
+                    (Q(department__icontains=department) for department in requesting_nurse.department.split(',')),
+                    [Q(edited_by__icontains=str(requesting_nurse.id))]
+                )
+            )
+        ))
 
         target_nurse = request.GET.get('nurse', '')
         if target_nurse:
@@ -1466,10 +1710,7 @@ def splitToLists(query_dict):
         'edited_by', 'edited_at',
     ]
     for key in query_dict.keys():
-        print(list_keys)
-        print('key', key, key in list_keys)
         if (key in list_keys):
-            print('bad action')
             query_dict[key] = query_dict[key].split(';;')
     return query_dict
 

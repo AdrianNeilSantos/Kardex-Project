@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>CLINICAL AREAS ENDORSEMENT LOG SHEET</title>
     <style>
         table {
             border: 1px solid black;
@@ -14,40 +14,60 @@
 
         @page {
             size: letter;
-            margin: 1in;
+            margin: 0.5in;
         }
+
+        .header{
+            text-align: center;
+        }
+
+        pre {
+            font-family: default;
+            white-space: pre;
+        }
+
     </style>
 </head>
 <body>
-    <h1>Nursing Endorsement Sheet</h1>
-
-
     
-    <h3>User Details</h3>
-    <b>Full Name:</b> {{user.first_name}} {{user.last_name}}<br>
-    <b>Username:</b> {{user.username}}  <br>
-    <b>Email Address:</b> {{user.email}} 
+    <p class="header">
+        Republic of the Philippines<br>
+        Department of Health <br>
+        <i> “PHIC Accredited” </i>
+    </p>
+    <h1 class="header">CLINICAL AREAS ENDORSEMENT LOG SHEET <br>
+        Nursing Service
+    </h1>
 
-    <br><br>
+    <b>CLINICAL AREA:</b> {{kardex.name_of_ward}}<br>
+    <b>DATE & SHIFT:</b> {{kardex.date_time}}
     
-    <h3>Details</h3>
-    
-    <table class="table table-hover">
+    <table class="table">
         <thead>
             <tr>
-                <th>Patient Name</th>
-                <th>Age</th>
-                <th>Sex</th>
-                <th>Hospital Number</th>
+                <th width="10%">Location (Room/Bed #/Unit)</th>
+                <th width="20%">Name of Patient</th>
+                <th width="5%">M</th>
+                <th width="5%">F</th>
+                <th width="20%">Contraptions</th>
+                <th width="25%">Special Notations/Diagnostics</th>                
+                <th width="15%">Diet</th>
             </tr>
         </thead>
         <tbody>
-            {% for kardex in kardexs %}
+            {% for index, kardex in enumerated_kardexs %}
             <tr>
-                <td>{{kardex.name}}</td>
-                <td>{{kardex.age}}</td>
-                <td>{{kardex.sex}}</td>
-                <td>{{kardex.hospital_num}}</td>
+                <td width="10%">{{kardex.bed_num|default:''}}</td>
+                <td width="20%">{{kardex.first_name}} {{kardex.last_name}}</td>
+                <td width="5%"> {% if kardex.sex == 'Male' %} {{kardex.age|default:''}} {% endif %} </td>
+                <td width="5%"> {% if kardex.sex == 'Female' %} {{kardex.age|default:''}} {% endif %}</td>
+                    {% for contraptions in contraptions_list %}
+                        {% if forloop.counter0 == index %}
+                        <td width="20%">{{contraptions|default:''}}</td>
+                        {% endif %}
+                    {% endfor %}
+                <td width="25%">{{kardex.special_notations|default:''}}</td>
+                <td width="15%">{{kardex.diet|default:''}}</td>
             </tr>
             {% endfor %}            
         </tbody>
@@ -55,9 +75,7 @@
     
     <br><br>   
 
-
-
-
-
+    <pre> <b>ENDORSED BY:                                                             RECEIVED BY:</b>
+    </pre>
 </body>
 </html>

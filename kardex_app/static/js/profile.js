@@ -245,26 +245,26 @@ const sortKardexSelect = document.querySelector('#sortKardexSelect');
 const sortKardexs = () => {
   const sortVal = sortKardexSelect.value;
   switch (sortVal) {
-  case '0':
-    currKardexs = _.orderBy(currKardexs, ['name'], ['asc']);
-    break;
-  case '1':
-    currKardexs = _.orderBy(currKardexs, ['name'], ['desc']);
-    break;
-  case '2':
-    currKardexs = _.orderBy(currKardexs, ['date_time', 'date_added'], ['desc', 'desc']);
-    break;
-  case '3':
-    currKardexs = _.orderBy(currKardexs, ['date_time', 'date_added'], ['asc', 'asc']);
-    break;
-  case '4':
-    currKardexs = _.orderBy(currKardexs, ['edited_at'], ['desc']);
-    break;
-  case '5':
-    currKardexs = _.orderBy(currKardexs, ['edited_at'], ['asc']);
-    break;
-  default:
-    // do nothing
+    case '0':
+      currKardexs = _.orderBy(currKardexs, ['last_name', 'first_name'], ['asc', 'asc']);
+      break;
+    case '1':
+      currKardexs = _.orderBy(currKardexs, ['last_name', 'first_name'], ['desc', 'desc']);
+      break;
+    case '2':
+      currKardexs = _.orderBy(currKardexs, ['date_time', 'date_added'], ['desc', 'desc']);
+      break;
+    case '3':
+      currKardexs = _.orderBy(currKardexs, ['date_time', 'date_added'], ['asc', 'asc']);
+      break;
+    case '4':
+      currKardexs = _.orderBy(currKardexs, ['edited_at'], ['desc']);
+      break;
+    case '5':
+      currKardexs = _.orderBy(currKardexs, ['edited_at'], ['asc']);
+      break;
+    default:
+      // do nothing
   }
   kardexGroupContainer.querySelectorAll('.kardex-container').forEach((el) => {
     el.style.order = currKardexs

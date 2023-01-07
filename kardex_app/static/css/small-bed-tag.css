@@ -1,0 +1,15 @@
+.box-shadow {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.small-bed-tag-body {
+  white-space: nowrap;
+}
+
+.border-dashed {
+  border: 1px dashed #808080;
+}
+
+.span1 {
+  font-size: calc(1.3rem + .6vw);
+}

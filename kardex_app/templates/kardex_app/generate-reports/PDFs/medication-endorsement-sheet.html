@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Medication Endorsement Log Sheet</title>
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"
+    >
+    {% load my_templatetags %}
     <style>
         table {
             border: 1px solid black;
@@ -12,52 +17,91 @@
             padding: 2px;
         }
 
+        .table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .table td {
+            width: 33.33%;
+        }
+
         @page {
             size: letter;
             margin: 1in;
         }
+
+        .header {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <h1>Medication Endorsement Sheet</h1>
+    <div class="header">
+        <p>
+            Republic of the Philippines <br>
+            Department of Health
+        </p>
+        <p class="sub">
+            "PHIC Accredited"
+        </p>
+        <h1>
+            MEDICATION ENDORSEMENT LOG SHEET <br>
+            Nursing Service
+        </h1>
+        <hr>
+    </div>
 
+    <table style="border: none;">
+        <th style="width: 34%; text-align: left; font-size: 1.3rem;">Clinical Area: {{user.ward}}</th>
+        <th style="width: 33%; text-align: left; font-size: 1.3rem;">Date: {{current_date}}</th>
+        <th style="width: 33%; text-align: left; font-size: 1.3rem;">Shift: {{ formatted_nurse_on_duty }}</th>
+    </table>
 
-    
-    <h3>User Details</h3>
-    <b>Full Name:</b> {{user.first_name}} {{user.last_name}}<br>
-    <b>Username:</b> {{user.username}}  <br>
-    <b>Email Address:</b> {{user.email}} 
-
-    <br><br>
-    
-    <h3>Details</h3>
-    
     <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Patient Name</th>
-                <th>Age</th>
-                <th>Sex</th>
-                <th>Hospital Number</th>
-            </tr>
-        </thead>
+        <!-- Undecided Structure -->
         <tbody>
-            {% for kardex in kardexs %}
+            {% for index, kardex in enumerated_kardexs %}
             <tr>
-                <td>{{kardex.name}}</td>
-                <td>{{kardex.age}}</td>
-                <td>{{kardex.sex}}</td>
-                <td>{{kardex.hospital_num}}</td>
+                <td>
+                    <b>{% if kardex.bed_num %}BED {{kardex.bed_num}}{% endif %} {{kardex.last_name}} {{kardex.first_name}}</b>
+                </td>
+                <td></td>
+                <td></td>
             </tr>
-            {% endfor %}            
+            {% if kardex.medications %}
+            {% for medication in kardex.medications|split:',' %}
+            <tr>
+                <td>
+                    <b>{{medication}}</b>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+            <tr>
+                <td><br></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
+
+    <br>
+
+    <table>
+        <tr>
+            <td> <b>SPECIAL NOTATIONS:</b><br>
+                {% for index, kardex in enumerated_kardexs_2 %}
+                {% if kardex.special_notations %}
+                {{kardex.special_notations}} - patient {{kardex.last_name}}<br>
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
     
-    <br><br>   
-
-
-
-
-
 </body>
 </html>
